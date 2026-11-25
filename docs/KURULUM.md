@@ -32,10 +32,19 @@ Başarı ya da tanıtım cümlesi değişince paylaşım görsellerini yenile: `
 
 ## Yayın
 
-`main` dalına gönderilen her değişiklik `.github/workflows/yayin.yml` ile derlenip GitHub Pages'e konur.
-Depo `matristechnology/matristechnology.github.io` olursa adres `https://matristechnology.github.io/` olur.
-Başka bir adreste yayınlanacaksa `astro.config.mjs` içindeki `site` ve `icerik.yaml` içindeki `site.adres` değişir.
-Depoda Settings, Pages, Source olarak "GitHub Actions" seçilmelidir.
+Adres: https://matristechnology.github.io/ · Depo: github.com/matristechnology/matristechnology.github.io
+
+```
+npm run yayinla      # derler, çıktıyı gh-pages dalına gönderir
+git push             # kaynak kodu main dalına gönderir
+```
+
+GitHub Pages `gh-pages` dalından yayınlar. Yayın birkaç dakika sürer.
+`gh` hesabı `matristechnology` olmalı: `gh auth switch -u matristechnology`.
+
+Kendiliğinden yayın (main'e push edince) için hazır iş akışı `.github/workflows/yayin.yml` dosyasında duruyor ama depoya gönderilmedi,
+çünkü `gh` girişinde `workflow` izni yok. Açmak için: `gh auth refresh -h github.com -s workflow`, sonra dosyayı commit edip gönder
+ve depoda Settings, Pages, Source olarak "GitHub Actions" seç.
 
 `ham/` klasörü ve PDF'ler `.gitignore` içindedir, depoya girmez.
 
