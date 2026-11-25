@@ -1,0 +1,179 @@
+# Sitenin bütün metinleri bu dosyadadır. Yeni üye, sponsor, başarı ya da fotoğraf eklemek için
+# yalnızca burayı (ve ilgili görseli) değiştir. İki dilli alanlar { tr: ..., en: ... } biçimindedir.
+# Boş bırakılan alan ve boş liste sitede görünmez.
+
+site:
+  adres: https://matristechnology.github.io
+  baslik:
+    tr: Matris | TEKNOFEST Sürü İHA Takımı
+    en: Matris | TEKNOFEST Swarm UAV Team
+  aciklama:
+    tr: Bursa Teknik Üniversitesi'nin TEKNOFEST Sürü İHA takımı Matris. Otonom uçuş, görev koordinasyonu ve sürü haberleşmesi.
+    en: Matris, the TEKNOFEST Swarm UAV team of Bursa Technical University. Autonomous flight, mission coordination and swarm communication.
+
+takim:
+  ad: Matris
+  ustluk:
+    tr: TEKNOFEST Sürü İHA Takımı · Bursa Teknik Üniversitesi
+    en: TEKNOFEST Swarm UAV Team · Bursa Technical University
+  tanitim:
+    tr: Otonom uçuş, görev koordinasyonu ve sürü haberleşmesi üzerine çalışan mühendislik ekibi.
+    en: An engineering team working on autonomous flight, mission coordination and swarm communication.
+  # Giriş fotoğrafı: src/assets/galeri/<dosya>
+  fotograf: takim-2026.jpg
+  fotograf_alt:
+    tr: Matris takımının on üyesi Sürü İHA Yarışması afişinin önünde yan yana duruyor, önlerinde çimde bir İHA var.
+    en: Ten members of the Matris team standing side by side in front of the Swarm UAV Competition banner, with a UAV on the grass in front of them.
+  hikaye:
+    tr:
+      - MATRİS, Bursa Teknik Üniversitesi bünyesinde, MATRO (Makine Teknolojileri Robot ve Otomasyon) Topluluğu çatısı altında çalışan ve TEKNOFEST Sürü İHA kategorisinde otonom uçuş, görev koordinasyonu ve sürü haberleşmesi üzerine çalışmalar yürüten bir mühendislik ekibidir.
+    en:
+      - MATRİS is an engineering team at Bursa Technical University, working under the MATRO (Machine Technologies, Robotics and Automation) Society. It competes in the TEKNOFEST Swarm UAV category and works on autonomous flight, mission coordination and swarm communication.
+  odak:
+    - { tr: Otonom uçuş ve görev koordinasyonu, en: Autonomous flight and mission coordination }
+    - { tr: Sürü haberleşmesi ve karar verme altyapısı, en: Swarm communication and decision-making infrastructure }
+    - { tr: Çoklu İHA koordinasyonu, en: Multi-UAV coordination }
+
+# tur: finalist | derece | odul. Bu üçü birbirinin yerine kullanılmaz, veride ne yazıyorsa o.
+basarilar:
+  - yil: 2024
+    tur: finalist
+    baslik: { tr: Finalist, en: Finalist }
+    ayrinti: { tr: TEKNOFEST Sürü İHA Yarışması, en: TEKNOFEST Swarm UAV Competition }
+  - yil: 2026
+    tur: derece
+    baslik: { tr: Ön Tasarım Raporu Türkiye 2.si, en: 2nd in Türkiye, Preliminary Design Report }
+    ayrinti: { tr: Ön Tasarım Raporu · 93/100 puan, en: Preliminary Design Report · 93/100 points }
+  - yil: 2026
+    tur: finalist
+    baslik: { tr: Finalist, en: Finalist }
+    ayrinti: { tr: TEKNOFEST Sürü İHA Yarışması, en: TEKNOFEST Swarm UAV Competition }
+
+suru:
+  anlatim:
+    tr:
+      - Sürü İHA, birlikte uçan ve aynı görevi paylaşan insansız hava araçlarıdır (İHA). Her araç kendi konumunu bilir, ötekilerle haberleşir ve hareketini sürünün geri kalanına göre ayarlar.
+      - Sürüde her aracı ayrı bir pilot yönetmez. Sürüye tek bir komut verilir, araçlar işi kendi aralarında paylaşır. Bir araç devre dışı kalsa bile kalanlar görevi sürdürür.
+    en:
+      - A UAV swarm is a group of unmanned aerial vehicles (UAVs) that fly together and share one mission. Each vehicle knows its own position, talks to the others and adjusts its motion to the rest of the swarm.
+      - No pilot flies each vehicle separately. The swarm receives a single command and the vehicles divide the work among themselves. If one vehicle drops out, the rest carry on with the mission.
+  # Yarışmanın ne istediği: teknofest.org'daki güncel şartnameden doğrulanınca yazılacak. Boşken görünmez.
+  yarisma: { tr: "", en: "" }
+
+# Alt ekipler: anahtar üyelerdeki "ekip" alanında kullanılır.
+ekipler:
+  algoritma: { tr: Algoritma, en: Algorithms }
+  aviyonik: { tr: Aviyonik ve yazılım, en: Avionics and software }
+  mekanik: { tr: Mekanik ve test, en: Mechanics and testing }
+  elektronik: { tr: Elektronik, en: Electronics }
+
+ekip_yazisi:
+  tr: Ekibimiz algoritma, aviyonik/yazılım, mekanik-test ve elektronik alanlarında görev paylaşımı yaparak çalışır. Bu yapı, sürecin düzenli ilerlemesini ve her ekip üyesinin net bir sorumlulukla katkı sunmasını sağlar.
+  en: Our team shares the work across algorithms, avionics/software, mechanics-testing and electronics. This structure keeps the process orderly and gives every member a clear responsibility.
+
+# ŞABLON: 17 üye. Veri gelince her satır doldurulur.
+#   ad        boşsa kart "Üye 01" ve "yakında" gösterir
+#   gorev     örnek: { tr: Takım kaptanı, en: Team captain }
+#   ekip      algoritma | aviyonik | mekanik | elektronik
+#   sorumlu   true ise (kaptan, ekip sorumlusu) kart öne gelir
+#   bolum     örnek: { tr: Mekatronik Mühendisliği · 3. sınıf, en: Mechatronics Engineering · 3rd year }
+#   fotograf  src/assets/uyeler/<dosya>. Yoksa baş harfler gösterilir
+#   baglanti  üyenin kendi verdiği bağlantı (LinkedIn gibi)
+#   izin      üye sitede görünmeye izin verdiyse true. Adı yazılı ama izni false olan üye sitede hiç görünmez
+uyeler:
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+
+# Danışmanlar: ad ve izin gelince görünür. İkisi de boşken bu satır sitede çıkmaz.
+danismanlar:
+  - { ad: "", unvan: { tr: Akademik danışman, en: Academic advisor }, izin: false }
+  - { ad: "", unvan: { tr: Sektör danışmanı, en: Industry advisor }, izin: false }
+
+surec:
+  - baslik: { tr: Simülasyon, en: Simulation }
+    ayrinti: { tr: "Gazebo / SITL ortamında görev mantığı, rota ve haberleşme senaryoları.", en: "Mission logic, routing and communication scenarios in Gazebo / SITL." }
+  - baslik: { tr: Donanım entegrasyonu, en: Hardware integration }
+    ayrinti: { tr: "Pixhawk, Raspberry Pi, güç dağıtımı, telemetri ve sensör doğrulama.", en: "Pixhawk, Raspberry Pi, power distribution, telemetry and sensor validation." }
+  - baslik: { tr: Tek İHA testleri, en: Single-UAV tests }
+    ayrinti: { tr: "Uçuş kararlılığı, failsafe, pil ve bağlantı davranışlarının ölçümü.", en: "Measuring flight stability, failsafe, battery and link behaviour." }
+  - baslik: { tr: Çoklu İHA denemeleri, en: Multi-UAV trials }
+    ayrinti: { tr: "Sürü davranışı, görev paylaşımı ve veri aktarımı testleri.", en: "Swarm behaviour, task sharing and data transfer tests." }
+
+# Fotoğraflar: src/assets/galeri/<dosya>. Her birine tek satır açıklama.
+galeri:
+  - dosya: sahne.jpg
+    alt: { tr: Takım, Sürü İHA Yarışması sahnesinin önünde., en: The team in front of the Swarm UAV Competition stage. }
+  - dosya: uc-arac.jpg
+    alt: { tr: Yarışma alanında takım ve üç İHA., en: The team and three UAVs at the competition field. }
+  - dosya: juri.jpg
+    alt: { tr: Yarışma çadırında sistemin anlatımı., en: Explaining the system in the competition tent. }
+  - dosya: arac-tezgah.jpg
+    alt: { tr: Atölyede bir İHA., en: A UAV in the workshop. }
+  - dosya: ucus-oncesi.jpg
+    alt: { tr: Uçuş öncesi kontrol., en: Pre-flight check. }
+  - dosya: atolye.jpg
+    alt: { tr: Atölyede donanım çalışması., en: Hardware work in the workshop. }
+  - dosya: gece-testi.jpg
+    alt: { tr: Akşam saatlerinde uçuş denemesi hazırlığı., en: Preparing for an evening flight trial. }
+  - dosya: saha.jpg
+    alt: { tr: Sahada sıralanmış İHA'lar., en: UAVs lined up on the field. }
+  - dosya: pist.jpg
+    alt: { tr: Açık alanda uçuş denemesi., en: A flight trial in the open. }
+  - dosya: hazirlik.jpg
+    alt: { tr: Uçuş öncesi araçların hazırlanması., en: Preparing the vehicles before a flight. }
+
+destek:
+  metin:
+    tr: MATRİS olarak TEKNOFEST Sürü İHA kategorisinde otonom uçuş, sürü koordinasyonu, haberleşme ve saha testleri üzerine çalışmalar yürütüyoruz. Projemizin sürdürülebilir ilerlemesi için malzeme, üretim, test, yazılım ve finansal destek alanlarında iş birlikleri geliştirmeyi hedefliyoruz.
+    en: As MATRİS we work on autonomous flight, swarm coordination, communication and field testing in the TEKNOFEST Swarm UAV category. To keep the project moving we aim to build partnerships in materials, manufacturing, testing, software and funding.
+  alanlar:
+    - { tr: Malzeme desteği, en: Material support }
+    - { tr: Üretim ve test desteği, en: Manufacturing and testing support }
+    - { tr: Finansal destek, en: Financial support }
+  haklar:
+    - { tr: Logo görünürlüğü, en: Logo visibility }
+    - { tr: Sosyal medya paylaşımları, en: Social media posts }
+    - { tr: Etkinlik ve yarışmalarda görünürlük, en: Visibility at events and competitions }
+  ihtiyac_yazisi:
+    tr: Tasarım, entegrasyon ve saha test süreçlerinde ihtiyaç duyduğumuz temel donanımlar.
+    en: The core hardware we need for design, integration and field testing.
+  ihtiyaclar:
+    - grup: { tr: Uçuş kontrol ve gömülü sistemler, en: Flight control and embedded systems }
+      ogeler: [Raspberry Pi 5, Pixhawk Orange Cube, Matek, Power modülü, UBEC, Safe switch, Buzzer modülü]
+    - grup: { tr: Haberleşme ve konumlandırma, en: Communication and positioning }
+      ogeler: [Here 3 GPS, V5 telemetri, FlySky kumanda, FlySky radyo alıcı, DW1000C UWB, DW1001DEV UWB]
+    - grup: { tr: İtki sistemi, en: Propulsion }
+      ogeler: [EMAX 820KV motor, Banana ESC 30A, Hobbywing FlyFun 18A, EMAX 20A ESC, T-Air 40A ESC, Skywalker 40A ESC]
+    - grup: { tr: Güç ve görüntüleme, en: Power and imaging }
+      ogeler: [LiPo batarya, Raspberry Pi Camera V3]
+    - grup: { tr: Mekanik bileşenler, en: Mechanical parts }
+      ogeler: [S500 frame, 10" pervane CW, 10" pervane CCW, 11" pervane çifti]
+  # Sponsorluk dosyası: public/ altına konan PDF'in adı. Boşken indirme düğmesi çıkmaz.
+  dosya: ""
+  # Sponsorlar: { ad, logo (src/assets/sponsorlar/<dosya>), baglanti }. Boşken logo satırı çıkmaz.
+  sponsorlar: []
+
+iletisim:
+  eposta: zeynepcan9573@gmail.com
+  eposta_etiket: { tr: Sponsorluk iletişimi, en: Sponsorship contact }
+  instagram: https://www.instagram.com/btu_matris/
+  instagram_ad: "@btu_matris"
+  linkedin: ""
+  # Kimler başvurabilir, nasıl başvurulur. Boşken görünmez.
+  katil: { tr: "", en: "" }
+  basvuru: ""

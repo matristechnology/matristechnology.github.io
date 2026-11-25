@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { t } from '../lib/i18n';
+---
+<Base dil="tr" baslik="404 | Matris" aciklama={t('yok404', 'tr')} karsiYol="/en/" sayfa="diger">
+  <section class="yok kap">
+    <h1>404</h1>
+    <p class="tanitim">{t('yok404', 'tr')} <span lang="en" class="soluk">{t('yok404', 'en')}</span></p>
+    <div class="dugmeler">
+      <a class="dugme birincil" href="/">{t('anaSayfa', 'tr')}</a>
+      <a class="dugme" href="/en/" lang="en">{t('anaSayfa', 'en')}</a>
+    </div>
+  </section>
+</Base>

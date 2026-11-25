@@ -1,0 +1,259 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import SuruDemo from '../components/SuruDemo.astro';
+import UyeKarti from '../components/UyeKarti.astro';
+import { icerik, c, gorunenUyeler, gorunenDanismanlar, gorunenBolumler, galeriGorseli, sponsorGorseli, type Dil } from '../lib/icerik';
+import { t, bolumler, digerDil, anaYol, type Bolum } from '../lib/i18n';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const diger = digerDil(dil);
+const { takim, basarilar, suru, destek, iletisim } = icerik;
+const var_ = new Set<string>(gorunenBolumler());
+const kimlik = (b: Bolum) => ({ id: bolumler[b][dil], 'data-karsi': bolumler[b][diger] });
+const bag = (b: Bolum) => `#${bolumler[b][dil]}`;
+
+const uyeler = gorunenUyeler();
+const danismanlar = gorunenDanismanlar();
+const doluEkipler = Object.keys(icerik.ekipler).filter((e) => uyeler.some((u) => u.ekip === e));
+const finalist = basarilar.filter((b) => b.tur === 'finalist').length;
+const serit = [
+  { sayi: icerik.uyeler.length, ad: t('uye', dil) },
+  { sayi: Object.keys(icerik.ekipler).length, ad: t('altEkip', dil) },
+  { sayi: finalist, ad: t('finalistlik', dil) },
+].filter((s) => s.sayi > 0);
+
+const girisFoto = takim.fotograf ? galeriGorseli(takim.fotograf) : null;
+const galeri = await Promise.all(
+  icerik.galeri.map(async (g) => {
+    const kaynak = galeriGorseli(g.dosya);
+    const buyuk = await getImage({ src: kaynak, width: Math.min(1600, kaynak.width), format: 'webp' });
+    return { kaynak, buyuk: buyuk.src, alt: c(g.alt, dil), dik: kaynak.height > kaynak.width };
+  }),
+);
+const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
+---
+
+<Base dil={dil} baslik={c(icerik.site.baslik, dil)} aciklama={c(icerik.site.aciklama, dil)} karsiYol={anaYol(diger)} sayfa="ana">
+  <section class="giris kap" id="ust">
+    <div class="giris-yazi">
+      <p class="ustluk" data-belir><span class="uclu" aria-hidden="true"><i></i><i></i><i></i></span>{c(takim.ustluk, dil)}</p>
+      <h1 data-belir style="--i:1">{takim.ad}</h1>
+      <p class="tanitim" data-belir style="--i:2">{c(takim.tanitim, dil)}</p>
+      {basarilar.length > 0 && (
+        <ul class="rozetler" data-belir style="--i:3">
+          {basarilar.map((b) => (
+            <li><span class="rozet-yil">{b.yil}</span>{c(b.baslik, dil)}</li>
+          ))}
+        </ul>
+      )}
+      <div class="dugmeler" data-belir style="--i:4">
+        <a class="dugme birincil" href={bag('destek')}>{t('destekOl', dil)}</a>
+        {var_.has('takim') && <a class="dugme" href={bag('takim')}>{t('takimiTani', dil)}</a>}
+      </div>
+    </div>
+    {girisFoto && (
+      <figure class="giris-foto" data-belir style="--i:2">
+        <Image src={girisFoto} alt={c(takim.fotograf_alt, dil)} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 100vw, 50vw" loading="eager" fetchpriority="high" />
+      </figure>
+    )}
+    {serit.length > 0 && (
+      <dl class="serit" data-belir style="--i:5">
+        {serit.map((s) => (
+          <div><dt>{s.ad}</dt><dd>{s.sayi}</dd></div>
+        ))}
+      </dl>
+    )}
+  </section>
+
+  <section class="bolum kap" {...kimlik('suru')}>
+    <h2 data-belir>{t('suruBaslik', dil)}</h2>
+    <div class="yazi" data-belir>
+      {suru.anlatim[dil].map((p) => <p>{p}</p>)}
+    </div>
+    {c(suru.yarisma, dil) && (
+      <div class="not" data-belir>
+        <h3>{t('yarisma', dil)}</h3>
+        <p>{c(suru.yarisma, dil)}</p>
+      </div>
+    )}
+    <SuruDemo dil={dil} />
+  </section>
+
+  <section class="bolum kap" {...kimlik('matris')}>
+    <h2 data-belir>{t('matrisBaslik', dil)}</h2>
+    <div class="iki-sutun">
+      <div class="yazi" data-belir>
+        {takim.hikaye[dil].map((p) => <p>{p}</p>)}
+      </div>
+      {takim.odak.length > 0 && (
+        <div class="odak" data-belir style="--i:1">
+          <h3>{t('odak', dil)}</h3>
+          <ul>{takim.odak.map((o) => <li>{c(o, dil)}</li>)}</ul>
+        </div>
+      )}
+    </div>
+    {basarilar.length > 0 && (
+      <>
+        <h3 class="ara-baslik" data-belir>{t('basarilar', dil)}</h3>
+        <ol class="cizgi" data-cizgi>
+          {basarilar.map((b, i) => (
+            <li class="durak" data-belir style={`--i:${i}`}>
+              <span class="durak-yil">{b.yil}</span>
+              <div>
+                <p class="durak-baslik">{c(b.baslik, dil)}</p>
+                {c(b.ayrinti, dil) && <p class="soluk">{c(b.ayrinti, dil)}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </>
+    )}
+  </section>
+
+  {var_.has('takim') && (
+    <section class="bolum kap" {...kimlik('takim')}>
+      <h2 data-belir>{t('takimBaslik', dil)}</h2>
+      {c(icerik.ekip_yazisi, dil) && <p class="bolum-giris" data-belir>{c(icerik.ekip_yazisi, dil)}</p>}
+      <ul class="ekip-adlari" data-belir>
+        {Object.values(icerik.ekipler).map((e) => <li>{c(e, dil)}</li>)}
+      </ul>
+      {doluEkipler.length > 1 && (
+        <div class="suzgec js-only" data-suzgec role="group" aria-label={t('suz', dil)}>
+          <button type="button" data-ekip="" aria-pressed="true">{t('hepsi', dil)}</button>
+          {doluEkipler.map((e) => (
+            <button type="button" data-ekip={e} aria-pressed="false">{c(icerik.ekipler[e], dil)}</button>
+          ))}
+        </div>
+      )}
+      <ul class="uyeler" data-uyeler>
+        {uyeler.map((u, i) => <UyeKarti uye={u} dil={dil} gecikme={i % 6} />)}
+      </ul>
+      {danismanlar.length > 0 && (
+        <div class="danismanlar" data-belir>
+          <h3 class="ara-baslik">{t('danismanlar', dil)}</h3>
+          <ul>
+            {danismanlar.map((d) => <li><strong>{d.ad}</strong><span class="soluk">{c(d.unvan, dil)}</span></li>)}
+          </ul>
+        </div>
+      )}
+    </section>
+  )}
+
+  {var_.has('calismalar') && (
+    <section class="bolum kap" {...kimlik('calismalar')}>
+      <h2 data-belir>{t('calismalarBaslik', dil)}</h2>
+      <p class="bolum-giris" data-belir>{t('calismalarGiris', dil)}</p>
+      <ol class="surec">
+        {icerik.surec.map((s, i) => (
+          <li data-belir style={`--i:${i}`}>
+            <span class="surec-no" aria-hidden="true">{i + 1}</span>
+            <h3>{c(s.baslik, dil)}</h3>
+            <p class="soluk">{c(s.ayrinti, dil)}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  {var_.has('galeri') && (
+    <section class="bolum kap" {...kimlik('galeri')}>
+      <h2 data-belir>{t('galeriBaslik', dil)}</h2>
+      <p class="bolum-giris" data-belir>{t('galeriGiris', dil)}</p>
+      <ul class="galeri" data-galeri>
+        {galeri.map((g, i) => (
+          <li class:list={[{ dik: g.dik }]} data-belir style={`--i:${i % 4}`}>
+            <a href={g.buyuk} data-foto data-alt={g.alt} aria-label={`${t('buyut', dil)}: ${g.alt}`}>
+              <Image src={g.kaynak} alt={g.alt} widths={[320, 480, 720]} sizes="(max-width: 600px) 50vw, (max-width: 1000px) 33vw, 290px" loading="lazy" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <dialog class="buyutec" data-buyutec aria-label={t('goruntuleyici', dil)}>
+        <div class="buyutec-ust">
+          <span class="buyutec-sayac" data-sayac></span>
+          <button type="button" class="dugme-ikon" data-kapat aria-label={t('kapat', dil)}>
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="buyutec-govde">
+          <button type="button" class="dugme-ikon" data-onceki aria-label={t('onceki', dil)}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <img data-buyuk alt="" />
+          <button type="button" class="dugme-ikon" data-sonraki aria-label={t('sonraki', dil)}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <p class="buyutec-alt" data-aciklama role="status"></p>
+      </dialog>
+    </section>
+  )}
+
+  <section class="bolum kap" {...kimlik('destek')}>
+    <h2 data-belir>{t('destekBaslik', dil)}</h2>
+    {c(destek.metin, dil) && <p class="bolum-giris genis" data-belir>{c(destek.metin, dil)}</p>}
+    {destek.sponsorlar.length > 0 && (
+      <div class="sponsorlar" data-belir>
+        <h3 class="ara-baslik">{t('sponsorlar', dil)}</h3>
+        <ul>
+          {destek.sponsorlar.map((s) => {
+            const ic = s.logo ? <Image src={sponsorGorseli(s.logo)} alt={s.ad} height={56} /> : <span>{s.ad}</span>;
+            return <li>{s.baglanti ? <a href={s.baglanti} rel="noopener">{ic}</a> : ic}</li>;
+          })}
+        </ul>
+      </div>
+    )}
+    {(destek.alanlar.length > 0 || destek.haklar.length > 0) && (
+      <div class="destek-izgara">
+        {destek.alanlar.length > 0 && (
+          <div class="kutu" data-belir>
+            <h3>{t('alanlar', dil)}</h3>
+            <ul class="madde">{destek.alanlar.map((a) => <li>{c(a, dil)}</li>)}</ul>
+          </div>
+        )}
+        {destek.haklar.length > 0 && (
+          <div class="kutu" data-belir style="--i:1">
+            <h3>{t('haklar', dil)}</h3>
+            <ul class="madde">{destek.haklar.map((a) => <li>{c(a, dil)}</li>)}</ul>
+          </div>
+        )}
+      </div>
+    )}
+    {destek.ihtiyaclar.length > 0 && (
+      <div class="ihtiyac" data-belir>
+        <h3 class="ara-baslik">{t('ihtiyaclar', dil)}</h3>
+        {c(destek.ihtiyac_yazisi, dil) && <p class="soluk">{c(destek.ihtiyac_yazisi, dil)}</p>}
+        <dl>
+          {destek.ihtiyaclar.map((g) => (
+            <div>
+              <dt>{c(g.grup, dil)}</dt>
+              <dd><ul class="etiketler">{g.ogeler.map((o) => <li>{o}</li>)}</ul></dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    )}
+    <div class="cagri" data-belir>
+      <div class="dugmeler">
+        {eposta ? <a class="dugme birincil" href={eposta}>{t('bizeYaz', dil)}</a> : var_.has('iletisim') && <a class="dugme birincil" href={bag('iletisim')}>{t('bizeYaz', dil)}</a>}
+        {destek.dosya && <a class="dugme" href={`/${destek.dosya}`} download>{t('dosyaIndir', dil)}</a>}
+      </div>
+      {iletisim.eposta && <p class="soluk">{c(iletisim.eposta_etiket, dil)}: <a href={eposta}>{iletisim.eposta}</a></p>}
+    </div>
+  </section>
+
+  {var_.has('iletisim') && (
+    <section class="bolum kap" {...kimlik('iletisim')}>
+      <h2 data-belir>{t('iletisimBaslik', dil)}</h2>
+      <p class="bolum-giris" data-belir>{c(iletisim.katil, dil) || t('iletisimGiris', dil)}</p>
+      <ul class="baglantilar" data-belir>
+        {iletisim.basvuru && <li><span class="soluk">{t('basvur', dil)}</span><a href={iletisim.basvuru} rel="noopener">{t('basvur', dil)}</a></li>}
+        {iletisim.eposta && <li><span class="soluk">{c(iletisim.eposta_etiket, dil) || 'E-posta'}</span><a href={eposta}>{iletisim.eposta}</a></li>}
+        {iletisim.instagram && <li><span class="soluk">Instagram</span><a href={iletisim.instagram} rel="noopener">{iletisim.instagram_ad || 'Instagram'}</a></li>}
+        {iletisim.linkedin && <li><span class="soluk">LinkedIn</span><a href={iletisim.linkedin} rel="noopener">LinkedIn</a></li>}
+      </ul>
+    </section>
+  )}
+</Base>

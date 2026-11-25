@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+ham/
+*.pdf
+*.HEIC
+.DS_Store
+test-results/
+.claude/
+docs/EKSIKLER.md

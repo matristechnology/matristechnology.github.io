@@ -1,0 +1,50 @@
+---
+// Oynanabilir sürü benzetimi. Metinler iki dilde data-* ile betiğe verilir (src/scripts/demo-suru.ts).
+// Betik kapalıyken tuval yerine aynı fikirleri anlatan yazılı liste görünür.
+import type { Dil } from '../lib/icerik';
+import { t } from '../lib/i18n';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const fikirler = ['fikirDizilim', 'fikirDusur', 'fikirEngel', 'fikirHedef', 'fikirSayi'] as const;
+const durumlar = ['durumDizilim', 'durumDusur', 'durumDusmez', 'durumEngel', 'durumEngelYok', 'durumHedef', 'durumSayi', 'durumSinir'] as const;
+const veri = Object.fromEntries(durumlar.map((d) => [`data-${d.replace('durum', 'd-').toLowerCase()}`, t(d, dil)]));
+---
+
+<div class="demo" data-belir>
+  <h3 class="ara-baslik">{t('demoBaslik', dil)}</h3>
+
+  <div class="demo-govde js-only" data-suru-demo data-dizilim="cizgi" data-sayi="7" data-engel="0" data-oturdu="0"
+    data-ad-cizgi={t('cizgi', dil)} data-ad-v={t('v', dil)} data-ad-halka={t('halka', dil)}
+    data-engel-koy={t('engel', dil)} data-engel-kaldir={t('engelKaldir', dil)} {...veri}>
+    <div class="demo-alan">
+      <canvas role="img" aria-label={t('alanEtiket', dil)}></canvas>
+    </div>
+    <div class="demo-kumanda">
+      <div class="demo-grup" role="group" aria-label={t('dizilim', dil)}>
+        <span class="demo-etiket">{t('dizilim', dil)}</span>
+        <button type="button" class="dugme kucuk" data-dizilim-sec="cizgi" aria-pressed="true">{t('cizgi', dil)}</button>
+        <button type="button" class="dugme kucuk" data-dizilim-sec="v" aria-pressed="false">{t('v', dil)}</button>
+        <button type="button" class="dugme kucuk" data-dizilim-sec="halka" aria-pressed="false">{t('halka', dil)}</button>
+      </div>
+      <div class="demo-grup" role="group" aria-label={t('aracSayisi', dil)}>
+        <span class="demo-etiket">{t('aracSayisi', dil)}</span>
+        <button type="button" class="dugme kucuk kare" data-azalt aria-label={t('azalt', dil)}>−</button>
+        <output class="demo-sayi" data-sayi-yaz>7</output>
+        <button type="button" class="dugme kucuk kare" data-artir aria-label={t('artir', dil)}>+</button>
+      </div>
+      <div class="demo-grup">
+        <button type="button" class="dugme kucuk" data-dusur>{t('dusur', dil)}</button>
+        <button type="button" class="dugme kucuk" data-engel-dugme aria-pressed="false">{t('engel', dil)}</button>
+        <button type="button" class="dugme kucuk" data-hedef>{t('hedef', dil)}</button>
+        <button type="button" class="dugme kucuk" data-sifirla>{t('sifirla', dil)}</button>
+      </div>
+      <p class="demo-durum" role="status" data-durum>{t('durumBasla', dil)}</p>
+    </div>
+  </div>
+
+  <ul class="demo-fikirler">
+    {fikirler.map((f) => <li>{t(f, dil)}</li>)}
+  </ul>
+  <p class="demo-not">{t('demoNot', dil)}</p>
+</div>

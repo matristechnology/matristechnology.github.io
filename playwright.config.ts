@@ -1,0 +1,21 @@
+import { defineConfig, devices } from '@playwright/test';
+
+// Yerelde önce siteyi derleyip önizlemeyi başlat: npm run build && npm run preview
+// Canlı siteyi denemek için: TABAN=https://matristechnology.github.io npx playwright test
+const taban = process.env.TABAN ?? 'http://127.0.0.1:4321';
+
+export default defineConfig({
+  testDir: './testler',
+  outputDir: './test-results',
+  fullyParallel: true,
+  // Her sayfada sürü canlandırması çalıştığı için çok sayıda tarayıcı aynı anda açılınca zamanlamaya duyarlı denemeler düşüyor.
+  workers: 2,
+  retries: 0,
+  reporter: [['list'], ['json', { outputFile: 'test-results/sonuc.json' }]],
+  use: { baseURL: taban },
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
+});
