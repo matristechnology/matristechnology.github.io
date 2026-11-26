@@ -1,12 +1,11 @@
 ---
 // Çalışmalar ayrıntı sayfası: tıklanan dört aşama, atölye, raporların nasıl hazırlandığı ve dereceler.
-// Anlatım icerik.yaml (calisma_sayfa, basarilar). Aşama sekmeleri Matris sayfasındaki hikâye betiğini kullanır.
+// Anlatım icerik.yaml (calisma_sayfa, basarilar). Aşamalar alt alta durur, sayfa kaydırıldıkça belirir ve yandaki çizgi dolar (calisma-sayfa.ts).
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { icerik, c, galeriGorseli, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
 import { sm } from '../lib/i18n-suru';
-import { mm } from '../lib/i18n-matris';
 
 interface Props { dil: Dil }
 const { dil } = Astro.props;
@@ -19,9 +18,9 @@ const y = {
 const foto = (f: string) => ({ kaynak: galeriGorseli(f), alt: c(icerik.galeri.find((g) => g.dosya === f)?.alt, dil) });
 const icindekiler = [
   ['asamalar', c(S.asamalar.baslik, dil)],
-  ['atolye', c(S.atolye.baslik, dil)],
+  ...(S.atolye.goster ? [['atolye', c(S.atolye.baslik, dil)]] : []),
   ['rapor', c(S.rapor.baslik, dil)],
-] as const;
+];
 ---
 
 <Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.calismalar[digerDil(dil)]} sayfa="diger" bolum="calismalar">
@@ -40,27 +39,19 @@ const icindekiler = [
 
   <section class="bolum kap" id={kimlik('asamalar')}>
     <h2 data-belir>{c(S.asamalar.baslik, dil)}</h2>
-    <p class="bolum-giris js-only" data-belir>{c(S.asamalar.giris, dil)}</p>
-    <div class="hikaye asama" data-hikaye data-asama data-belir style={`--n:${A.length}`}>
-      <div class="hikaye-serit" role="tablist" aria-label={y.asamalar}>
-        {A.map((a, i) => (
-          <button type="button" role="tab" id={`durak-${i}`} aria-controls={`durak-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="hikaye-durak">
-            <span class="hikaye-yil">{y.asama} {i + 1}</span>
-            <span class="hikaye-ad">{c(a.ad, dil)}</span>
-          </button>
-        ))}
-      </div>
-      <div class="asama-cizgi js-only" aria-hidden="true"><i></i></div>
-      <div class="hikaye-paneller">
-        {A.map((a, i) => (
-          <article class="hikaye-panel asama-panel" role="tabpanel" id={`durak-panel-${i}`} aria-labelledby={`durak-${i}`} data-secili={i === 0 ? '' : undefined}>
-            <div class="asama-yazi">
+    <p class="bolum-giris" data-belir>{c(S.asamalar.giris, dil)}</p>
+    <ol class="akis" data-akis>
+      {A.map((a, i) => (
+        <li class="akis-adim" data-adim>
+          <span class="akis-nokta" aria-hidden="true">{i + 1}</span>
+          <article class="akis-kart">
+            <div class="asama-yazi" data-belir>
               <p class="hikaye-yil">{y.asama} {i + 1} / {A.length}</p>
               <h3>{c(a.ad, dil)}</h3>
               <p>{c(a.metin, dil)}</p>
               {c(a.gecis, dil) && <p class="asama-gecis"><strong>{y.gecis}</strong>{c(a.gecis, dil)}</p>}
             </div>
-            <div class="asama-yan">
+            <div class="asama-yan" data-belir style="--i:2">
               {a.fotograf && <Image src={foto(a.fotograf).kaynak} alt={foto(a.fotograf).alt} widths={[400, 800]} sizes="(min-width: 60rem) 24rem, 90vw" loading="lazy" />}
               {a.bakilan.length > 0 && (
                 <div class="asama-bakilan">
@@ -70,14 +61,9 @@ const icindekiler = [
               )}
             </div>
           </article>
-        ))}
-        <div class="hikaye-gez js-only">
-          <button type="button" class="dugme kucuk" data-onceki>← {mm('onceki', dil)}</button>
-          <span class="hikaye-sira" data-sira aria-hidden="true">1 / {A.length}</span>
-          <button type="button" class="dugme kucuk" data-sonraki>{mm('sonraki', dil)} →</button>
-        </div>
-      </div>
-    </div>
+        </li>
+      ))}
+    </ol>
     {S.asamalar.duzeltmeler.length > 0 && (
       <details class="teknik" data-belir>
         <summary>{sm('teknik', dil)}: {c(S.asamalar.duzeltme_baslik, dil)}</summary>
@@ -86,19 +72,21 @@ const icindekiler = [
     )}
   </section>
 
+  {S.atolye.goster && (
   <section class="bolum kap" id={kimlik('atolye')}>
-    <h2 data-belir>{c(S.atolye.baslik, dil)}</h2>
-    <div class="ortam">
-      <div class="yazi genis-yazi" data-belir>
-        {S.atolye.paragraflar.map((p) => <p>{c(p, dil)}</p>)}
+      <h2 data-belir>{c(S.atolye.baslik, dil)}</h2>
+      <div class="ortam">
+        <div class="yazi genis-yazi" data-belir>
+          {S.atolye.paragraflar.map((p) => <p>{c(p, dil)}</p>)}
+        </div>
+        {S.atolye.fotograflar.length > 0 && (
+          <ul class="ortam-foto tek" data-belir>
+            {S.atolye.fotograflar.map((f) => <li><Image src={foto(f).kaynak} alt={foto(f).alt} widths={[400, 800]} sizes="(min-width: 60rem) 26rem, 90vw" loading="lazy" /></li>)}
+          </ul>
+        )}
       </div>
-      {S.atolye.fotograflar.length > 0 && (
-        <ul class="ortam-foto tek" data-belir>
-          {S.atolye.fotograflar.map((f) => <li><Image src={foto(f).kaynak} alt={foto(f).alt} widths={[400, 800]} sizes="(min-width: 60rem) 26rem, 90vw" loading="lazy" /></li>)}
-        </ul>
-      )}
-    </div>
-  </section>
+    </section>
+  )}
 
   <section class="bolum kap" id={kimlik('rapor')}>
     <h2 data-belir>{c(S.rapor.baslik, dil)}</h2>
@@ -134,5 +122,5 @@ const icindekiler = [
 </Base>
 
 <script>
-  import '../scripts/matris-sayfa.ts';
+  import '../scripts/calisma-sayfa.ts';
 </script>

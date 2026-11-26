@@ -92,7 +92,7 @@ const sema = z.object({
       duzeltme_baslik: ikiDil,
       duzeltmeler: liste(ikiDil),
     }),
-    atolye: z.object({ baslik: ikiDil, paragraflar: liste(ikiDil), fotograflar: liste(z.string()) }),
+    atolye: z.object({ goster: z.boolean().optional().default(true), baslik: ikiDil, paragraflar: liste(ikiDil), fotograflar: liste(z.string()) }),
     rapor: z.object({ baslik: ikiDil, paragraflar: liste(ikiDil), adimlar: liste(z.object({ ad: ikiDil, metin: ikiDil })) }),
   }),
   takim_sayfa: z.object({

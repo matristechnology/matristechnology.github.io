@@ -583,17 +583,23 @@ html[data-suru='kapali'] .suru { display: none; }
 .katil-yan .dugme { gap: 0.4rem; }
 
 /* ── Çalışmalar sayfası ── */
-html.js .asama .hikaye-serit { border-bottom: 0; }
-html.js .asama .hikaye-durak { flex: 1 0 9rem; max-width: none; margin-right: 0; padding-right: 1rem; }
-.asama-cizgi { position: relative; height: 2px; background: var(--cizgi); margin-top: -1.25rem; }
-.asama-cizgi i { position: absolute; left: 0; top: 0; height: 2px; width: calc((var(--no, 0) + 1) / var(--n) * 100%); background: var(--vurgu); transition: width 0.45s var(--yumusak, ease); }
-.asama-cizgi i::after { content: ''; position: absolute; right: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--vurgu); box-shadow: 0 0 0 4px color-mix(in srgb, var(--vurgu) 25%, transparent); }
-@media (prefers-reduced-motion: reduce) { .asama-cizgi i { transition: none; } }
-@media (max-width: 44rem) { .asama-cizgi { display: none; } html.js .asama .hikaye-serit { border-bottom: 1px solid var(--cizgi); } }
-.hikaye-panel.asama-panel { max-width: none; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.5rem 2rem; align-items: start; }
+.akis { --ilerleme: 1; position: relative; display: grid; gap: clamp(1.5rem, 4vw, 3rem); margin-top: 2.5rem; padding-left: 3.25rem; overflow-x: clip; }
+.akis::before, .akis::after { content: ''; position: absolute; left: 1.0625rem; top: 0.5rem; bottom: 0.5rem; width: 2px; background: var(--cizgi); }
+.akis::after { background: var(--vurgu); transform-origin: top; transform: scaleY(var(--ilerleme)); }
+.akis-adim { position: relative; }
+.akis-nokta { position: absolute; left: -3.25rem; top: 1.1rem; z-index: 1; width: 2.25rem; height: 2.25rem; display: grid; place-items: center; border-radius: 50%; border: 2px solid var(--cizgi); background: var(--zemin); font-family: var(--es); font-size: 0.875rem; color: var(--soluk); transition: border-color 0.35s, color 0.35s, background 0.35s, box-shadow 0.35s; }
+.akis-adim[data-gecti] .akis-nokta, html:not(.js) .akis-nokta { border-color: var(--vurgu); background: var(--vurgu); color: var(--zemin); box-shadow: 0 0 0 5px color-mix(in srgb, var(--vurgu) 22%, transparent); }
+.akis-kart { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.5rem 2rem; align-items: start; padding: 1.4rem 1.5rem; background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 10px; transition: border-color 0.35s; }
+.akis-adim[data-gecti] .akis-kart { border-color: color-mix(in srgb, var(--vurgu) 40%, var(--cizgi)); }
+.akis-kart h3 { font-size: clamp(1.25rem, 2.6vw, 1.75rem); line-height: 1.2; letter-spacing: -0.02em; }
+@media (min-width: 56rem) {
+  html.anim .akis .asama-yazi[data-belir]:not(.gorundu) { transform: translateX(-2.5rem); }
+  html.anim .akis .asama-yan[data-belir]:not(.gorundu) { transform: translateX(2.5rem) scale(0.97); }
+}
+@media (max-width: 56rem) { .akis-kart { grid-template-columns: 1fr; } }
+@media (max-width: 30rem) { .akis { padding-left: 2.5rem; } .akis::before, .akis::after { left: 0.8125rem; } .akis-nokta { left: -2.5rem; width: 1.75rem; height: 1.75rem; font-size: 0.75rem; } .akis-kart { padding: 1.1rem 1rem; } }
 .asama-yazi { display: grid; gap: 0.7rem; }
 .asama-yazi p { line-height: 1.6; text-wrap: pretty; }
-.hikaye-panel.asama-panel p:last-child { color: inherit; }
 .asama-gecis { padding: 0.75rem 0.9rem; border-left: 2px solid var(--vurgu); background: var(--yuzey2); font-size: 0.9375rem; }
 .asama-gecis strong { display: block; font-family: var(--es); font-size: 0.6875rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); margin-bottom: 0.2rem; }
 .asama-yan { display: grid; gap: 1rem; }
@@ -602,7 +608,6 @@ html.js .asama .hikaye-durak { flex: 1 0 9rem; max-width: none; margin-right: 0;
 .asama-bakilan ul { display: grid; gap: 0.45rem; }
 .asama-bakilan li { position: relative; padding-left: 1.1rem; font-size: 0.9375rem; line-height: 1.45; }
 .asama-bakilan li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--vurgu); }
-@media (max-width: 56rem) { .hikaye-panel.asama-panel { grid-template-columns: 1fr; } }
 .ortam-foto.tek { grid-template-columns: 1fr; }
 .ortam-foto.tek li { aspect-ratio: 16 / 10; }
 @media (max-width: 56rem) { .ortam-foto.tek { grid-template-columns: 1fr 1fr; } }

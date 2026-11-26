@@ -769,15 +769,15 @@ calisma_sayfa:
     tr: Çalışmalar
     en: Work
   ozet:
-    tr: Bir fikrin sahada uçan bir sürüye dönüşmesi aylar sürüyor. Bu sayfada o yolun dört aşamasını, atölyede geçen işi ve raporların nasıl hazırlandığını bulursun.
-    en: It takes months for an idea to become a swarm flying in the field. This page shows the four stages of that road, the work done in the workshop and how the reports are prepared.
+    tr: Bir fikrin sahada uçan bir sürüye dönüşmesi aylar sürüyor. Bu sayfada o yolun dört aşamasını ve raporların nasıl hazırlandığını bulursun.
+    en: It takes months for an idea to become a swarm flying in the field. This page shows the four stages of that road and how the reports are prepared.
   asamalar:
     baslik:
       tr: Fikirden sahaya dört aşama
       en: Four stages from idea to field
     giris:
-      tr: Her aşama bir öncekinin üstüne kuruluyor. Bir aşamaya tıkla, orada ne yaptığımızı ve neye baktığımızı oku.
-      en: Each stage builds on the one before it. Click a stage to read what we do there and what we look at.
+      tr: Her aşama bir öncekinin üstüne kuruluyor. Aşağı kaydırdıkça sırayla açılıyorlar.
+      en: Each stage builds on the one before it. They open one after another as you scroll down.
     liste:
       - ad:
           tr: Simülasyon
@@ -872,6 +872,8 @@ calisma_sayfa:
       - tr: Lider ve takipçi yazılımı ayrıydı. İkisini tek yazılımda birleştirdik, böylece her İHA gerektiğinde lider olabiliyor.
         en: The leader and follower software were separate. We merged them into one program, so every UAV can become the leader when needed.
   atolye:
+    # Ali 26.11.2026'da bu bölümü şimdilik kaldırttı. Geri getirmek için true yap.
+    goster: false
     baslik:
       tr: Atölyede bir gün
       en: A day in the workshop
