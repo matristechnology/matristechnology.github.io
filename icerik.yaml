@@ -89,12 +89,50 @@ ekipler:
       uretim: { tr: Üretim, en: Manufacturing }
       test: { tr: Uçuş testleri, en: Flight testing }
 
+# Dalların ne yaptığı: Takım sayfasındaki organizasyon şemasında ve "Takıma katıl" bölümünde görünür.
+# Kaynak: 2026 Ön Tasarım Raporu. Elektronik ve Mekanik dallarının adları henüz onaylanmadı (docs/EKSIKLER.md).
+dal_anlatim:
+  algoritma:
+    tr: Sürünün nasıl uçacağını tasarlıyor. Lider ve takipçi düzeni, dizilimler, çarpışmadan kaçınma (ORCA) ve bunların Gazebo simülasyonunda denenmesi bu dalın işi.
+    en: Designs how the swarm flies. The leader and follower scheme, the formations, collision avoidance (ORCA) and testing all of it in the Gazebo simulation are this branch's job.
+  goruntu:
+    tr: İHA'nın gördüğünü anlamlandırıyor. Kameradan gelen görüntüde QR kodunu okuyor, iniş dairesini rengine ve şekline göre buluyor. OpenCV ve PyZbar kullanıyor.
+    en: Makes sense of what the UAV sees. It reads the QR code in the camera image and finds the landing circle by colour and shape. It uses OpenCV and PyZbar.
+  gomulu:
+    tr: Yazılımı aracın üstündeki donanımda çalıştırıyor. Görev bilgisayarı ile otopilotun birlikte çalışması ve UWB modülünün sisteme bağlanması bu dalın işi.
+    en: Runs the software on the hardware aboard the vehicle. Making the mission computer and the autopilot work together and connecting the UWB module to the system are this branch's job.
+  haberlesme:
+    tr: İHA'ların birbiriyle konuşmasını sağlıyor. Wi-Fi ağı üzerinden giden UDP paketleri ve otopilotla kurulan MAVLink bağlantısı bu dalın işi.
+    en: Makes the UAVs talk to each other. The UDP packets going over the Wi-Fi network and the MAVLink link to the autopilot are this branch's job.
+  aviyonik:
+    tr: Otopilotu ve sensörleri araca yerleştirip ayarlıyor. Pixhawk'ın kurulumu, GPS ve öteki sensörlerin bağlanması bu dalın işi.
+    en: Fits and configures the autopilot and the sensors. Setting up the Pixhawk and connecting the GPS and the other sensors are this branch's job.
+  guc:
+    tr: Aracın enerjisini yönetiyor. Batarya, güç dağıtım kartı, hız kontrolcüleri ve elektroniği besleyen dönüştürücüler bu dalın işi.
+    en: Manages the vehicle's energy. The battery, the power distribution board, the speed controllers and the converters feeding the electronics are this branch's job.
+  montaj:
+    tr: Parçaları araca takıyor ve kablolarını döşüyor. Kabloların gövdeye sabitlenmesi ve soketlerin titreşimle çıkmaması için alınan önlemler bu dalın işi.
+    en: Mounts the parts on the vehicle and lays the cables. Fixing the cables to the frame and keeping the connectors from shaking loose are this branch's job.
+  tasarim:
+    tr: Gövdeyi ve üstüne takılan parçaların tutucularını tasarlıyor. Otopilot ile görev bilgisayarını üst üste taşıyan aparat gibi parçalar burada çiziliyor.
+    en: Designs the airframe and the mounts for the parts on it. Pieces such as the carrier that stacks the autopilot and the mission computer are drawn here.
+  uretim:
+    tr: Tasarlanan parçaları üretiyor. 3B baskı ile çıkan tutucular ve taşıyıcılar bu dalın elinden geçiyor.
+    en: Makes the designed parts. The 3D-printed mounts and carriers pass through this branch's hands.
+  test:
+    tr: Araçları sahada uçuruyor. Uçuş testleri tek İHA ile başlıyor, iki İHA ile sürüyor ve tam sürüyle tamamlanıyor.
+    en: Flies the vehicles in the field. Flight tests begin with one UAV, continue with two and finish with the full swarm.
+
 ekip_yazisi:
   tr: Takım üç ana ekipten oluşur. Her ekip kendi içinde dallara ayrılır, böylece her üyenin sorumluluğu bellidir.
   en: The team is made up of three main groups. Each group is split into branches, so every member has a clear responsibility.
 
 # ÜYELER: 17 kayıt. İlk dokuzunun görevi ve dalı 2026 Ön Tasarım Raporu'ndaki organizasyon şemasından,
-# adlar bilerek boş: izin gelince yazılır. Son sekizi henüz yerleşmemiş üyeler.
+# adlar bilerek boş: izin gelince yazılır.
+# TASLAK: son sekiz kaydın ekibi, dalı ve görevi Ali'nin isteğiyle (26.11.2026) geçici olarak yerleştirildi,
+# gerçek liste gelince değişecek.
+#   ayrinti   isteğe bağlı: üyenin takımda tam olarak ne yaptığı, bir iki cümle. Takım sayfasındaki kartta görünür.
+#             örnek: ayrinti: { tr: "...", en: "..." }
 #   ad        boşsa ya da izin false ise kart adsız görünür ("İsim yakında"), fotoğraf, bölüm ve bağlantı da çıkmaz
 #             görev, ekip ve dal da boşsa kart "Yerleşecek üyeler" sırasına düşer
 #   gorev     örnek: { tr: Takım kaptanı, en: Team captain }
@@ -115,14 +153,14 @@ uyeler:
   - { ad: "", gorev: { tr: UDP ile haberleşme, en: UDP communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: MAVLink haberleşmesi, en: MAVLink communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Mekanik ve elektronik tasarım, en: Mechanical and electronic design }, ekip: "elektronik", dal: "montaj", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "QR kodu ve iniş dairesi algılama", en: "QR code and landing circle detection" }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "Görev bilgisayarı yazılımı", en: "Mission computer software" }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "Otopilot ve sensör kurulumu", en: "Autopilot and sensor setup" }, ekip: "elektronik", dal: "aviyonik", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "Güç dağıtımı ve batarya", en: "Power distribution and battery" }, ekip: "elektronik", dal: "guc", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "Gövde ve taşıyıcı tasarımı", en: "Airframe and mount design" }, ekip: "mekanik", dal: "tasarim", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "3B baskı ve üretim", en: "3D printing and manufacturing" }, ekip: "mekanik", dal: "uretim", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "Uçuş testleri ve pilotluk", en: "Flight tests and piloting" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "Test kayıtları ve saha güvenliği", en: "Test records and field safety" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
 
 # Danışmanlar: ad ve izin gelince görünür. İkisi de boşken bu satır sitede çıkmaz.
 danismanlar:
@@ -651,3 +689,73 @@ matris_sayfa:
         etiket:
           tr: Ön Tasarım Raporu'nda Türkiye sırası
           en: Rank in Türkiye for the Preliminary Design Report
+
+# ─── Takım sayfası (/takim/, /en/team/) ───────────────────────────────────────────────────────
+# Üye kartları yukarıdaki "uyeler" listesinden, şema "ekipler" ve "dal_anlatim" bölümlerinden kurulur.
+# TASLAK: "ortam" paragraflarının ikinci ve üçüncüsü ile "katil" adımları taslak, takım düzeltecek (docs/EKSIKLER.md).
+takim_sayfa:
+  baslik:
+    tr: Takım
+    en: Team
+  ozet:
+    tr: Matris 17 kişilik bir öğrenci takımı. Bu sayfada kimin hangi işle uğraştığını, takımın nasıl çalıştığını ve aramıza nasıl katılabileceğini bulursun.
+    en: Matris is a student team of 17. This page shows who works on what, how the team works and how you can join us.
+  sema:
+    baslik:
+      tr: Kim ne yapıyor?
+      en: Who does what?
+    giris:
+      tr: Takım üç ana ekipten oluşuyor, her ekip kendi içinde dallara ayrılıyor. Bir kutuya tıkla, o ekibin ya da dalın ne yaptığını oku.
+      en: The team is made up of three main groups and each group is split into branches. Click a box to read what that group or branch does.
+    kaptan:
+      ad:
+        tr: Takım kaptanı
+        en: Team captain
+      metin:
+        tr: Takımın koordinasyonunu ve görev dağılımını yürütüyor. Üç ekibin işinin aynı araçta buluşmasını ve takvimin tutmasını kaptan takip ediyor.
+        en: Runs the team's coordination and the division of tasks. The captain makes sure the work of the three groups comes together on the same vehicle and that the schedule holds.
+  uyeler:
+    baslik:
+      tr: Üyeler
+      en: Members
+    giris:
+      tr: Ekibe ya da dala göre süzebilir, ada ya da göreve göre arayabilirsin. Adı yazmayan üyelerin bilgisi izinleri gelince eklenecek.
+      en: You can filter by group or branch and search by name or role. Members shown without a name will be added once they give permission.
+  ortam:
+    baslik:
+      tr: Nasıl bir takımız?
+      en: What kind of team are we?
+    paragraflar:
+      - tr: Matris'te hedef yalnızca yarışma değil. İyi bir takım ortamı kurmak ve burada güzel arkadaşlıklar edinmek de bizim için önemli. Herkesin kendine bir şey katmasını ve birlikte bir şeyler başarmayı istiyoruz.
+        en: At Matris the goal is not only the competition. Building a good team environment and making good friends here matters to us too. We want everyone to gain something for themselves and to achieve things together.
+      - tr: İşin çoğu atölyede geçiyor. Yazılımcı, elektronikçi ve makineci aynı aracın başında birlikte çalışıyor, bir sorun çıktığında kimin dalı olduğuna bakılmadan birlikte çözülüyor.
+        en: Most of the work happens in the workshop. Software, electronics and mechanical people work on the same vehicle together, and when a problem comes up it gets solved together, whoever's branch it is.
+      - tr: Sahaya da birlikte çıkıyoruz. Uçuş denemeleri bazen akşama kadar sürüyor, yarışma haftasında bütün takım aynı çadırda oluyor.
+        en: We go out to the field together too. Flight trials sometimes run into the evening, and in competition week the whole team is in the same tent.
+    # Galerideki fotoğraflardan (src/assets/galeri/<dosya>). Açıklama galerideki "alt" metninden alınır.
+    fotograflar: [atolye.jpg, hazirlik.jpg, gece-testi.jpg, juri.jpg]
+  danismanlar:
+    baslik:
+      tr: Danışmanlar
+      en: Advisors
+  katil:
+    baslik:
+      tr: Takıma katıl
+      en: Join the team
+    metin:
+      tr: Yeni arkadaşlara her zaman açığız. Hangi dalla ilgilendiğini seç, o dalda ne yapıldığını oku ve bize yaz. Her şeyi bilmen gerekmiyor, öğrenmeye istekli olman yeterli.
+      en: We are always open to new people. Pick the branch you are interested in, read what it does and write to us. You do not need to know everything, being keen to learn is enough.
+    sec:
+      tr: Hangi dal ilgini çekiyor?
+      en: Which branch interests you?
+    dugme:
+      tr: Başvuru e-postası yaz
+      en: Write an application email
+    # Düğmeye basınca bu adrese, aşağıdaki konu ve gövdeyle e-posta taslağı açılır. {dal} seçilen dalın adıyla dolar.
+    eposta: matristechnology@gmail.com
+    konu:
+      tr: Matris'e katılmak istiyorum
+      en: I would like to join Matris
+    govde:
+      tr: "Merhaba,\n\nMatris'e katılmak istiyorum.\n\nAd Soyad: \nBölüm ve sınıf: \nİlgilendiğim dal: {dal}\nKendimden kısaca: \n"
+      en: "Hello,\n\nI would like to join Matris.\n\nFull name: \nDepartment and year: \nBranch I am interested in: {dal}\nA little about me: \n"

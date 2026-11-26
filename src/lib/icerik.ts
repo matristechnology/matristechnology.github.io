@@ -31,11 +31,13 @@ const sema = z.object({
   ),
   suru: z.object({ anlatim: z.object({ tr: z.array(z.string()), en: z.array(z.string()) }), yarisma: ikiDilBos }),
   ekipler: z.record(z.string(), z.object({ ad: ikiDil, ozet: ikiDilBos, dallar: z.record(z.string(), ikiDil).optional().default({}) })),
+  dal_anlatim: z.record(z.string(), ikiDil).optional().default({}),
   ekip_yazisi: ikiDilBos,
   uyeler: liste(
     z.object({
       ad: metin,
       gorev: ikiDilBos,
+      ayrinti: ikiDilBos,
       ekip: metin,
       dal: metin,
       sorumlu: z.boolean().optional().default(false),
@@ -79,6 +81,15 @@ const sema = z.object({
     hatlar: z.object({ guc: z.object({ ad: ikiDil, metin: ikiDil }), veri: z.object({ ad: ikiDil, metin: ikiDil }), sinyal: z.object({ ad: ikiDil, metin: ikiDil }) }),
     teknik: liste(ikiDil),
     not: ikiDilBos,
+  }),
+  takim_sayfa: z.object({
+    baslik: ikiDil,
+    ozet: ikiDilBos,
+    sema: z.object({ baslik: ikiDil, giris: ikiDilBos, kaptan: z.object({ ad: ikiDil, metin: ikiDil }) }),
+    uyeler: z.object({ baslik: ikiDil, giris: ikiDilBos }),
+    ortam: z.object({ baslik: ikiDil, paragraflar: liste(ikiDil), fotograflar: liste(z.string()) }),
+    danismanlar: z.object({ baslik: ikiDil }),
+    katil: z.object({ baslik: ikiDil, metin: ikiDilBos, sec: ikiDil, dugme: ikiDil, eposta: metin, konu: ikiDil, govde: ikiDil }),
   }),
   matris_sayfa: z.object({
     baslik: ikiDil,

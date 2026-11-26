@@ -1,0 +1,215 @@
+---
+// Takım ayrıntı sayfası: tıklanan organizasyon şeması, süzülen ve aranan üye kartları, takım ortamı, danışmanlar, takıma katıl.
+// Anlatım icerik.yaml (takim_sayfa, ekipler, dal_anlatim, uyeler), arayüz metinleri src/lib/i18n-takim.ts.
+// Üyenin adı, fotoğrafı, bölümü ve bağlantısı yalnızca izin: true ise sayfaya girer (gorunenUyeler bunu ayıklar).
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { icerik, c, gorunenUyeler, gorunenDanismanlar, galeriGorseli, uyeGorseli, type Dil } from '../lib/icerik';
+import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+import { tm, tPaket } from '../lib/i18n-takim';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const S = icerik.takim_sayfa;
+const uyeler = gorunenUyeler().sort((a, b) => a.sira - b.sira), danismanlar = gorunenDanismanlar();
+const ekipler = Object.entries(icerik.ekipler);
+const kimlik = (k: string) => (dil === 'tr' ? k : { sema: 'who', uyeler: 'members', ortam: 'culture', danismanlar: 'advisors', katil: 'join' }[k] ?? k);
+const kisi = (n: number) => `${n} ${tm(n === 1 ? 'kisiTek' : 'kisi', dil)}`;
+const gorevleri = (l: typeof uyeler) => [...new Set(l.map((u) => c(u.gorev, dil)).filter(Boolean))];
+const kaptanlar = uyeler.filter((u) => !u.ekip);
+
+// Şemadaki her kutunun panelde gösterilecek bilgisi.
+const dugumler: Record<string, { tur: string; ad: string; metin: string; sayi: string; gorevler: string[]; ekip: string; dal: string }> = {
+  kaptan: { tur: '', ad: c(S.sema.kaptan.ad, dil), metin: c(S.sema.kaptan.metin, dil), sayi: '', gorevler: [], ekip: '', dal: '' },
+};
+for (const [k, e] of ekipler) {
+  const ekipte = uyeler.filter((u) => u.ekip === k);
+  dugumler[`ekip:${k}`] = { tur: tm('turEkip', dil), ad: c(e.ad, dil), metin: c(e.ozet, dil), sayi: kisi(ekipte.length), gorevler: Object.values(e.dallar).map((d) => c(d, dil)), ekip: k, dal: '' };
+  for (const [dk, d] of Object.entries(e.dallar)) {
+    const dalda = ekipte.filter((u) => u.dal === dk);
+    dugumler[`dal:${dk}`] = { tur: `${c(e.ad, dil)} · ${tm('turDal', dil)}`, ad: c(d, dil), metin: c(icerik.dal_anlatim[dk], dil), sayi: kisi(dalda.length), gorevler: gorevleri(dalda), ekip: k, dal: dk };
+  }
+}
+const katilDallar = Object.fromEntries(ekipler.flatMap(([, e]) => Object.entries(e.dallar).map(([dk, d]) => [dk, { ad: c(d, dil), metin: c(icerik.dal_anlatim[dk], dil) }])));
+const posta = (dal: string) => `mailto:${S.katil.eposta}?subject=${encodeURIComponent(c(S.katil.konu, dil))}&body=${encodeURIComponent(c(S.katil.govde, dil).replace('{dal}', dal))}`;
+const fotolar = S.ortam.fotograflar.map((f) => ({ kaynak: galeriGorseli(f), alt: c(icerik.galeri.find((g) => g.dosya === f)?.alt, dil) }));
+const kucuk = (s: string) => s.toLocaleLowerCase(dil);
+const icindekiler = [
+  ['sema', c(S.sema.baslik, dil)],
+  ['uyeler', c(S.uyeler.baslik, dil)],
+  ['ortam', c(S.ortam.baslik, dil)],
+  ...(danismanlar.length ? [['danismanlar', c(S.danismanlar.baslik, dil)]] : []),
+  ...(S.katil.eposta ? [['katil', c(S.katil.baslik, dil)]] : []),
+];
+---
+
+<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.takim[digerDil(dil)]} sayfa="diger" bolum="takim">
+  <section class="sayfa-bas kap">
+    <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
+      <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{c(S.baslik, dil)}</span>
+    </nav>
+    <h1 data-belir>{c(S.baslik, dil)}</h1>
+    <p class="tanitim" data-belir style="--i:1">{c(S.ozet, dil)}</p>
+    <ol class="icindekiler" data-belir style="--i:2">
+      {icindekiler.map(([k, ad], i) => <li><a href={`#${kimlik(k)}`}><span>{String(i + 1).padStart(2, '0')}</span>{ad}</a></li>)}
+    </ol>
+  </section>
+
+  <section class="bolum kap" id={kimlik('sema')}>
+    <h2 data-belir>{c(S.sema.baslik, dil)}</h2>
+    <p class="bolum-giris js-only" data-belir>{c(S.sema.giris, dil)}</p>
+    <div class="sema js-only" data-sema data-m={tPaket(dil)} data-dugumler={JSON.stringify(dugumler)} data-belir>
+      <div class="sema-agac" role="group" aria-label={tm('semaAlan', dil)}>
+        <div class="sema-tepe">
+          <button type="button" class="sema-dugum kaptan" data-dugum="kaptan" aria-pressed="false">
+            <span class="sema-ad">{c(S.sema.kaptan.ad, dil)}</span>
+            <span class="dal-iha" aria-hidden="true">{kaptanlar.map(() => <i />)}</span>
+          </button>
+        </div>
+        <ul class="sema-ekipler">
+          {ekipler.map(([k, e]) => (
+            <li>
+              <button type="button" class="sema-dugum ekip" data-dugum={`ekip:${k}`} aria-pressed="false">
+                <span class="sema-ad">{c(e.ad, dil)}</span>
+                <span class="sema-sayi">{dugumler[`ekip:${k}`].sayi}</span>
+              </button>
+              <ul class="sema-dallar">
+                {Object.entries(e.dallar).map(([dk, d]) => (
+                  <li>
+                    <button type="button" class="sema-dugum dal" data-dugum={`dal:${dk}`} data-ust={k} aria-pressed="false">
+                      <span class="sema-ad">{c(d, dil)}</span>
+                      <span class="dal-iha" aria-hidden="true">{uyeler.filter((u) => u.dal === dk).map(() => <i />)}</span>
+                      <span class="gizli">, {dugumler[`dal:${dk}`].sayi}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="rol-panel sema-panel" data-sema-panel aria-live="polite"></div>
+    </div>
+    <dl class="js-yok parca-yazi">
+      {Object.values(dugumler).map((d) => <div><dt>{d.ad}{d.sayi && <span class="soluk"> · {d.sayi}</span>}</dt><dd>{d.metin}</dd></div>)}
+    </dl>
+  </section>
+
+  <section class="bolum kap" id={kimlik('uyeler')}>
+    <h2 data-belir>{c(S.uyeler.baslik, dil)}</h2>
+    <p class="bolum-giris" data-belir>{c(S.uyeler.giris, dil)}</p>
+    <div class="kadro" data-kadro data-m={tPaket(dil)}>
+      <div class="kadro-arac js-only" data-belir>
+        <div class="suzgec" data-kadro-ekip role="group" aria-label={tm('suz', dil)}>
+          <button type="button" data-ekip="" aria-pressed="true">{tm('hepsi', dil)}</button>
+          {ekipler.map(([k, e]) => <button type="button" data-ekip={k} aria-pressed="false">{c(e.ad, dil)}</button>)}
+        </div>
+        <label class="kadro-alan">
+          <span>{tm('dal', dil)}</span>
+          <select data-kadro-dal>
+            <option value="">{tm('tumDallar', dil)}</option>
+            {ekipler.map(([k, e]) => (
+              <optgroup label={c(e.ad, dil)}>
+                {Object.entries(e.dallar).map(([dk, d]) => <option value={dk} data-ekip={k}>{c(d, dil)}</option>)}
+              </optgroup>
+            ))}
+          </select>
+        </label>
+        <label class="kadro-alan ara">
+          <span>{tm('ara', dil)}</span>
+          <input type="search" data-kadro-ara autocomplete="off" />
+        </label>
+      </div>
+      <p class="demo-durum kisa js-only" role="status" data-kadro-durum></p>
+      <ul class="kadro-kartlar">
+        {uyeler.map((u, i) => {
+          const no = String(u.sira).padStart(2, '0'), ad = u.adsiz ? '' : u.ad, gorev = c(u.gorev, dil);
+          const e = icerik.ekipler[u.ekip], yer = e ? [c(e.ad, dil), c(e.dallar[u.dal], dil)].filter(Boolean).join(' · ') : '';
+          const bolum = c(u.bolum, dil), ayrinti = c(u.ayrinti, dil);
+          const basHarf = ad.split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
+          return (
+            <li class:list={['kuye', { adsiz: u.adsiz, sorumlu: u.sorumlu }]} data-kart data-ekip={u.ekip} data-dal={u.dal} data-ara={kucuk([ad, gorev, yer, bolum].join(' '))} data-belir style={`--i:${i % 4}`}>
+              <div class="kuye-ust">
+                <div class="kuye-foto" aria-hidden={ad && u.fotograf ? undefined : 'true'}>
+                  {ad && u.fotograf ? <Image src={uyeGorseli(u.fotograf)} alt={ad} width={192} height={192} fit="cover" loading="lazy" /> : ad ? <span class="bas-harf">{basHarf}</span> : (
+                    <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 15l18 18M33 15 15 33"/><circle cx="11" cy="11" r="5.5"/><circle cx="37" cy="11" r="5.5"/><circle cx="11" cy="37" r="5.5"/><circle cx="37" cy="37" r="5.5"/><rect x="19" y="19" width="10" height="10" rx="2.5" fill="currentColor" stroke="none"/></svg>
+                  )}
+                </div>
+                <span class="kuye-no">{tm('uye', dil)} {no}</span>
+              </div>
+              <h3 class:list={[{ yakinda: !ad }]}>{ad || tm('isimYakinda', dil)}</h3>
+              {gorev && <p class="kuye-gorev">{gorev}</p>}
+              {yer && <p class="kuye-yer">{yer}</p>}
+              {ayrinti && <p class="kuye-ayrinti">{ayrinti}</p>}
+              {bolum && <p class="kuye-ayrinti">{bolum}</p>}
+              {u.baglanti && <p><a href={u.baglanti} rel="noopener">{tm('profil', dil)}<span class="gizli">: {ad}</span></a></p>}
+            </li>
+          );
+        })}
+      </ul>
+      <p class="suzgec-bos" data-kadro-bos hidden>{tm('bos', dil)}</p>
+    </div>
+  </section>
+
+  <section class="bolum kap" id={kimlik('ortam')}>
+    <h2 data-belir>{c(S.ortam.baslik, dil)}</h2>
+    <div class="ortam">
+      <div class="yazi genis-yazi" data-belir>
+        {S.ortam.paragraflar.map((p) => <p>{c(p, dil)}</p>)}
+      </div>
+      {fotolar.length > 0 && (
+        <ul class="ortam-foto" data-belir>
+          {fotolar.map((f) => <li><Image src={f.kaynak} alt={f.alt} widths={[320, 640]} sizes="(min-width: 60rem) 20rem, 46vw" loading="lazy" /></li>)}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  {danismanlar.length > 0 && (
+    <section class="bolum kap" id={kimlik('danismanlar')}>
+      <h2 data-belir>{c(S.danismanlar.baslik, dil)}</h2>
+      <div class="danismanlar" data-belir>
+        <ul>{danismanlar.map((d) => <li><strong>{d.ad}</strong><span class="soluk">{c(d.unvan, dil)}</span></li>)}</ul>
+      </div>
+    </section>
+  )}
+
+  {S.katil.eposta && (
+    <section class="bolum kap" id={kimlik('katil')}>
+      <h2 data-belir>{c(S.katil.baslik, dil)}</h2>
+      <p class="bolum-giris" data-belir>{c(S.katil.metin, dil)}</p>
+      <div class="katil" data-katil data-m={tPaket(dil)} data-eposta={S.katil.eposta} data-konu={c(S.katil.konu, dil)} data-govde={c(S.katil.govde, dil)} data-dallar={JSON.stringify(katilDallar)} data-belir>
+        <div class="katil-sec js-only">
+          <p class="ara-baslik">{c(S.katil.sec, dil)}</p>
+          {ekipler.map(([, e]) => (
+            <div class="katil-ekip" role="group" aria-label={c(e.ad, dil)}>
+              <span class="katil-ekip-ad">{c(e.ad, dil)}</span>
+              {Object.entries(e.dallar).map(([dk, d]) => <button type="button" class="dugme kucuk" data-dal={dk} aria-pressed="false">{c(d, dil)}</button>)}
+            </div>
+          ))}
+        </div>
+        <div class="katil-yan">
+          <div class="rol-panel js-only" data-katil-panel aria-live="polite"></div>
+          <a class="dugme birincil" data-katil-dugme href={posta('')}>{c(S.katil.dugme, dil)}<span aria-hidden="true"> →</span></a>
+          <p class="soluk katil-adres">{S.katil.eposta}</p>
+        </div>
+      </div>
+      <dl class="js-yok parca-yazi">
+        {Object.values(katilDallar).map((d) => <div><dt>{d.ad}</dt><dd>{d.metin}</dd></div>)}
+      </dl>
+    </section>
+  )}
+
+  <section class="kap sayfa-son">
+    <div class="dugmeler">
+      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
+      <a class="dugme birincil" href={altSayfa.matris[dil]}>{t('matris', dil)} →</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/takim-sayfa.ts';
+</script>

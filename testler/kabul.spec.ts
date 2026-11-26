@@ -364,13 +364,13 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 });
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
-  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
       if (h.startsWith('#')) expect(await page.locator(`[id="${h.slice(1)}"]`).count(), h).toBe(1);
       else if (h.startsWith('/')) expect((await request.get(h.split('#')[0])).status(), h).toBe(200);
-      else expect(h, h).toMatch(/^(mailto:[^@\s]+@[^@\s]+\.[a-z]+$|https:\/\/(www\.)?(instagram|linkedin)\.com\/)/);
+      else expect(h, h).toMatch(/^(mailto:[^@\s?]+@[^@\s?]+\.[a-z]+(\?subject=[^\s]*)?$|https:\/\/(www\.)?(instagram|linkedin)\.com\/)/);
     }
   }
   expect((await request.get('/olmayan-sayfa/')).status()).toBe(404);
@@ -679,5 +679,78 @@ test.describe('D15 Matris sayfası', () => {
     await expect(page.locator('.parca-yazi')).toBeVisible();
     await expect(page.locator('[data-iha-ici]')).toBeHidden();
     await ctx.close();
+  });
+});
+
+test.describe('D16 Takım sayfası', () => {
+  test('sayfa iki dilde açılır, ana sayfadan bağlantı var, 320 pikselde taşmaz', async ({ page }) => {
+    for (const yol of ['/takim/', '/en/team/']) {
+      await page.goto(yol);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('[data-kart]')).toHaveCount(17);
+    }
+    await page.goto('/');
+    await expect(page.locator('.ayrintili a[href="/takim/"]')).toBeVisible();
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/takim/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('şema: kutuya basınca anlatım açılır, yol yanar, üyeleri göster kartları süzer', async ({ page }) => {
+    await page.goto('/takim/');
+    const s = page.locator('[data-sema]');
+    await expect(s).toHaveAttribute('data-secili', 'kaptan');
+    await s.locator('[data-dugum="dal:goruntu"]').click();
+    await expect(s.locator('[data-sema-panel]')).toContainText('OpenCV');
+    await expect(s.locator('[data-dugum="ekip:yazilim"]')).toHaveAttribute('data-yolda', '');
+    await expect(s.locator('[data-dugum="ekip:mekanik"]')).not.toHaveAttribute('data-yolda', '');
+    await s.locator('[data-goster]').click();
+    const k = page.locator('[data-kadro]');
+    await expect(k).toHaveAttribute('data-gorunen', '2');
+    await expect(k).toHaveAttribute('data-dal', 'goruntu');
+    await expect(page.locator('[data-kart]:visible')).toHaveCount(2);
+  });
+
+  test('üyeler: ekip, dal ve arama süzgeci', async ({ page }) => {
+    await page.goto('/takim/');
+    const k = page.locator('[data-kadro]');
+    await expect(k).toHaveAttribute('data-gorunen', '17');
+    await k.locator('[data-kadro-ekip] [data-ekip="mekanik"]').click();
+    await expect(k).toHaveAttribute('data-gorunen', '4');
+    await k.locator('[data-kadro-dal]').selectOption('haberlesme');
+    await expect(k).toHaveAttribute('data-ekip', 'yazilim');
+    await expect(k).toHaveAttribute('data-gorunen', '2');
+    await k.locator('[data-kadro-ekip] [data-ekip=""]').click();
+    await k.locator('[data-kadro-ara]').fill('uwb');
+    await expect(k).toHaveAttribute('data-gorunen', '1');
+    await expect(k.locator('[data-kadro-durum]')).toContainText('17');
+    await k.locator('[data-kadro-ara]').fill('zzzz');
+    await expect(k.locator('[data-kadro-bos]')).toBeVisible();
+  });
+
+  test('adı ve izni olmayan üyenin kişisel bilgisi sayfada yok', async ({ page }) => {
+    await page.goto('/takim/');
+    await expect(page.locator('[data-kart].adsiz')).toHaveCount(17);
+    await expect(page.locator('[data-kart] img')).toHaveCount(0);
+  });
+
+  test('takıma katıl: dal seçilince e-posta taslağına yazılır', async ({ page }) => {
+    await page.goto('/takim/');
+    const k = page.locator('[data-katil]'), d = k.locator('[data-katil-dugme]');
+    await expect(d).toHaveAttribute('href', /^mailto:matristechnology@gmail\.com\?subject=/);
+    await k.locator('[data-dal="test"]').click();
+    await expect(k).toHaveAttribute('data-secili', 'test');
+    await expect(k.locator('[data-katil-panel]')).toContainText('Uçuş testleri');
+    expect(decodeURIComponent((await d.getAttribute('href')) ?? '')).toContain('İlgilendiğim dal: Uçuş testleri');
+  });
+
+  test('betik kapalıyken şema anlatımı, kartlar ve başvuru bağlantısı görünür', async ({ browser }) => {
+    const b = await browser.newContext({ javaScriptEnabled: false });
+    const page = await b.newPage();
+    await page.goto('/takim/');
+    await expect(page.locator('#sema dl.js-yok')).toBeVisible();
+    await expect(page.locator('[data-kart]').first()).toBeVisible();
+    await expect(page.locator('[data-katil-dugme]')).toHaveAttribute('href', /^mailto:matristechnology@gmail\.com/);
+    await b.close();
   });
 });
