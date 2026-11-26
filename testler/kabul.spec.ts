@@ -590,6 +590,11 @@ test.describe('D15 Matris sayfası', () => {
     await page.locator('[data-iha-ici] [data-parca="otopilot"]').click();
     await expect(i).toHaveAttribute('data-secili', 'otopilot');
     await expect(page.locator('[data-parca-panel]')).toContainText('Pixhawk 2.4.8');
+    // Seçilen parçanın bağlı olduğu parçalar listelenir, birine basınca o parçaya geçilir.
+    await expect(page.locator('[data-parca-panel] [data-git]')).toHaveCount(6);
+    await page.locator('[data-parca-panel] [data-git="gps"]').click();
+    await expect(i).toHaveAttribute('data-secili', 'gps');
+    await page.locator('[data-iha-ici] [data-parca="otopilot"]').click();
     await page.locator('[data-iha-ici] [data-ac]').click();
     await expect(i).toHaveAttribute('data-acik', '1');
     await expect(page.locator('[data-iha-ici] [data-ac]')).toHaveAttribute('aria-pressed', 'true');

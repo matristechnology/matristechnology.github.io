@@ -376,8 +376,12 @@ html.js .uye:not([data-acik]) .uye-ayrinti { display: none; }
 .iha-ici.webgl-yok .sahne { display: none; }
 .dugme.etiketli { font-size: 0.8125rem; padding: 0 0.7rem; }
 [data-parca-panel] h4 { margin: 0; }
+.parca-bag-baslik { margin-top: 0.4rem; font-family: var(--es); font-size: 0.6875rem !important; text-transform: uppercase; letter-spacing: 0.08em; }
+.parca-bag { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.parca-bag .dugme { gap: 0.45rem; }
+.parca-bag-hat { font-family: var(--es); font-size: 0.6875rem; color: var(--soluk); }
 .dugme[data-hat] { gap: 0.45rem; }
-.dugme[data-hat] i { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--s-kirmizi); }
+.dugme[data-hat] i, .parca-bag .dugme i { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--s-kirmizi); }
 .dugme.hat-veri i { background: var(--s-mavi); }
 .dugme.hat-sinyal i { background: var(--s-yesil); }
 .parca-model { font-family: var(--es); font-size: 0.75rem !important; letter-spacing: 0.04em; color: var(--vurgu) !important; }

@@ -491,8 +491,8 @@ iha:
       ad: { tr: Görev bilgisayarı, en: Mission computer }
       model: Raspberry Pi 4
       metin:
-        tr: Sürüyle ilgili işlerin hepsi burada çalışıyor. Dizilimdeki yerin hesabı, çarpışmadan kaçınma, QR kodunun okunması ve öteki İHA'larla haberleşme bu bilgisayarın işi. Otopilotla UART üzerinden MAVLink ile konuşuyor. Yer kazanmak ve dengeyi bozmamak için 3B baskı bir taşıyıcıyla otopilotun üstünde duruyor.
-        en: Everything to do with the swarm runs here. Working out the place in the formation, avoiding collisions, reading the QR code and talking to the other UAVs are this computer's job. It talks to the autopilot with MAVLink over UART. To save space and keep the balance it sits above the autopilot on a 3D-printed carrier.
+        tr: Sürüyle ilgili işlerin hepsi burada çalışıyor. Dizilimdeki yerin hesabı, çarpışmadan kaçınma, QR kodunun okunması ve öteki İHA'larla haberleşme bu bilgisayarın işi. Otopilotla UART üzerinden MAVLink ile konuşuyor. Yer kazanmak ve dengeyi bozmamak için 3B baskı bir taşıyıcıyla otopilotla üst üste duruyor.
+        en: Everything to do with the swarm runs here. Working out the place in the formation, avoiding collisions, reading the QR code and talking to the other UAVs are this computer's job. It talks to the autopilot with MAVLink over UART. To save space and keep the balance it is stacked with the autopilot on a 3D-printed carrier.
     - anahtar: kamera
       ad: { tr: Kamera, en: Camera }
       model: Raspberry Pi Global Shutter
@@ -545,8 +545,8 @@ iha:
     - tr: Kablolar gövdeye kelepçeleniyor. Soketlerin titreşimle yerinden çıkmaması için sönümleyici sünger kullanılıyor.
       en: The cables are clamped to the frame. Damping foam is used so that vibration does not shake the connectors loose.
   not:
-    tr: Çizimdeki yerleşim ve ölçüler temsilî. Parçaların adları ve görevleri takımın 2026 Ön Tasarım Raporu'ndan.
-    en: The layout and sizes in the drawing are illustrative. The part names and what they do come from the team's 2026 Preliminary Design Report.
+    tr: Modeldeki yerleşim ve görünüm temsilî, yarışmadaki araçla birebir aynı değil. Parçaların adları ve görevleri takımın 2026 Ön Tasarım Raporu'ndan.
+    en: The layout and look of the model are illustrative and not identical to the competition vehicle. The part names and what they do come from the team's 2026 Preliminary Design Report.
 
 # ─── Matris sayfası (/matris/, /en/matris/) ───────────────────────────────────────────────────
 # "neden" paragraflarının ilk üçü ve "Sırada" durağı Ali'nin 26.11.2026'da söylediklerinden.
@@ -633,8 +633,8 @@ matris_sayfa:
           tr: Bundan sonrası
           en: What comes next
         metin:
-          tr: 2026'da finalist olduk. Yeni sezonda bunun üstüne koyarak, bu kez derece hedefiyle sahaya çıkacağız. Gümbür gümbür geliyoruz.
-          en: We were finalists in 2026. Next season we build on that and take the field aiming for a ranking this time. We are coming in strong.
+          tr: Önceki yıllar bize neyi eksik bıraktığımızı gösterdi, dersimizi aldık. Bu sezon o tecrübenin üstüne koyuyoruz. Daha planlı çalışıyor ve derece hedefimizin peşinden koşuyoruz. Gümbür gümbür geliyoruz.
+          en: The earlier years showed us what we had left undone, and we learned from it. This season we build on that experience. We work to a tighter plan and we are chasing a ranking. We are coming in strong.
   sayilar:
     baslik:
       tr: Sayılarla Matris

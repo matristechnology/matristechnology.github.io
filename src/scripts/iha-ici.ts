@@ -2,6 +2,7 @@
 // Model (three.js) ancak bölüm ekrana yaklaşınca indirilir, böylece sayfanın ilk açılışı ağırlaşmaz.
 // Düğmeler model gelmeden de çalışır. WebGL açılamazsa çizim alanı gizlenir, parçalar yine düğmelerle okunur.
 import type { Durum, Gorsel } from './iha-uc';
+import { baglantilar } from './iha-hatlar';
 
 type Bilgi = { ad: string; model: string; metin: string };
 
@@ -28,6 +29,21 @@ for (const kok of document.querySelectorAll<HTMLElement>('[data-iha-ici]')) {
         const h = document.createElement('h4'); h.textContent = b.ad; panel.append(h);
         if (b.model) { const m = document.createElement('p'); m.className = 'parca-model'; m.textContent = b.model; panel.append(m); }
         const p = document.createElement('p'); p.textContent = b.metin; panel.append(p);
+        // Bağlı olduğu parçalar: tıklanınca o parçaya geçilir. Renkli nokta hattın türünü gösterir.
+        const bag = baglantilar(durum.secili).filter((x) => bilgi[x.diger]);
+        if (bag.length) {
+          const bas = document.createElement('p'); bas.className = 'parca-bag-baslik'; bas.textContent = M.bagli; panel.append(bas);
+          const liste = document.createElement('div'); liste.className = 'parca-bag';
+          for (const x of bag) {
+            const d = document.createElement('button'); d.type = 'button'; d.className = `dugme kucuk etiketli hat-${x.hat}`; d.dataset.git = x.diger;
+            const i = document.createElement('i'); i.setAttribute('aria-hidden', 'true');
+            const s = document.createElement('span'); s.className = 'parca-bag-hat'; s.textContent = hatBilgi[x.hat]?.ad ?? '';
+            d.append(i, bilgi[x.diger].ad, s);
+            d.addEventListener('click', () => sec(x.diger));
+            liste.append(d);
+          }
+          panel.append(liste);
+        }
       }
     }
     const m = durum.hat && hatBilgi[durum.hat] ? hatBilgi[durum.hat].metin : b ? '' : M.ipucu;

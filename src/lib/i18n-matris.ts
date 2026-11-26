@@ -7,6 +7,7 @@ const m = {
   topla: { tr: 'Topla', en: 'Put together' },
   hatlar: { tr: 'Bağlantıları göster', en: 'Show connections' },
   parcalar: { tr: 'Parçalar', en: 'Parts' },
+  bagli: { tr: 'Bağlı olduğu parçalar', en: 'Connected to' },
   ipucu: { tr: 'Bir parçaya tıkla ya da aşağıdan seç.', en: 'Click a part or pick one below.' },
   uye: { tr: 'Üye', en: 'Members' },
   ekip: { tr: 'Ana ekip', en: 'Main teams' },
