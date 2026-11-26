@@ -25,5 +25,6 @@ Toplam: 35 geçti, 4 atlandı, 0 düştü. Atlananlar: E3 üç tarayıcıda (ayr
 | D11 | Ham veriyle karşılaştırma | Elle yapıldı | Başarılar, tanıtım, ekip yapısı, süreç, sponsorluk metinleri tanıtım dosyasının 2, 3, 4, 5 ve 10. sayfalarından. Kendi yazdığım metinler KARAR.md içinde listeli |
 | D12 | Sayfa denetim aracı | Yapılmadı | Lighthouse bu oturumda çalıştırılamadı |
 | D13 | Canlı adres | Geçti | 26.11.2026, https://matristechnology.github.io/ üzerinde 34 geçti, 4 atlandı, 1 düştü. Düşen D10 (WebKit, 30 sn zaman aşımı) tek başına 3 kez çalıştırılınca 3 kez geçti: geçici |
+| D13b | Canlı adres, Sürü İHA sayfasıyla | Geçti | 26.11.2026, https://matristechnology.github.io/ üzerinde üç tarayıcıda 74 geçti, 4 atlandı, düşen yok |
 
 Denemeleri yinelemek için: `npm run build && npm run preview`, sonra `npm test`.
