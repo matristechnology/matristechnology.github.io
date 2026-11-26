@@ -16,10 +16,10 @@ Bütün metinler `icerik.yaml` dosyasındadır. Boş bırakılan alan ve boş li
 
 | Ne | Nasıl |
 |---|---|
-| Üye | `uyeler` altındaki bir şablon satırını doldur. Fotoğrafı `src/assets/uyeler/` altına koy, dosya adını `fotograf` alanına yaz. Üye izin verdiyse `izin: true` yap. Adı yazılı ama izni `false` olan üye sitede hiç görünmez |
+| Üye | `uyeler` altındaki bir şablon satırını doldur. Fotoğrafı `src/assets/uyeler/` altına koy, dosya adını `fotograf` alanına yaz. Üye izin verdiyse `izin: true` yap. Adı yazılı ama izni `false` olan üye adsız görünür: görevi ve dalı çıkar, adı, fotoğrafı, bölümü, bağlantısı çıkmaz |
 | Üyenin ekibi | `ekip`: yazilim, elektronik ya da mekanik. `dal`: o ekibin dallarından biri (örnek: `ekip: yazilim, dal: goruntu`). Kartta "Yazılım · Görüntü işleme" diye görünür |
 | Ekip ve dallar | `ekipler` altında. Dal eklemek, silmek ya da adını değiştirmek için yalnızca orayı değiştir |
-| Kaptan, ekip sorumlusu | `sorumlu: true`. Kart öne gelir |
+| Kaptan, ekip sorumlusu | `sorumlu: true`. Ekibi boş bırakılan üye (kaptan gibi) ekip kutularının üstünde durur |
 | Danışman | `danismanlar` altında `ad` ve `izin: true` |
 | Başarı | `basarilar` listesine satır. `tur`: finalist, derece ya da odul |
 | Fotoğraf | Dosyayı `src/assets/galeri/` altına koy, `galeri` listesine `dosya` ve iki dilde `alt` yaz |

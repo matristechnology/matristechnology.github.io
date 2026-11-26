@@ -93,7 +93,7 @@ $$<HTMLAnchorElement>('[data-dil-degistir]').forEach((bag) => {
   });
 });
 
-/* ── 5. Üye süzgeci ────────────────────────────────────────────────────────── */
+/* ── 5. Ekip süzgeci: seçilen ekip öne çıkar, ötekiler söner (dar ekranda gizlenir) ── */
 const suzgec = $('[data-suzgec]');
 if (suzgec) {
   const dugmeler = $$<HTMLButtonElement>('button', suzgec);
@@ -102,9 +102,14 @@ if (suzgec) {
     if (!d) return;
     const ekip = d.dataset.ekip ?? '';
     dugmeler.forEach((x) => x.setAttribute('aria-pressed', String(x === d)));
-    for (const k of $$('[data-uyeler] > li')) {
-      k.hidden = !!ekip && k.dataset.ekip !== ekip;
-      if (!k.hidden) k.classList.add('gorundu');
+    for (const k of $$('[data-ekipler] > li')) {
+      const sonuk = !!ekip && k.dataset.ekip !== ekip;
+      k.toggleAttribute('data-sonuk', sonuk);
+      if (!sonuk) {
+        k.classList.add('gorundu');
+        $$('.uye', k).forEach((u) => u.classList.add('gorundu'));
+        $$<HTMLDetailsElement>('details', k).forEach((x) => (x.open = true));
+      }
     }
   });
 }

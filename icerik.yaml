@@ -93,8 +93,10 @@ ekip_yazisi:
   tr: Takım üç ana ekipten oluşur. Her ekip kendi içinde dallara ayrılır, böylece her üyenin sorumluluğu bellidir.
   en: The team is made up of three main groups. Each group is split into branches, so every member has a clear responsibility.
 
-# ŞABLON: 17 üye. Veri gelince her satır doldurulur.
-#   ad        boşsa kart "Üye 01" ve "yakında" gösterir
+# ÜYELER: 17 kayıt. İlk dokuzunun görevi ve dalı 2026 Ön Tasarım Raporu'ndaki organizasyon şemasından,
+# adlar bilerek boş: izin gelince yazılır. Son sekizi henüz yerleşmemiş üyeler.
+#   ad        boşsa ya da izin false ise kart adsız görünür ("İsim yakında"), fotoğraf, bölüm ve bağlantı da çıkmaz
+#             görev, ekip ve dal da boşsa kart "Yerleşecek üyeler" sırasına düşer
 #   gorev     örnek: { tr: Takım kaptanı, en: Team captain }
 #   ekip      yazilim | elektronik | mekanik
 #   dal       ekibin dallarından biri. Örnek: ekip: yazilim, dal: goruntu
@@ -102,17 +104,17 @@ ekip_yazisi:
 #   bolum     örnek: { tr: Mekatronik Mühendisliği · 3. sınıf, en: Mechatronics Engineering · 3rd year }
 #   fotograf  src/assets/uyeler/<dosya>. Yoksa baş harfler gösterilir
 #   baglanti  üyenin kendi verdiği bağlantı (LinkedIn gibi)
-#   izin      üye sitede görünmeye izin verdiyse true. Adı yazılı ama izni false olan üye sitede hiç görünmez
+#   izin      üye adıyla görünmeye izin verdiyse true. Adı yazılı ama izni false olan üye adsız görünür
 uyeler:
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: Takım kaptanı, en: Team captain }, ekip: "", dal: "", sorumlu: true, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: Sürü mimarisi, en: Swarm architecture }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: Çarpışmadan kaçınma, en: Collision avoidance }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: Simülasyon, en: Simulation }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: Görüntü işleme yöntemleri, en: Computer vision methods }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: UWB entegrasyonu, en: UWB integration }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: UDP ile haberleşme, en: UDP communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: MAVLink haberleşmesi, en: MAVLink communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: Mekanik ve elektronik tasarım, en: Mechanical and electronic design }, ekip: "elektronik", dal: "montaj", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }

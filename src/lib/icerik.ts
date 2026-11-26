@@ -85,19 +85,23 @@ export function c(deger: string | { tr: string; en: string } | undefined, dil: D
   return typeof deger === 'string' ? deger : (deger[dil] ?? deger.tr ?? '');
 }
 
-export type Uye = (typeof icerik.uyeler)[number] & { sira: number; sablon: boolean };
+export type Uye = (typeof icerik.uyeler)[number] & { sira: number; adsiz: boolean; sablon: boolean };
 
 /**
- * Sitede gösterilecek üyeler.
- * - Adı boş olan kayıt şablon karttır ("Üye 01", "yakında").
- * - Adı yazılı ama izni olmayan üye hiç gösterilmez.
+ * Sitede gösterilecek üyeler. Hiçbir kayıt düşmez, ama adı yalnızca izni olan üyede görünür.
+ * - adsiz: adı boş ya da izni yok. Kartta ad, fotoğraf, bölüm ve bağlantı çıkmaz, görev ve dal görünür.
+ * - sablon: görevi, ekibi ve dalı da boş. Bu kayıtlar "yerleşecek üyeler" sırasında durur.
  * - Sorumlular (kaptan, ekip sorumluları) öne gelir, şablonlar sona kalır.
  */
 export function gorunenUyeler(): Uye[] {
-  const hepsi = icerik.uyeler.map((u, i) => ({ ...u, sira: i + 1, sablon: !u.ad.trim() }));
-  const gorunen = hepsi.filter((u) => u.sablon || u.izin);
+  const hepsi = icerik.uyeler.map((u, i) => {
+    const adsiz = !u.ad.trim() || !u.izin;
+    const sablon = adsiz && !u.ekip && !u.dal && !u.gorev.tr.trim() && !u.gorev.en.trim();
+    // Adı görünmeyen üyenin kişisel alanları sayfaya hiç girmez.
+    return adsiz ? { ...u, ad: '', fotograf: '', baglanti: '', bolum: { tr: '', en: '' }, sira: i + 1, adsiz, sablon } : { ...u, sira: i + 1, adsiz, sablon };
+  });
   const agirlik = (u: Uye) => (u.sablon ? 2 : u.sorumlu ? 0 : 1);
-  return gorunen.sort((a, b) => agirlik(a) - agirlik(b) || a.sira - b.sira);
+  return hepsi.sort((a, b) => agirlik(a) - agirlik(b) || a.sira - b.sira);
 }
 
 export const gorunenDanismanlar = () => icerik.danismanlar.filter((d) => d.ad.trim() && d.izin);

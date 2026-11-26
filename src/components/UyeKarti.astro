@@ -1,44 +1,38 @@
 ---
-// Üye kartı. Adı boş kayıt şablon olarak çizilir: "Üye 01", "Yakında".
+// Üye kartı, ekip kutusunun içinde dal altında durur.
+// Adı görünmeyen üye (izni yok ya da ad henüz yazılmadı) görevi ve dalıyla, "İsim yakında" diye çizilir.
 // Ayrıntı (bölüm, bağlantı) betik kapalıyken açık durur. Betik varken kartın üstüne gelince,
 // karta dokununca ya da düğmeye basınca açılır: hiçbir bilgi yalnızca fareyle erişilir değildir.
 import { Image } from 'astro:assets';
-import { icerik, c, uyeGorseli, type Dil, type Uye } from '../lib/icerik';
+import { c, uyeGorseli, type Dil, type Uye } from '../lib/icerik';
 import { t } from '../lib/i18n';
 
 interface Props { uye: Uye; dil: Dil; gecikme: number }
 const { uye, dil, gecikme } = Astro.props;
 const no = String(uye.sira).padStart(2, '0');
-const ad = uye.sablon ? `${t('uyeSablon', dil)} ${no}` : uye.ad;
-const basHarf = uye.ad.split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
 const gorev = c(uye.gorev, dil);
+const ad = uye.adsiz ? '' : uye.ad;
+const baslik = ad || gorev || `${t('uyeSablon', dil)} ${no}`;
+const altSatir = ad ? gorev : t('isimYakinda', dil);
+const basHarf = ad.split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
 const bolum = c(uye.bolum, dil);
-const ekipKaydi = uye.ekip ? icerik.ekipler[uye.ekip] : undefined;
-const ekip = ekipKaydi ? [c(ekipKaydi.ad, dil), uye.dal ? c(ekipKaydi.dallar[uye.dal], dil) : ''].filter(Boolean).join(' · ') : '';
-const ayrintiVar = !uye.sablon && !!(bolum || uye.baglanti);
+const ayrintiVar = !uye.adsiz && !!(bolum || uye.baglanti);
 const kimlik = `uye-${no}`;
 ---
 
-<li class:list={['uye', { sablon: uye.sablon, sorumlu: uye.sorumlu }]} data-ekip={uye.ekip} data-dal={uye.dal} data-belir style={`--i:${gecikme}`}>
-  <div class="uye-foto" aria-hidden={uye.fotograf && !uye.sablon ? undefined : 'true'}>
-    {!uye.sablon && uye.fotograf ? (
-      <Image src={uyeGorseli(uye.fotograf)} alt={uye.ad} width={320} height={320} fit="cover" loading="lazy" />
-    ) : uye.sablon ? (
-      <svg viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M15 15l18 18M33 15 15 33"/><circle cx="11" cy="11" r="5.5"/><circle cx="37" cy="11" r="5.5"/><circle cx="11" cy="37" r="5.5"/><circle cx="37" cy="37" r="5.5"/><rect x="19" y="19" width="10" height="10" rx="2.5" fill="currentColor" stroke="none"/></svg>
-    ) : (
+<li class:list={['uye', { adsiz: uye.adsiz, sorumlu: uye.sorumlu }]} data-ekip={uye.ekip} data-dal={uye.dal} data-belir style={`--i:${gecikme}`}>
+  <div class="uye-foto" aria-hidden={ad && uye.fotograf ? undefined : 'true'}>
+    {ad && uye.fotograf ? (
+      <Image src={uyeGorseli(uye.fotograf)} alt={ad} width={160} height={160} fit="cover" loading="lazy" />
+    ) : ad ? (
       <span class="bas-harf">{basHarf}</span>
+    ) : (
+      <svg viewBox="0 0 48 48" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 15l18 18M33 15 15 33"/><circle cx="11" cy="11" r="5.5"/><circle cx="37" cy="11" r="5.5"/><circle cx="11" cy="37" r="5.5"/><circle cx="37" cy="37" r="5.5"/><rect x="19" y="19" width="10" height="10" rx="2.5" fill="currentColor" stroke="none"/></svg>
     )}
   </div>
   <div class="uye-yazi">
-    <h3>{ad}</h3>
-    {uye.sablon ? (
-      <p class="uye-gorev"><span class="yakinda">{t('yakinda', dil)}</span><span class="gizli"> {t('sablonAciklama', dil)}</span></p>
-    ) : (
-      <>
-        {gorev && <p class="uye-gorev">{gorev}</p>}
-        {ekip && <p class="uye-ekip">{ekip}</p>}
-      </>
-    )}
+    <h4>{baslik}</h4>
+    {altSatir && <p class:list={['uye-gorev', { yakinda: !ad }]}>{altSatir}</p>}
     {ayrintiVar && (
       <>
         <button type="button" class="uye-ac js-only" aria-expanded="false" aria-controls={kimlik}>{t('ayrinti', dil)}<span class="gizli">: {ad}</span></button>

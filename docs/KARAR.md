@@ -27,10 +27,10 @@ Denemeler Playwright. Yazı tipleri depoya gömülü (Inter Tight, JetBrains Mon
 | Arka plan sürüsündeki araç | 11 | `src/scripts/suru.ts`, `N` |
 | Dizilimde kalma süresi | 7 sn | `SURE` |
 | Dağılıp tek tek dolaşma | 8 sn | `DAGIL` |
-| Benzetimde araç sayısı | 3 ile başlar, 3 ile 6 arası | `src/scripts/demo-suru.ts` |
-| Benzetimde alan | Ev, 4 QR noktası, kırmızı ve mavi iniş alanı. Yerleri temsili | `demo-suru.ts` içinde `EV`, `QR`, `ALAN` |
-| Benzetimde QR emirleri | QR 1: V. QR 2: 12 m ve 10 derece yatış. QR 3: 2 numaralı araç kırmızı alana iner, kalanlar ok başı. QR 4: 8 m, çizgi, eve dönüş | `demo-suru.ts` içinde `GOREV` |
-| Benzetimde hızlar | Uçuş irtifası 8 m, tırmanma 4 m/sn, bir görev yaklaşık 50 sn | `demo-suru.ts` |
+| Benzetimde araç sayısı | 5 ile başlar, 3 ile 7 arası | `src/scripts/demo-suru.ts` |
+| Benzetimde boşta dolaşma | 9 sn dokunulmazsa başlar, 7 sn arayla yeni nokta | `demo-suru.ts` |
+| Arka plan sürüsünde dizilim geçişi | 1,7 sn, dağılmadan toplanma 2,8 sn | `src/scripts/suru.ts` içinde `GECIS`, `TOPLAN` |
+| Yabancı sürü | İlk gelişi 15 ile 27 sn arası, sonra 40 ile 70 sn arayla. 5 ile 7 araç | `suru.ts` içinde `baskin` |
 | Elektronik ve Mekanik dalları | Aviyonik, Güç sistemi, Montaj ve kablolama. Gövde tasarımı, Üretim, Uçuş testleri. Benim önerim, Ali onaylayınca kesinleşir | `icerik.yaml` içinde `ekipler` |
 | Dar ekranda sürü saydamlığı | 0,6 katı | `suru.ts`, `kis` |
 
@@ -49,13 +49,16 @@ Kullanılanlar: giriş için `IMG_4150` (Eylül 2026), galeri için tanıtım do
 Kullanılmayanlar ve nedeni: tek kişinin yüzünün öne çıktığı özçekimler (5 kare), hazır görsel bankası fotoğrafı (para), başka logolu "destek ihtiyaçlarımız" görseli, takım dışı kişilerin ve yetkililerin öne çıktığı kalabalık kareleri (3 kare), belediye afişli masa fotoğrafı, çok küçük kareler (502x280 İHA, 673x375 uçuş), dört kişilik WhatsApp fotoğrafı (arka planda siyasi afişler).
 Bütün görsellerden konum ve cihaz bilgisi silindi.
 
-## 26.11.2026: ekip yapısı ve benzetim
+## 26.11.2026: ekip yapısı, benzetim, arka plan sürüsü
 
-- Takım üç ana ekibe ayrıldı: Yazılım, Elektronik, Mekanik. Her ekibin altında dallar var. Yazılım dalları Ali'nin verdiği üç dal (algoritma, görüntü işleme, gömülü sistemler) ve Ön Tasarım Raporu'ndaki organizasyon şemasından Haberleşme.
-- "Kendin dene" benzetimi takımın uçuş kodu ve 2026 Ön Tasarım Raporu okunarak yeniden yazıldı. Artık yarışmanın iki görevini gösteriyor.
-- Koddan alınan fikirler: lider ve takipçi düzeni, yuva hesabı (çizgi, V, ok başı), görev akışı (QR noktasına git, kuzeye dön, merkezle, oku, uygula), yatışta irtifa farkı, sürüden ayrılıp renkli alana iniş ve geri katılma, lider düşünce en küçük numaralı aracın liderliği alıp eve dönmesi.
-- Siteye bilerek konmayanlar: saha koordinatları, ağ adresleri, başvuru numarası, gerçek parametre değerleri. Benzetimdeki sayılar temsilidir.
+- Takım üç ana ekibe ayrıldı: Yazılım, Elektronik, Mekanik. Her ekibin altında dallar var. Yazılım dalları Ali'nin verdiği üç dal ve Ön Tasarım Raporu'ndaki organizasyon şemasından Haberleşme.
+- Üyeler ekip kutularının içinde, kendi dallarının altında duruyor. Kaptan kutuların üstünde. Görevi ve dalı belli olmayan kayıtlar "Yerleşecek üyeler" sırasında.
+- İlk dokuz kaydın görevi ve dalı Ön Tasarım Raporu'ndaki organizasyon şemasından. Adlar `icerik.yaml` içine bilerek yazılmadı, depo herkese açık. İzin gelince yazılır.
+- Kural değişti: adı yazılı ama izni olmayan üye artık hiç gizlenmiyor, adsız görünüyor. Görev ve dalı çıkar, adı, fotoğrafı, bölümü ve bağlantısı sayfaya hiç girmez.
+- "Kendin dene" bir ara yarışma alanına çevrilmişti, Ali istemedi. Yeniden serbest uçan sürü oldu, uçuş mantığı takımın kodundan sadeleştirildi: lider ve takipçiler, yuvalar taraf değiştirmez, sürü önce döner sonra gider, araç düşünce kalanlar içeri kayar, lider düşünce en küçük numaralı araç lider olur.
+- Arka plan sürüsü dizilime girerken her İHA'ya toplam yolu en kısa yapan yuva verilir (Macar yöntemi). 500 rastgele geçişte kesişen yol çıkmadı. Sonra her İHA yuvasına düz çizgiyle, ötekilerle aynı anda varır.
+- Yabancı sürü sahnesi geri geldi: kırmızı bir sürü kenardan girer, bizimkiler kovalayıp düşürür, sonra yeniden dizilime girer. Renk koyu temada `#ff6b5e`, açık temada `#c4302b`.
+- Siteye bilerek konmayanlar: saha koordinatları, ağ adresleri, başvuru numarası, gerçek parametre değerleri.
 - Çarpışmadan kaçınma benzetimde basit bir itme kuvvetidir, koddaki ORCA yöntemi değildir.
-- Rapordaki organizasyon şemasında adı geçen üyeler siteye yazılmadı. Üye bilgisi ve izinler Ali'den gelince girilecek.
-- Arka plandaki sürü artık benzetim alanının üstünden geçmiyor, araçlar karışmasın diye.
+- Arka plandaki sürü benzetim alanının üstünden geçmiyor.
 - Elimdeki şartname PDF'i açılmadı, sayfalar boş çıkıyor. Yarışma tanımının kaynağı takımın kendi raporu.
