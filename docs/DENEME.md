@@ -27,5 +27,6 @@ Toplam: 35 geçti, 4 atlandı, 0 düştü. Atlananlar: E3 üç tarayıcıda (ayr
 | D13 | Canlı adres | Geçti | 26.11.2026, https://matristechnology.github.io/ üzerinde 34 geçti, 4 atlandı, 1 düştü. Düşen D10 (WebKit, 30 sn zaman aşımı) tek başına 3 kez çalıştırılınca 3 kez geçti: geçici |
 | D13b | Canlı adres, Sürü İHA sayfasıyla | Geçti | 26.11.2026, https://matristechnology.github.io/ üzerinde üç tarayıcıda 74 geçti, 4 atlandı, düşen yok |
 | D15 | Matris sayfası | Geçti | 26.11.2026, üç tarayıcı. İki dilde açılıyor, 320 pikselde taşma yok. İHA'nın içinde parça seçimi, parçalara ayırma, hatlar ve tuvale tıklama çalışıyor. Hikâye durakları fare ve ok tuşlarıyla geziliyor. Betik kapalıyken duraklar ve parça listesi yazıyla görünüyor. Mesh ağ denemesi D14'e eklendi (2 atlama, kopma, zincirde 4 atlama) |
+| D13c | Canlı adres, Matris sayfasıyla | Geçti (bir deneme ikinci turda) | 26.11.2026, canlıda üç tarayıcı: 97 geçti, 4 atlandı, 1 düştü. Düşen WebKit'teki tarama denemesiydi, 90 saniyelik sınırı aştı. Tek başına üç kez çalıştırıldı, üçü de geçti (38 sn). Yerel tam turda 98 geçti. Tarama gerçek zamanlı 34 sn sürdüğü için yan yana ağır bir denemeyle çakışınca yavaşlıyor |
 
 Denemeleri yinelemek için: `npm run build && npm run preview`, sonra `npm test`.
