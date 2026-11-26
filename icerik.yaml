@@ -759,3 +759,165 @@ takim_sayfa:
     govde:
       tr: "Merhaba,\n\nMatris'e katılmak istiyorum.\n\nAd Soyad: \nBölüm ve sınıf: \nİlgilendiğim dal: {dal}\nKendimden kısaca: \n"
       en: "Hello,\n\nI would like to join Matris.\n\nFull name: \nDepartment and year: \nBranch I am interested in: {dal}\nA little about me: \n"
+
+# ─── Çalışmalar sayfası (/calismalar/, /en/work/) ─────────────────────────────────────────────
+# Kaynak: 2026 Ön Tasarım Raporu (proje takvimi, simülasyon ortamı, geliştirme sürecindeki iyileştirmeler).
+# TASLAK: "gecis" cümleleri, "atolye" paragrafları ve "rapor" paragrafları Ali'nin anlatımından yazıldı,
+# takım düzeltecek (docs/EKSIKLER.md). Ölçüm sonucu ve parametre değeri bilerek yazılmadı.
+calisma_sayfa:
+  baslik:
+    tr: Çalışmalar
+    en: Work
+  ozet:
+    tr: Bir fikrin sahada uçan bir sürüye dönüşmesi aylar sürüyor. Bu sayfada o yolun dört aşamasını, atölyede geçen işi ve raporların nasıl hazırlandığını bulursun.
+    en: It takes months for an idea to become a swarm flying in the field. This page shows the four stages of that road, the work done in the workshop and how the reports are prepared.
+  asamalar:
+    baslik:
+      tr: Fikirden sahaya dört aşama
+      en: Four stages from idea to field
+    giris:
+      tr: Her aşama bir öncekinin üstüne kuruluyor. Bir aşamaya tıkla, orada ne yaptığımızı ve neye baktığımızı oku.
+      en: Each stage builds on the one before it. Click a stage to read what we do there and what we look at.
+    liste:
+      - ad:
+          tr: Simülasyon
+          en: Simulation
+        metin:
+          tr: Yeni bir fikir önce bilgisayarda deneniyor. Gazebo ve ArduPilot SITL ile yarışma alanının bir modelini kurduk. Pist, QR kodları ve iniş daireleri bu modelde var, her sanal İHA'nın altında aşağı bakan bir kamera duruyor. Sanal İHA'larda gerçek araçtakiyle aynı yazılım çalışıyor. Simülasyon her şeyi göstermiyor. Fizik yaklaşık, kamera görüntüsü gerçeğinden farklı ve radyo bağlantısındaki kopmalar modelde yok. Sonraki aşamalara bu yüzden ihtiyaç var.
+          en: A new idea is first tried on the computer. We built a model of the competition field with Gazebo and ArduPilot SITL. The runway, the QR codes and the landing circles are in the model, and each virtual UAV has a downward camera. The virtual UAVs run the same software as the real vehicle. The simulation does not show everything. The physics is approximate, the camera image differs from the real one and radio dropouts are not modelled. That is why the later stages are needed.
+        bakilan:
+          - tr: Sürü dizilimi koruyor mu, dönüşlerde dağılıyor mu?
+            en: Does the swarm hold its formation, or does it fall apart in turns?
+          - tr: QR kodu okunuyor mu, İHA kodun üstüne ortalanabiliyor mu?
+            en: Is the QR code read, and can the UAV centre itself over it?
+          - tr: Lider düşünce görev yeni lidere geçiyor mu?
+            en: When the leader drops out, does the mission pass to a new leader?
+          - tr: İHA'lar yer değiştirirken birbirinden kaçınıyor mu?
+            en: Do the UAVs avoid each other while changing places?
+        gecis:
+          tr: Görev simülasyonda baştan sona tamamlanınca.
+          en: Once the mission runs from start to finish in the simulation.
+        fotograf: ""
+      - ad:
+          tr: Donanım entegrasyonu
+          en: Hardware integration
+        metin:
+          tr: Bu aşama atölyede geçiyor. Malzemeler geldikten sonra İHA'lar tek tek monte ediliyor, Pixhawk otopilotun ayarları yapılıyor, görev bilgisayarı ve UWB modülü araca bağlanıyor. Simülasyonda çalışan yazılım hiç değiştirilmeden görev bilgisayarına yükleniyor. Burada amaç aracın yerde, pervaneler takılmadan, kendi parçalarıyla doğru konuştuğunu görmek.
+          en: This stage happens in the workshop. Once the parts arrive the UAVs are assembled one by one, the Pixhawk autopilot is configured, and the mission computer and the UWB module are connected to the vehicle. The software that ran in the simulation is loaded onto the mission computer unchanged. The aim here is to see the vehicle talk correctly to its own parts on the ground, with the propellers off.
+        bakilan:
+          - tr: Otopilot sensörlerini doğru okuyor mu?
+            en: Does the autopilot read its sensors correctly?
+          - tr: Görev bilgisayarı otopilotla konuşabiliyor mu?
+            en: Can the mission computer talk to the autopilot?
+          - tr: Güç hattı bütün kartları besliyor mu?
+            en: Does the power line feed every board?
+          - tr: İHA'lar aynı ağda birbirini görüyor mu?
+            en: Do the UAVs see each other on the same network?
+        gecis:
+          tr: Araç yerde bütün kontrollerden geçince.
+          en: Once the vehicle passes every check on the ground.
+        fotograf: arac-tezgah.jpg
+      - ad:
+          tr: Tek İHA testleri
+          en: Single-UAV tests
+        metin:
+          tr: Sahaya ilk çıkışta yalnızca bir İHA uçuyor. Önce aracın havada dengede durduğundan emin oluyoruz, sonra bir şey ters gittiğinde ne yaptığına bakıyoruz. Kumanda bağlantısı kesildiğinde ya da pil azaldığında aracın kendi kendine güvenli tarafa geçmesi gerekiyor. Tek araç güvenle uçmadan ikincisi havalanmıyor.
+          en: On the first trip to the field only one UAV flies. First we make sure the vehicle is stable in the air, then we look at what it does when something goes wrong. When the control link is cut or the battery runs low the vehicle has to move to the safe side by itself. The second vehicle does not take off until one flies safely.
+        bakilan:
+          - tr: Araç havada dengeli duruyor mu?
+            en: Is the vehicle stable in the air?
+          - tr: Bağlantı kesilince güvenlik davranışı devreye giriyor mu?
+            en: Does the failsafe kick in when the link is cut?
+          - tr: Pil bir uçuş boyunca nasıl davranıyor?
+            en: How does the battery behave over a flight?
+          - tr: Kamera uçarken QR kodunu okuyabiliyor mu?
+            en: Can the camera read the QR code in flight?
+        gecis:
+          tr: Tek İHA görevini kendi başına güvenle tamamlayınca.
+          en: Once a single UAV completes its mission safely by itself.
+        fotograf: ucus-oncesi.jpg
+      - ad:
+          tr: Çoklu İHA denemeleri
+          en: Multi-UAV trials
+        metin:
+          tr: Önce iki İHA birlikte uçuyor, sonra tam sürü. Simülasyonda görünmeyen sorunlar burada ortaya çıkıyor. Gerçek ağda paketler gecikebiliyor ya da kaybolabiliyor, rüzgâr araçları dizilimden çıkarabiliyor. Her denemeden sonra kayıtlara bakıp yazılımı iyileştiriyoruz, sonra aynı denemeyi yeniden yapıyoruz. Yarışmadan önce bütün görev baştan sona birkaç kez uçuluyor.
+          en: First two UAVs fly together, then the full swarm. Problems that do not show up in the simulation appear here. On a real network packets can be delayed or lost, and wind can push the vehicles out of formation. After each trial we look at the logs and improve the software, then we run the same trial again. Before the competition the whole mission is flown from start to finish several times.
+        bakilan:
+          - tr: Sürü havada dizilimi koruyor mu?
+            en: Does the swarm hold its formation in the air?
+          - tr: Takipçiler lidere zamanında yetişiyor mu?
+            en: Do the followers keep up with the leader?
+          - tr: Bağlantı zayıfladığında sürü ne yapıyor?
+            en: What does the swarm do when the link weakens?
+          - tr: Bir İHA ayrılıp inince kalanlar göreve devam ediyor mu?
+            en: When one UAV leaves and lands, do the rest carry on?
+        gecis:
+          tr: Bu son aşama. Sırada yarışma var.
+          en: This is the last stage. The competition comes next.
+        fotograf: saha.jpg
+    duzeltme_baslik:
+      tr: Denemelerde bulup düzelttiklerimiz
+      en: What we found and fixed in trials
+    duzeltmeler:
+      - tr: İHA'lar dizilime katılırken birbirine fazla yaklaşıyordu. Yerleşim kuralını değiştirdik, katılma sırasındaki çarpışma riski ortadan kalktı.
+        en: The UAVs came too close to each other while joining the formation. We changed the placement rule and the collision risk during joining went away.
+      - tr: Çarpışmadan kaçınma başta yalnızca uyarı veriyordu. ORCA yöntemini sisteme bağladık, artık araç yolunu kendisi düzeltiyor.
+        en: Collision avoidance only gave a warning at first. We wired the ORCA method into the system and the vehicle now corrects its own path.
+      - tr: Sürü dönerken yön birden değişiyordu. Dönüşleri yay çizecek şekilde yumuşattık.
+        en: The heading changed abruptly when the swarm turned. We smoothed the turns into arcs.
+      - tr: QR kodu yüksekten okunamadığında sürü bekliyordu. Kod okunana kadar kendiliğinden alçalmayı ekledik, okuyunca eski yüksekliğine dönüyor.
+        en: When the QR code could not be read from high up the swarm just waited. We added automatic descent until the code is read, and it climbs back afterwards.
+      - tr: Gürültülü konum verisi yüzünden bir İHA yerine oturmadan "katıldım" diyebiliyordu. Konum bir süre sabit kalmadan bildirim gönderilmiyor.
+        en: Because of noisy position data a UAV could report "joined" before it had settled. The report is now sent only after the position stays steady for a while.
+      - tr: Lider ve takipçi yazılımı ayrıydı. İkisini tek yazılımda birleştirdik, böylece her İHA gerektiğinde lider olabiliyor.
+        en: The leader and follower software were separate. We merged them into one program, so every UAV can become the leader when needed.
+  atolye:
+    baslik:
+      tr: Atölyede bir gün
+      en: A day in the workshop
+    paragraflar:
+      - tr: İşin elle tutulan kısmı atölyede yapılıyor. Elektronik ekibi araçların başında. Kablolar lehimleniyor, kartlar gövdeye yerleştiriliyor, otopilotun ayarları yapılıyor. Bir araç ilk kez çalıştırıldığında herkes masanın çevresine toplanıyor.
+        en: The hands-on part of the work is done in the workshop. The electronics team is at the vehicles. Cables are soldered, boards are fitted to the frame and the autopilot is configured. When a vehicle is powered up for the first time everyone gathers round the bench.
+      - tr: Yazılımcılar da aynı masada. Yeni yazılan kod araca yüklenip pervaneler takılmadan yerde deneniyor. Bir sorun çıktığında bunun yazılımdan mı yoksa bir kablodan mı kaynaklandığını bulmak çoğu zaman en uzun süren iş oluyor.
+        en: The software people are at the same bench. Newly written code is loaded onto the vehicle and tried on the ground with the propellers off. When a problem comes up, working out whether it comes from the software or from a cable is often the job that takes longest.
+      - tr: Sahadan dönen araç yine buraya geliyor. Sert bir inişten sonra kol ya da pervane değişiyor, gevşeyen bağlantılar yeniden sıkılıyor ve araç bir sonraki denemeye hazırlanıyor.
+        en: A vehicle coming back from the field ends up here again. After a hard landing an arm or a propeller is replaced, loose connections are tightened and the vehicle is made ready for the next trial.
+    fotograflar: [atolye.jpg, hazirlik.jpg]
+  rapor:
+    baslik:
+      tr: Raporlar ve dereceler
+      en: Reports and results
+    paragraflar:
+      - tr: TEKNOFEST'te sahaya çıkmadan önce rapor aşamaları var. Bir rapora yazdığımız her şey önce araştırılıyor ve deneniyor. Rapor bu yüzden haftalar süren bir çalışmanın sonunda ortaya çıkıyor.
+        en: At TEKNOFEST there are report stages before the field. Everything we write in a report is researched and tried first. That is why a report comes at the end of weeks of work.
+    adimlar:
+      - ad:
+          tr: Araştırma
+          en: Research
+        metin:
+          tr: Rapora girecek her konu için önce kapsamlı bir araştırma yapıyoruz. Akademik yayınları okuyor, sürü algoritmalarını birbiriyle karşılaştırıyoruz.
+          en: For every topic that goes into the report we first do thorough research. We read the academic papers and compare swarm algorithms with each other.
+      - ad:
+          tr: Tasarım kararı
+          en: Design decision
+        metin:
+          tr: Araştırmadan çıkanlara göre hangi yöntemi ve hangi donanımı kullanacağımıza karar veriyoruz.
+          en: Based on what the research turns up we decide which method and which hardware to use.
+      - ad:
+          tr: Simülasyon
+          en: Simulation
+        metin:
+          tr: Kararları simülasyonda günlerce, gerektiğinde haftalarca deniyoruz. Çalışmayan fikir bu aşamada eleniyor.
+          en: We try the decisions in simulation for days, and for weeks when needed. An idea that does not work is dropped at this stage.
+      - ad:
+          tr: Canlı testler
+          en: Live tests
+        metin:
+          tr: Simülasyondan geçen fikir gerçek araçta deneniyor. Saha testleri de günler ve haftalar alıyor.
+          en: An idea that passes simulation is tried on the real vehicle. The field tests also take days and weeks.
+      - ad:
+          tr: Rapor
+          en: Report
+        metin:
+          tr: Rapora denediğimiz ve gördüğümüz şeyleri yazıyoruz.
+          en: In the report we write what we tried and what we saw.

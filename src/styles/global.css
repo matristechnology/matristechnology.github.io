@@ -581,3 +581,38 @@ html[data-suru='kapali'] .suru { display: none; }
 @media (max-width: 56rem) { .katil { grid-template-columns: 1fr; } }
 .katil-sec .ara-baslik { margin: 0; }
 .katil-yan .dugme { gap: 0.4rem; }
+
+/* ── Çalışmalar sayfası ── */
+html.js .asama .hikaye-serit { border-bottom: 0; }
+html.js .asama .hikaye-durak { flex: 1 0 9rem; max-width: none; margin-right: 0; padding-right: 1rem; }
+.asama-cizgi { position: relative; height: 2px; background: var(--cizgi); margin-top: -1.25rem; }
+.asama-cizgi i { position: absolute; left: 0; top: 0; height: 2px; width: calc((var(--no, 0) + 1) / var(--n) * 100%); background: var(--vurgu); transition: width 0.45s var(--yumusak, ease); }
+.asama-cizgi i::after { content: ''; position: absolute; right: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--vurgu); box-shadow: 0 0 0 4px color-mix(in srgb, var(--vurgu) 25%, transparent); }
+@media (prefers-reduced-motion: reduce) { .asama-cizgi i { transition: none; } }
+@media (max-width: 44rem) { .asama-cizgi { display: none; } html.js .asama .hikaye-serit { border-bottom: 1px solid var(--cizgi); } }
+.hikaye-panel.asama-panel { max-width: none; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.5rem 2rem; align-items: start; }
+.asama-yazi { display: grid; gap: 0.7rem; }
+.asama-yazi p { line-height: 1.6; text-wrap: pretty; }
+.hikaye-panel.asama-panel p:last-child { color: inherit; }
+.asama-gecis { padding: 0.75rem 0.9rem; border-left: 2px solid var(--vurgu); background: var(--yuzey2); font-size: 0.9375rem; }
+.asama-gecis strong { display: block; font-family: var(--es); font-size: 0.6875rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); margin-bottom: 0.2rem; }
+.asama-yan { display: grid; gap: 1rem; }
+.asama-yan img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 8px; border: 1px solid var(--cizgi); }
+.asama-bakilan h4 { font-family: var(--es); font-size: 0.6875rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); margin-bottom: 0.5rem; }
+.asama-bakilan ul { display: grid; gap: 0.45rem; }
+.asama-bakilan li { position: relative; padding-left: 1.1rem; font-size: 0.9375rem; line-height: 1.45; }
+.asama-bakilan li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--vurgu); }
+@media (max-width: 56rem) { .hikaye-panel.asama-panel { grid-template-columns: 1fr; } }
+.ortam-foto.tek { grid-template-columns: 1fr; }
+.ortam-foto.tek li { aspect-ratio: 16 / 10; }
+@media (max-width: 56rem) { .ortam-foto.tek { grid-template-columns: 1fr 1fr; } }
+.rapor-yol { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.5rem), 1fr)); gap: 0.75rem; margin-top: 2rem; }
+.rapor-yol li { position: relative; padding: 1.1rem 1rem 1.2rem; background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 10px; display: grid; gap: 0.4rem; align-content: start; }
+.rapor-yol h3 { font-size: 1.0625rem; font-weight: 620; }
+.rapor-yol p { font-size: 0.875rem; line-height: 1.5; }
+.rapor-yol .surec-no { font-size: 1.5rem; }
+.dereceler { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; margin-top: 1.5rem; }
+.dereceler li { display: grid; gap: 0.25rem; padding: 1.1rem 1.1rem 1.2rem; border: 1px solid var(--cizgi); border-top: 2px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); }
+.dereceler li.derece { border-top-color: var(--vurgu); }
+.dereceler strong { font-size: 1.125rem; font-weight: 620; line-height: 1.25; }
+.dereceler .soluk { font-size: 0.875rem; }

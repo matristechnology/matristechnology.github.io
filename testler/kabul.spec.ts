@@ -364,7 +364,7 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 });
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
-  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
@@ -751,6 +751,53 @@ test.describe('D16 Takım sayfası', () => {
     await expect(page.locator('#sema dl.js-yok')).toBeVisible();
     await expect(page.locator('[data-kart]').first()).toBeVisible();
     await expect(page.locator('[data-katil-dugme]')).toHaveAttribute('href', /^mailto:matristechnology@gmail\.com/);
+    await b.close();
+  });
+});
+
+test.describe('D17 Çalışmalar sayfası', () => {
+  test('sayfa iki dilde açılır, ana sayfadan bağlantı var, 320 pikselde taşmaz', async ({ page }) => {
+    for (const yol of ['/calismalar/', '/en/work/']) {
+      await page.goto(yol);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('[data-asama] [role="tab"]')).toHaveCount(4);
+    }
+    await page.goto('/');
+    await expect(page.locator('.ayrintili a[href="/calismalar/"]')).toBeVisible();
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/calismalar/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('aşamalar: sekmeyle ve düğmeyle gezilir, her aşamada anlatım ve bakılanlar görünür', async ({ page }) => {
+    await page.goto('/calismalar/');
+    const a = page.locator('[data-asama]');
+    await expect(a).toHaveAttribute('data-no', '0');
+    await expect(a.locator('[role="tabpanel"]:visible')).toContainText('Gazebo');
+    await a.locator('[role="tab"]').nth(2).click();
+    await expect(a).toHaveAttribute('data-no', '2');
+    await expect(a.locator('[role="tabpanel"]:visible')).toHaveCount(1);
+    await expect(a.locator('[role="tabpanel"]:visible')).toContainText('Tek İHA testleri');
+    await expect(a.locator('[role="tabpanel"]:visible li')).toHaveCount(4);
+    await expect(a.locator('[role="tabpanel"]:visible img')).toBeVisible();
+    await a.locator('[data-sonraki]').click();
+    await expect(a).toHaveAttribute('data-no', '3');
+    await a.locator('[role="tab"]').nth(3).press('ArrowLeft');
+    await expect(a).toHaveAttribute('data-no', '2');
+  });
+
+  test('raporlar: süreç adımları ve dereceler içerikten gelir', async ({ page }) => {
+    await page.goto('/calismalar/');
+    await expect(page.locator('.rapor-yol li')).toHaveCount(5);
+    await expect(page.locator('.dereceler li')).toHaveCount(3);
+    await expect(page.locator('.dereceler')).toContainText('93/100');
+  });
+
+  test('betik kapalıyken dört aşamanın hepsi alt alta okunur', async ({ browser }) => {
+    const b = await browser.newContext({ javaScriptEnabled: false });
+    const page = await b.newPage();
+    await page.goto('/calismalar/');
+    await expect(page.locator('[data-asama] [role="tabpanel"]:visible')).toHaveCount(4);
     await b.close();
   });
 });

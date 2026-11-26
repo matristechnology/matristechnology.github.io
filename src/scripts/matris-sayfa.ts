@@ -11,6 +11,7 @@ for (const kok of document.querySelectorAll<HTMLElement>('[data-hikaye]')) {
     sekmeler.forEach((s, j) => { s.setAttribute('aria-selected', String(j === no)); s.tabIndex = j === no ? 0 : -1; });
     paneller.forEach((p, j) => p.toggleAttribute('data-secili', j === no));
     kok.dataset.no = String(no);
+    kok.style.setProperty('--no', String(no));
     if (sira) sira.textContent = `${no + 1} / ${sekmeler.length}`;
     if (odak) sekmeler[no].focus();
     // Şerit yana kayıyorsa seçili durak görünür kalsın. Sayfanın kendisi kaymasın diye yalnızca şerit kaydırılır.

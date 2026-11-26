@@ -1,0 +1,138 @@
+---
+// Çalışmalar ayrıntı sayfası: tıklanan dört aşama, atölye, raporların nasıl hazırlandığı ve dereceler.
+// Anlatım icerik.yaml (calisma_sayfa, basarilar). Aşama sekmeleri Matris sayfasındaki hikâye betiğini kullanır.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { icerik, c, galeriGorseli, type Dil } from '../lib/icerik';
+import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+import { sm } from '../lib/i18n-suru';
+import { mm } from '../lib/i18n-matris';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const S = icerik.calisma_sayfa, A = S.asamalar.liste;
+const kimlik = (k: string) => (dil === 'tr' ? k : { asamalar: 'stages', atolye: 'workshop', rapor: 'reports' }[k] ?? k);
+const y = {
+  tr: { asama: 'Aşama', asamalar: 'Aşamalar', bakilan: 'Neye bakıyoruz', gecis: 'Sonraki aşamaya ne zaman geçiyoruz' },
+  en: { asama: 'Stage', asamalar: 'Stages', bakilan: 'What we look at', gecis: 'When we move on' },
+}[dil];
+const foto = (f: string) => ({ kaynak: galeriGorseli(f), alt: c(icerik.galeri.find((g) => g.dosya === f)?.alt, dil) });
+const icindekiler = [
+  ['asamalar', c(S.asamalar.baslik, dil)],
+  ['atolye', c(S.atolye.baslik, dil)],
+  ['rapor', c(S.rapor.baslik, dil)],
+] as const;
+---
+
+<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.calismalar[digerDil(dil)]} sayfa="diger" bolum="calismalar">
+  <section class="sayfa-bas kap">
+    <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
+      <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{c(S.baslik, dil)}</span>
+    </nav>
+    <h1 data-belir>{c(S.baslik, dil)}</h1>
+    <p class="tanitim" data-belir style="--i:1">{c(S.ozet, dil)}</p>
+    <ol class="icindekiler" data-belir style="--i:2">
+      {icindekiler.map(([k, ad], i) => <li><a href={`#${kimlik(k)}`}><span>{String(i + 1).padStart(2, '0')}</span>{ad}</a></li>)}
+    </ol>
+  </section>
+
+  <section class="bolum kap" id={kimlik('asamalar')}>
+    <h2 data-belir>{c(S.asamalar.baslik, dil)}</h2>
+    <p class="bolum-giris js-only" data-belir>{c(S.asamalar.giris, dil)}</p>
+    <div class="hikaye asama" data-hikaye data-asama data-belir style={`--n:${A.length}`}>
+      <div class="hikaye-serit" role="tablist" aria-label={y.asamalar}>
+        {A.map((a, i) => (
+          <button type="button" role="tab" id={`durak-${i}`} aria-controls={`durak-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="hikaye-durak">
+            <span class="hikaye-yil">{y.asama} {i + 1}</span>
+            <span class="hikaye-ad">{c(a.ad, dil)}</span>
+          </button>
+        ))}
+      </div>
+      <div class="asama-cizgi js-only" aria-hidden="true"><i></i></div>
+      <div class="hikaye-paneller">
+        {A.map((a, i) => (
+          <article class="hikaye-panel asama-panel" role="tabpanel" id={`durak-panel-${i}`} aria-labelledby={`durak-${i}`} data-secili={i === 0 ? '' : undefined}>
+            <div class="asama-yazi">
+              <p class="hikaye-yil">{y.asama} {i + 1} / {A.length}</p>
+              <h3>{c(a.ad, dil)}</h3>
+              <p>{c(a.metin, dil)}</p>
+              {c(a.gecis, dil) && <p class="asama-gecis"><strong>{y.gecis}</strong>{c(a.gecis, dil)}</p>}
+            </div>
+            <div class="asama-yan">
+              {a.fotograf && <Image src={foto(a.fotograf).kaynak} alt={foto(a.fotograf).alt} widths={[400, 800]} sizes="(min-width: 60rem) 24rem, 90vw" loading="lazy" />}
+              {a.bakilan.length > 0 && (
+                <div class="asama-bakilan">
+                  <h4>{y.bakilan}</h4>
+                  <ul>{a.bakilan.map((b) => <li>{c(b, dil)}</li>)}</ul>
+                </div>
+              )}
+            </div>
+          </article>
+        ))}
+        <div class="hikaye-gez js-only">
+          <button type="button" class="dugme kucuk" data-onceki>← {mm('onceki', dil)}</button>
+          <span class="hikaye-sira" data-sira aria-hidden="true">1 / {A.length}</span>
+          <button type="button" class="dugme kucuk" data-sonraki>{mm('sonraki', dil)} →</button>
+        </div>
+      </div>
+    </div>
+    {S.asamalar.duzeltmeler.length > 0 && (
+      <details class="teknik" data-belir>
+        <summary>{sm('teknik', dil)}: {c(S.asamalar.duzeltme_baslik, dil)}</summary>
+        {S.asamalar.duzeltmeler.map((d) => <p>{c(d, dil)}</p>)}
+      </details>
+    )}
+  </section>
+
+  <section class="bolum kap" id={kimlik('atolye')}>
+    <h2 data-belir>{c(S.atolye.baslik, dil)}</h2>
+    <div class="ortam">
+      <div class="yazi genis-yazi" data-belir>
+        {S.atolye.paragraflar.map((p) => <p>{c(p, dil)}</p>)}
+      </div>
+      {S.atolye.fotograflar.length > 0 && (
+        <ul class="ortam-foto tek" data-belir>
+          {S.atolye.fotograflar.map((f) => <li><Image src={foto(f).kaynak} alt={foto(f).alt} widths={[400, 800]} sizes="(min-width: 60rem) 26rem, 90vw" loading="lazy" /></li>)}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <section class="bolum kap" id={kimlik('rapor')}>
+    <h2 data-belir>{c(S.rapor.baslik, dil)}</h2>
+    <div class="yazi genis-yazi" data-belir>
+      {S.rapor.paragraflar.map((p) => <p>{c(p, dil)}</p>)}
+    </div>
+    <ol class="rapor-yol">
+      {S.rapor.adimlar.map((a, i) => (
+        <li data-belir style={`--i:${i}`}>
+          <span class="surec-no" aria-hidden="true">{i + 1}</span>
+          <h3>{c(a.ad, dil)}</h3>
+          <p class="soluk">{c(a.metin, dil)}</p>
+        </li>
+      ))}
+    </ol>
+    <ul class="dereceler">
+      {icerik.basarilar.map((b, i) => (
+        <li data-belir style={`--i:${i}`} class:list={[{ derece: b.tur === 'derece' }]}>
+          <span class="hikaye-yil">{b.yil}</span>
+          <strong>{c(b.baslik, dil)}</strong>
+          <span class="soluk">{c(b.ayrinti, dil)}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="kap sayfa-son">
+    <div class="dugmeler">
+      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
+      <a class="dugme birincil" href={altSayfa.takim[dil]}>{t('takim', dil)} →</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/matris-sayfa.ts';
+</script>

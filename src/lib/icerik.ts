@@ -82,6 +82,19 @@ const sema = z.object({
     teknik: liste(ikiDil),
     not: ikiDilBos,
   }),
+  calisma_sayfa: z.object({
+    baslik: ikiDil,
+    ozet: ikiDilBos,
+    asamalar: z.object({
+      baslik: ikiDil,
+      giris: ikiDilBos,
+      liste: liste(z.object({ ad: ikiDil, metin: ikiDil, bakilan: liste(ikiDil), gecis: ikiDilBos, fotograf: metin })),
+      duzeltme_baslik: ikiDil,
+      duzeltmeler: liste(ikiDil),
+    }),
+    atolye: z.object({ baslik: ikiDil, paragraflar: liste(ikiDil), fotograflar: liste(z.string()) }),
+    rapor: z.object({ baslik: ikiDil, paragraflar: liste(ikiDil), adimlar: liste(z.object({ ad: ikiDil, metin: ikiDil })) }),
+  }),
   takim_sayfa: z.object({
     baslik: ikiDil,
     ozet: ikiDilBos,
