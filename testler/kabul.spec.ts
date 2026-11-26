@@ -271,6 +271,22 @@ test('D9c arka plan sürüsü: yabancı sürü geliyor, önleniyor, sürü yenid
   expect(await kirmizi()).toBe(0);
 });
 
+test('D9e arka plan sürüsü: serbest dolaşan araçlar ekranda toplanıyor, dizilim kuruyor, sonra dağılıyor', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/?dizilim'); // ilk dizilimi 1,2 sn sonra çağırır
+  await page.evaluate(() => scrollTo(0, 2400));
+  const tuval = page.locator('canvas[data-suru]');
+  await expect(tuval).toHaveAttribute('data-mod', 'toplan', { timeout: 6000 });
+  const gorunen = Number(await tuval.getAttribute('data-gorunen')), uye = Number(await tuval.getAttribute('data-uye'));
+  console.log('görünen', gorunen, 'katılan', uye);
+  expect(uye).toBeGreaterThanOrEqual(Math.max(5, Math.min(12, gorunen)));
+  expect(uye).toBeLessThanOrEqual(12);
+  await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 9000 });
+  await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 40_000 });
+  await expect(tuval).toHaveAttribute('data-uye', '0');
+});
+
 test('D9d takım: üyeler dallarında, adı izinsiz görünmüyor, süzgeç öteki ekipleri söndürüyor', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');

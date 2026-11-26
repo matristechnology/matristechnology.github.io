@@ -29,7 +29,7 @@ Denemeler Playwright. Yazı tipleri depoya gömülü (Inter Tight, JetBrains Mon
 | Dağılıp tek tek dolaşma | 8 sn | `DAGIL` |
 | Benzetimde araç sayısı | 5 ile başlar, 3 ile 7 arası | `src/scripts/demo-suru.ts` |
 | Benzetimde boşta dolaşma | 9 sn dokunulmazsa başlar, 7 sn arayla yeni nokta | `demo-suru.ts` |
-| Arka plan sürüsünde dizilim geçişi | 1,7 sn, dağılmadan toplanma 2,8 sn | `src/scripts/suru.ts` içinde `GECIS`, `TOPLAN` |
+| Arka plan sürüsü | 20 İHA sayfanın her yerine dağılmış, serbest dolaşır (80 ile 125 px/sn, her noktada 1,2 ile 4,2 sn asılı). 8 ile 14 sn arayla dizilim: o an ekranda görünenler katılır, en az 5, en çok 12. Plan: bir yere git, dizilim değiştir ya da dön, belki bir yer daha, sonra dağıl | `src/scripts/suru.ts` içinde `N`, `EN_AZ`, `EN_COK`, `sonrakiDizilim` |
 | Yabancı sürü | İlk gelişi 15 ile 27 sn arası, sonra 40 ile 70 sn arayla. 5 ile 7 araç | `suru.ts` içinde `baskin` |
 | Elektronik ve Mekanik dalları | Aviyonik, Güç sistemi, Montaj ve kablolama. Gövde tasarımı, Üretim, Uçuş testleri. Benim önerim, Ali onaylayınca kesinleşir | `icerik.yaml` içinde `ekipler` |
 | Dar ekranda sürü saydamlığı | 0,6 katı | `suru.ts`, `kis` |
@@ -62,3 +62,11 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Çarpışmadan kaçınma benzetimde basit bir itme kuvvetidir, koddaki ORCA yöntemi değildir.
 - Arka plandaki sürü benzetim alanının üstünden geçmiyor.
 - Elimdeki şartname PDF'i açılmadı, sayfalar boş çıkıyor. Yarışma tanımının kaynağı takımın kendi raporu.
+
+## 26.11.2026: arka plan sürüsü serbest dolaşıyor
+
+- Ali'nin isteği: İHA'lar genelde tek tek dolaşsın, sayı 20 olsun, dizilim zamanı gelince ekranda görünenler toplansın, bir iki yere gidip dizilim değiştirsin ya da dönsün, sonra dağılsın.
+- İHA'ların konumu sayfaya bağlı: kaydırınca başka İHA'lar görünür. Dizilim ise görüş alanında kurulur ve kaydırılsa da görüş alanında kalır, üyeler arkasından yetişir.
+- Ekranda 5'ten az İHA varsa en yakındakiler ekran dışından gelir. Sayfa uzun olduğu için çoğu zaman ekranda 0 ile 2 İHA oluyor, dizilime gelenlerin çoğu dışarıdan geliyor.
+- Kenarlardan giren yabancı sürü kaldı. Onu da o an görünenler ve en yakındakiler önlüyor, iş bitince dağılıyorlar.
+- Boş bir yere tıklamak serbestken görünenleri oraya toplar, dizilimdeyken sürüyü oraya götürür.
