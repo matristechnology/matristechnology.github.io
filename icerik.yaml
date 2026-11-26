@@ -247,7 +247,7 @@ iletisim:
   eposta_etiket: { tr: Sponsorluk iletişimi, en: Sponsorship contact }
   instagram: https://www.instagram.com/btu_matris/
   instagram_ad: "@btu_matris"
-  linkedin: ""
+  linkedin: https://www.linkedin.com/company/matris-technology/
   # Kimler başvurabilir, nasıl başvurulur. Boşken görünmez.
   katil: { tr: "", en: "" }
   basvuru: ""

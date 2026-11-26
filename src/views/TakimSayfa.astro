@@ -3,6 +3,7 @@
 // Anlatım icerik.yaml (takim_sayfa, ekipler, dal_anlatim, uyeler), arayüz metinleri src/lib/i18n-takim.ts.
 // Üyenin adı, fotoğrafı, bölümü ve bağlantısı yalnızca izin: true ise sayfaya girer (gorunenUyeler bunu ayıklar).
 import { Image } from 'astro:assets';
+import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, gorunenUyeler, gorunenDanismanlar, galeriGorseli, uyeGorseli, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
@@ -202,10 +203,7 @@ const icindekiler = [
   )}
 
   <section class="kap sayfa-son">
-    <div class="dugmeler">
-      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
-      <a class="dugme birincil" href={altSayfa.matris[dil]}>{t('matris', dil)} →</a>
-    </div>
+    <SayfaGecis dil={dil} bolum="takim" />
   </section>
 </Base>
 

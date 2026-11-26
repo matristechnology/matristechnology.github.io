@@ -1,6 +1,7 @@
 ---
 // Sürü İHA ayrıntı sayfası. Anlatım icerik.yaml (suru_sayfa), benzetim metinleri src/lib/i18n-suru.ts,
 // benzetimler src/scripts/suru-sayfa.ts. Betik kapalıyken her benzetimin yerinde yazılı anlatım kalır.
+import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
@@ -334,10 +335,7 @@ const plan = [
 
   <section class="kap sayfa-son">
     <p class="demo-not">{c(S.not, dil)} {sm('temsili', dil)}</p>
-    <div class="dugmeler">
-      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
-      <a class="dugme birincil" href={`${anaYol(dil)}#${dil === 'tr' ? 'destek' : 'support'}`}>{t('destekOl', dil)}</a>
-    </div>
+    <SayfaGecis dil={dil} bolum="suru" />
   </section>
 </Base>
 

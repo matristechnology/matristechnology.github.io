@@ -2,6 +2,7 @@
 // İletişim ayrıntı sayfası: kime hangi adresten ulaşılacağını gösteren kartlar ve üniversitenin haritadaki yeri.
 // Anlatım icerik.yaml (iletisim_sayfa, iletisim). Telefon ve açık adres yazılmaz.
 // Harita (OpenStreetMap) ancak bölüm ekrana yaklaşınca yüklenir, betik kapalıyken yerine bağlantılar durur.
+import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
@@ -85,10 +86,7 @@ const tarif = `https://www.google.com/maps/dir/?api=1&destination=${e}%2C${b}`;
   </div>
 
   <section class="kap sayfa-son">
-    <div class="dugmeler">
-      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
-      <a class="dugme birincil" href={altSayfa.destek[dil]}>{t('destek', dil)} →</a>
-    </div>
+    <SayfaGecis dil={dil} bolum="iletisim" />
   </section>
 </Base>
 

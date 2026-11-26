@@ -2,6 +2,7 @@
 // Çalışmalar ayrıntı sayfası: tıklanan dört aşama, atölye, raporların nasıl hazırlandığı ve dereceler.
 // Anlatım icerik.yaml (calisma_sayfa, basarilar). Aşamalar alt alta durur, sayfa kaydırıldıkça belirir ve yandaki çizgi dolar (calisma-sayfa.ts).
 import { Image } from 'astro:assets';
+import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, galeriGorseli, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
@@ -107,10 +108,7 @@ const icindekiler = [
   </section>
 
   <section class="kap sayfa-son">
-    <div class="dugmeler">
-      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
-      <a class="dugme birincil" href={altSayfa.takim[dil]}>{t('takim', dil)} →</a>
-    </div>
+    <SayfaGecis dil={dil} bolum="calismalar" />
   </section>
 </Base>
 

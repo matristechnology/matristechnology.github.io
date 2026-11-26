@@ -3,6 +3,7 @@
 // 3B model üzerinde ihtiyaç listesi, sponsorlar, sık sorulanlar ve dolu e-posta taslağı açan düğme.
 // Anlatım icerik.yaml (destek_sayfa, destek, basarilar). Tutar yazılmaz.
 import { Image } from 'astro:assets';
+import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, sponsorGorseli, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
@@ -222,10 +223,7 @@ const icindekiler = [
   </div>
 
   <section class="kap sayfa-son">
-    <div class="dugmeler">
-      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
-      <a class="dugme birincil" href={altSayfa.galeri[dil]}>{t('galeri', dil)} →</a>
-    </div>
+    <SayfaGecis dil={dil} bolum="destek" />
   </section>
 </Base>
 

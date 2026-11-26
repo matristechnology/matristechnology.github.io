@@ -1,6 +1,7 @@
 ---
 // Matris ayrıntı sayfası: neden, hikâye (tıklanan duraklar), sayılar, İHA'nın içi.
 // Anlatım icerik.yaml (matris_sayfa, iha), arayüz metinleri src/lib/i18n-matris.ts.
+import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import IhaIci from '../components/IhaIci.astro';
 import { icerik, c, type Dil } from '../lib/icerik';
@@ -97,10 +98,7 @@ const D = S.hikaye.duraklar;
 
   <section class="kap sayfa-son">
     <p class="demo-not">{c(I.not, dil)}</p>
-    <div class="dugmeler">
-      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
-      <a class="dugme birincil" href={altSayfa.suru[dil]}>{t('suru', dil)} →</a>
-    </div>
+    <SayfaGecis dil={dil} bolum="matris" />
   </section>
 </Base>
 

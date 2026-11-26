@@ -979,7 +979,7 @@ test.describe('D21 İletişim sayfası', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 
-  test('kartlar: üç adres konulu taslak açar, LinkedIn boş şablon, telefon ve IBAN yok', async ({ page }) => {
+  test('kartlar: üç adres konulu taslak açar, Instagram ve LinkedIn bağlantılı, telefon ve IBAN yok', async ({ page }) => {
     await page.goto('/iletisim/');
     const k = page.locator('[data-iletisim]');
     for (const ad of ['sponsor', 'takim', 'kaptan']) {
@@ -987,8 +987,8 @@ test.describe('D21 İletişim sayfası', () => {
     }
     await expect(k.locator('[data-ulas="takim"] .ulas-adres')).toHaveText('matristechnology@gmail.com');
     await expect(k.locator('[data-ulas="instagram"] a')).toHaveAttribute('href', /instagram\.com/);
-    await expect(k.locator('[data-ulas="linkedin"][data-ulas-sablon]')).toContainText('Yakında');
-    await expect(k.locator('[data-ulas="linkedin"] a')).toHaveCount(0);
+    await expect(k.locator('[data-ulas="linkedin"] a')).toHaveAttribute('href', /linkedin\.com\/company\//);
+    await expect(k.locator('[data-ulas-sablon]')).toHaveCount(0);
     expect(await page.locator('main').innerText()).not.toMatch(/IBAN|\+90|\b0?5\d{2}[ .]?\d{3}/);
   });
 
@@ -1023,4 +1023,25 @@ test.describe('D21 İletişim sayfası', () => {
     await expect(page.locator('[data-harita]')).toBeHidden();
     await b.close();
   });
+});
+
+test('D22 sayfa altı geçişi: önceki, ana sayfa ve sonraki düğmeleri menü sırasını izler', async ({ page }) => {
+  const sira = ['/suru-iha/', '/matris/', '/takim/', '/calismalar/', '/galeri/', '/destek/', '/iletisim/'];
+  for (let i = 0; i < sira.length; i++) {
+    await page.goto(sira[i]);
+    const g = page.locator('[data-gecis]');
+    await expect(g.locator('[data-ana-don]')).toHaveAttribute('href', '/');
+    if (i > 0) await expect(g.locator('[data-once]')).toHaveAttribute('href', sira[i - 1]); else await expect(g.locator('[data-once]')).toHaveCount(0);
+    if (i < sira.length - 1) await expect(g.locator('[data-sonra]')).toHaveAttribute('href', sira[i + 1]); else await expect(g.locator('[data-sonra]')).toHaveCount(0);
+  }
+  await page.goto('/takim/');
+  await page.locator('[data-gecis] [data-sonra]').click();
+  await expect(page).toHaveURL(/\/calismalar\/$/);
+  await page.locator('[data-gecis] [data-once]').click();
+  await expect(page).toHaveURL(/\/takim\/$/);
+  await page.goto('/en/work/');
+  await expect(page.locator('[data-gecis] [data-sonra]')).toHaveAttribute('href', '/en/gallery/');
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto('/calismalar/');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
 });

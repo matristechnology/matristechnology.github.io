@@ -1,0 +1,17 @@
+---
+// Ayrıntı sayfalarının altındaki geçiş: solda menüdeki bir önceki sayfa, ortada ana sayfa, sağda bir sonraki sayfa.
+// Sıra üst menüyle aynı. İlk sayfada önceki, son sayfada sonraki düğme çıkmaz.
+import type { Dil } from '../lib/icerik';
+import { t, anaYol, altSayfa } from '../lib/i18n';
+
+const sira = ['suru', 'matris', 'takim', 'calismalar', 'galeri', 'destek', 'iletisim'] as const;
+interface Props { dil: Dil; bolum: (typeof sira)[number] }
+const { dil, bolum } = Astro.props;
+const i = sira.indexOf(bolum), once = sira[i - 1], sonra = sira[i + 1];
+const y = { tr: { gecis: 'Sayfalar arası geçiş', once: 'Önceki', sonra: 'Sonraki' }, en: { gecis: 'Page navigation', once: 'Previous', sonra: 'Next' } }[dil];
+---
+<nav class="gecis" aria-label={y.gecis} data-gecis>
+  {once ? <a class="dugme gecis-once" data-once href={altSayfa[once][dil]}><span aria-hidden="true">←</span><span><small>{y.once}</small>{t(once, dil)}</span></a> : <span class="gecis-bos"></span>}
+  <a class="dugme gecis-ana" data-ana-don href={anaYol(dil)}>{t('anaSayfaKisa', dil)}</a>
+  {sonra ? <a class="dugme birincil gecis-sonra" data-sonra href={altSayfa[sonra][dil]}><span><small>{y.sonra}</small>{t(sonra, dil)}</span><span aria-hidden="true">→</span></a> : <span class="gecis-bos"></span>}
+</nav>
