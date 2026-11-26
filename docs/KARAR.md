@@ -29,7 +29,7 @@ Denemeler Playwright. Yazı tipleri depoya gömülü (Inter Tight, JetBrains Mon
 | Dağılıp tek tek dolaşma | 8 sn | `DAGIL` |
 | Benzetimde araç sayısı | 5 ile başlar, 3 ile 7 arası | `src/scripts/demo-suru.ts` |
 | Benzetimde boşta dolaşma | 9 sn dokunulmazsa başlar, 7 sn arayla yeni nokta | `demo-suru.ts` |
-| Arka plan sürüsü | 20 İHA sayfanın her yerine dağılmış, serbest dolaşır (80 ile 125 px/sn, her noktada 1,2 ile 4,2 sn asılı). 8 ile 14 sn arayla dizilim: o an ekranda görünenler katılır, en az 5, en çok 12. Plan: bir yere git, dizilim değiştir ya da dön, belki bir yer daha, sonra dağıl | `src/scripts/suru.ts` içinde `N`, `EN_AZ`, `EN_COK`, `sonrakiDizilim` |
+| Arka plan sürüsü | 30 İHA, her birinin sayfada bir bölgesi var (bölgeler sayfa boyunca eşit aralıklı). Serbestken bölgesinde dolaşır (80 ile 125 px/sn, her noktada 1,2 ile 4,2 sn asılı). 8 ile 14 sn arayla dizilim: en az 5, en çok 12 üye. Ayrılan İHA 6 sn yeniden katılmaz | `src/scripts/suru.ts` içinde `N`, `EN_AZ`, `EN_COK`, `BEKLEME` |
 | Yabancı sürü | İlk gelişi 15 ile 27 sn arası, sonra 40 ile 70 sn arayla. 5 ile 7 araç | `suru.ts` içinde `baskin` |
 | Elektronik ve Mekanik dalları | Aviyonik, Güç sistemi, Montaj ve kablolama. Gövde tasarımı, Üretim, Uçuş testleri. Benim önerim, Ali onaylayınca kesinleşir | `icerik.yaml` içinde `ekipler` |
 | Dar ekranda sürü saydamlığı | 0,6 katı | `suru.ts`, `kis` |
@@ -70,3 +70,9 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Ekranda 5'ten az İHA varsa en yakındakiler ekran dışından gelir. Sayfa uzun olduğu için çoğu zaman ekranda 0 ile 2 İHA oluyor, dizilime gelenlerin çoğu dışarıdan geliyor.
 - Kenarlardan giren yabancı sürü kaldı. Onu da o an görünenler ve en yakındakiler önlüyor, iş bitince dağılıyorlar.
 - Boş bir yere tıklamak serbestken görünenleri oraya toplar, dizilimdeyken sürüyü oraya götürür.
+
+## 26.11.2026: bölgeler, canlı üyelik, dizilimle hücum
+
+- İHA sayısı 30. Her İHA'nın sayfada bir bölgesi var, serbestken orada dolaşır, sürüden ayrılınca oraya döner.
+- Sürü kuruluyken görüş alanına giren İHA katılır, kaydırmaya gerek yok. 12 dolduysa bölgesi görüş alanından en uzak üye ayrılıp bölgesine döner. Bölgesi görüş alanından 1,6 ekran boyundan uzak kalan üye de ayrılır, sürüde en az 5 üye kaldıkça.
+- Yabancı sürü geldiğinde bizimkiler dağınıksa önce dizilime girer, yabancılara dönük. Fark ettikten sonra dizilimle hücum eder, 130 px yaklaşınca her İHA bir yabancıyı kovalar. Dizilim zaten kuruluysa doğrudan hücuma geçer.

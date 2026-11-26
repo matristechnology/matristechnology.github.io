@@ -266,7 +266,11 @@ test('D9c arka plan sürüsü: yabancı sürü geliyor, önleniyor, sürü yenid
     return n;
   });
   await expect.poll(kirmizi, { timeout: 5000 }).toBeGreaterThan(30);
-  await expect(tuval).toHaveAttribute('data-onleme', '0', { timeout: 20000 });
+  // Dağınıkken gelen yabancıya karşı önce dizilime giriliyor, dizilimle hücum ediliyor, sonra tek tek kovalanıyor
+  await expect(tuval).toHaveAttribute('data-faz', 'topla');
+  await expect(tuval).toHaveAttribute('data-faz', 'hucum', { timeout: 10000 });
+  await expect(tuval).toHaveAttribute('data-faz', 'kovala', { timeout: 10000 });
+  await expect(tuval).toHaveAttribute('data-onleme', '0', { timeout: 25000 });
   await bekle(page, 800); // son parlama sönsün
   expect(await kirmizi()).toBe(0);
 });
@@ -285,6 +289,24 @@ test('D9e arka plan sürüsü: serbest dolaşan araçlar ekranda toplanıyor, di
   await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 9000 });
   await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 40_000 });
   await expect(tuval).toHaveAttribute('data-uye', '0');
+});
+
+test('D9f arka plan sürüsü: dizilim sürerken hızla kaydırınca yenileri katılıyor, bölgesi uzak kalanlar ayrılıyor', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/?dizilim');
+  await page.evaluate(() => scrollTo(0, 1200));
+  const tuval = page.locator('canvas[data-suru]');
+  await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 12000 });
+  for (let k = 0; k < 6; k++) { await page.mouse.wheel(0, 700); await bekle(page, 250); }
+  await expect.poll(async () => Number(await tuval.getAttribute('data-katilan')), { timeout: 5000 }).toBeGreaterThan(0);
+  await expect.poll(async () => Number(await tuval.getAttribute('data-ayrilan')), { timeout: 5000 }).toBeGreaterThan(0);
+  // Kaydırma durunca görüş alanında olup sürüye katılabilecek İHA kalmıyor
+  await expect(tuval).toHaveAttribute('data-disarida', '0', { timeout: 5000 });
+  const uye = Number(await tuval.getAttribute('data-uye'));
+  console.log('kaydırma sonrası', JSON.stringify({ uye, katilan: await tuval.getAttribute('data-katilan'), ayrilan: await tuval.getAttribute('data-ayrilan') }));
+  expect(uye).toBeGreaterThanOrEqual(5);
+  expect(uye).toBeLessThanOrEqual(12);
 });
 
 test('D9d takım: üyeler dallarında, adı izinsiz görünmüyor, süzgeç öteki ekipleri söndürüyor', async ({ page }) => {
