@@ -26,5 +26,6 @@ Toplam: 35 geçti, 4 atlandı, 0 düştü. Atlananlar: E3 üç tarayıcıda (ayr
 | D12 | Sayfa denetim aracı | Yapılmadı | Lighthouse bu oturumda çalıştırılamadı |
 | D13 | Canlı adres | Geçti | 26.11.2026, https://matristechnology.github.io/ üzerinde 34 geçti, 4 atlandı, 1 düştü. Düşen D10 (WebKit, 30 sn zaman aşımı) tek başına 3 kez çalıştırılınca 3 kez geçti: geçici |
 | D13b | Canlı adres, Sürü İHA sayfasıyla | Geçti | 26.11.2026, https://matristechnology.github.io/ üzerinde üç tarayıcıda 74 geçti, 4 atlandı, düşen yok |
+| D15 | Matris sayfası | Geçti | 26.11.2026, üç tarayıcı. İki dilde açılıyor, 320 pikselde taşma yok. İHA'nın içinde parça seçimi, parçalara ayırma, hatlar ve tuvale tıklama çalışıyor. Hikâye durakları fare ve ok tuşlarıyla geziliyor. Betik kapalıyken duraklar ve parça listesi yazıyla görünüyor. Mesh ağ denemesi D14'e eklendi (2 atlama, kopma, zincirde 4 atlama) |
 
 Denemeleri yinelemek için: `npm run build && npm run preview`, sonra `npm test`.

@@ -772,3 +772,101 @@ function planYap(): QrPlan[] {
     oku();
   }
 }
+
+/* ════ 7. Mesh ağ: menzil dışındaki İHA'ya paket aradaki İHA üzerinden ulaşır ═════════════ */
+{
+  const kok = $(document, '[data-mesh]');
+  if (kok) {
+    const M = metinler(kok), durumYaz = $(kok, '[data-durum]')!, secDugmeleri = $$<HTMLButtonElement>(kok, '[data-sec]');
+    const MENZIL = 15, IRTIFA = 8, SINIR = 34;
+    const ilk = () => [v3(0, 0, IRTIFA), v3(-9, -8, IRTIFA), v3(9, -8, IRTIFA), v3(-18, -16, IRTIFA), v3(18, -16, IRTIFA)];
+    type Dugum = { p: V3; h: V3; atlama: number; ust: number };
+    let d: Dugum[] = ilk().map((p) => ({ p: { ...p }, h: { ...p }, atlama: 0, ust: -1 }));
+    let secili = 4, tutulan = -1, saat = 0;
+    const uzaklik = (a: V3, b: V3) => Math.hypot(a.x - b.x, a.y - b.y);
+    /** Liderden başlayan enine arama: her İHA'ya kaç atlamada ve kimin üzerinden ulaşıldığını bulur. */
+    const hesapla = () => {
+      d.forEach((x, i) => { x.atlama = i ? -1 : 0; x.ust = -1; });
+      const kuyruk = [0];
+      while (kuyruk.length) {
+        const i = kuyruk.shift()!;
+        d.forEach((x, j) => { if (x.atlama < 0 && uzaklik(d[i].p, x.p) <= MENZIL) { x.atlama = d[i].atlama + 1; x.ust = i; kuyruk.push(j); } });
+      }
+    };
+    const yol = (i: number): number[] => { const y: number[] = []; for (let k = i; k >= 0 && y.length < 8; k = d[k].ust) y.unshift(k); return y; };
+    const ad = (i: number) => (i ? `${document.documentElement.lang === 'tr' ? 'İHA' : 'UAV'} ${i}` : M.lider);
+    const yaz = () => {
+      hesapla();
+      const s = d[secili];
+      kok.dataset.secili = String(secili); kok.dataset.atlama = String(s.atlama);
+      kok.dataset.kopuk = String(d.filter((x) => x.atlama < 0).length);
+      secDugmeleri.forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.sec) === secili)));
+      const m = s.atlama < 0 ? doldur(M.mKopuk, { n: secili }) : s.atlama === 1 ? doldur(M.mDogrudan, { n: secili }) : doldur(M.mAtlama, { n: secili, k: s.atlama, yol: yol(secili).slice(1, -1).map(ad).join(', ') });
+      if (durumYaz.textContent !== m) durumYaz.textContent = m;
+    };
+    const kisitla = (p: V3) => { p.x = Math.max(-SINIR, Math.min(SINIR, p.x)); p.y = Math.max(-SINIR, Math.min(SINIR - 8, p.y)); };
+    const sahne = sahneKur(kok, {
+      uzak: 92,
+      adim: (dt) => {
+        saat += dt;
+        for (const x of d) { x.p.x += (x.h.x - x.p.x) * Math.min(1, dt * 5); x.p.y += (x.h.y - x.p.y) * Math.min(1, dt * 5); }
+        if (d.some((x) => uzaklik(x.p, x.h) > 0.05)) yaz();
+      },
+      tut: (x, y) => {
+        const e = enYakin(sahne!.kamera, d, x, y, 30);
+        tutulan = e ? d.indexOf(e) : -1;
+        if (tutulan > 0) { secili = tutulan; yaz(); }
+        return tutulan >= 0;
+      },
+      surukle: (x, y) => {
+        const n = sahne!.kamera.isin(x, y, IRTIFA);
+        if (!n || tutulan < 0) return;
+        kisitla(n); d[tutulan].h = n; d[tutulan].p = { ...n }; yaz();
+      },
+      birak: () => { tutulan = -1; },
+      tikla: (x, y) => { const e = enYakin(sahne!.kamera, d, x, y, 30); if (e && d.indexOf(e) > 0) { secili = d.indexOf(e); yaz(); sahne?.ciz(); } },
+      ciz: (s) => {
+        const c = s.cizer, r = c.r;
+        s.kamera.hedef = v3(0, -12, 5);
+        c.izgara(-36, 36, -36, 28, 6);
+        // Menzil halkaları uçuş irtifasında çizilir, böylece komşu İHA'nın halkanın içinde olup olmadığı doğrudan görülür.
+        c.zeminDaire(d[0].p, MENZIL, r.vurgu, null, 0.07);
+        c.zeminDaire(d[0].p, MENZIL, null, r.vurgu, 0.55, 1);
+        if (secili) c.zeminDaire(d[secili].p, MENZIL, null, r.soluk, 0.45, 1);
+        const secYol = d[secili].atlama > 0 ? yol(secili) : [];
+        const yolda = (i: number, j: number) => secYol.some((k, n) => n && ((k === i && secYol[n - 1] === j) || (k === j && secYol[n - 1] === i)));
+        for (let i = 0; i < d.length; i++) for (let j = i + 1; j < d.length; j++) {
+          if (uzaklik(d[i].p, d[j].p) > MENZIL) continue;
+          const v = yolda(i, j);
+          c.cizgi(d[i].p, d[j].p, v ? r.vurgu : r.metin, v ? 2.5 : 1, v ? 0.95 : 0.3);
+        }
+        // Paketler: liderden çıkar, ağaçtaki her kolda üstten alta doğru ilerler.
+        if (!s.azalt) for (const x of d) {
+          if (x.ust < 0) continue;
+          const t = (saat * 1.4 - (x.atlama - 1) * 0.5) % 1.6;
+          if (t < 0 || t > 1) continue;
+          const a = d[x.ust].p, n = s.kamera.izdus(v3(a.x + (x.p.x - a.x) * t, a.y + (x.p.y - a.y) * t, IRTIFA));
+          if (n) { c.ctx.beginPath(); c.ctx.arc(n.x, n.y, 3.5, 0, Math.PI * 2); c.ctx.fillStyle = r.vurgu; c.ctx.fill(); }
+        }
+        const sirali = d.map((x, i) => ({ x, i })).sort((a, b) => s.kamera.derinlik(b.x.p) - s.kamera.derinlik(a.x.p));
+        for (const { x, i } of sirali) {
+          const kopuk = x.atlama < 0;
+          c.iha({ p: x.p, yaw: Math.PI / 2, renk: kopuk ? r.kirmizi : i ? r.metin : r.vurgu, motor: true, kol: 1.9, secili: i === secili, halka: i ? undefined : r.vurgu,
+            etiket: !i ? M.lider : i === secili || kopuk ? `${ad(i)} · ${kopuk ? M.mKopukKisa : `${x.atlama} ${M.mAtlamaKisa}`}` : ad(i) });
+        }
+      },
+    });
+    const yenile = () => { if (sahne?.azalt) for (const x of d) x.p = { ...x.h }; yaz(); sahne?.ciz(); };
+    const it = (isaret: number) => {
+      const x = d[secili], dx = x.h.x - d[0].h.x, dy = x.h.y - d[0].h.y, u = Math.hypot(dx, dy) || 1;
+      const yeni = Math.max(5, u + isaret * 4);
+      x.h = v3(d[0].h.x + (dx / u) * yeni, d[0].h.y + (dy / u) * yeni, IRTIFA); kisitla(x.h); yenile();
+    };
+    secDugmeleri.forEach((b) => b.addEventListener('click', () => { secili = Number(b.dataset.sec); yenile(); }));
+    $(kok, '[data-uzak]')?.addEventListener('click', () => it(1));
+    $(kok, '[data-yakin]')?.addEventListener('click', () => it(-1));
+    $(kok, '[data-zincir]')?.addEventListener('click', () => { d.forEach((x, i) => (x.h = v3(-26 + i * 13, -6, IRTIFA))); d[0].h = v3(-26, -6, IRTIFA); yenile(); });
+    $(kok, '[data-sifirla]')?.addEventListener('click', () => { ilk().forEach((p, i) => (d[i].h = p)); secili = 4; yenile(); });
+    yenile();
+  }
+}

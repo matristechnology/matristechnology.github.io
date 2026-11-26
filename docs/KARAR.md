@@ -92,3 +92,12 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Alan tarama iki panele ayrıldı (Ali'nin isteği): solda tek İHA, sağda 3 ile 6 arası İHA'lık sürü. Tek düğmeyle aynı anda başlarlar, süre her panelin üstünde yazar. İki panel tek saatle ilerler, böylece fark gerçek. Sürüden ya da tek İHA'dan biri düşürülebilir.
 - `icerik.yaml` içinde `{ tr: ..., en: ... }` biçiminde tırnaksız yazılan metin ilk virgülde kesiliyormuş, şema da kalan parçayı sessizce atıyormuş. Sürü İHA sayfasında 15 metin, ana sayfada 2 metin (İngilizce "2nd in Türkiye, Preliminary Design Report" başlığı ve ilk galeri fotoğrafının açıklaması) kesik çıkıyordu. Hepsi düzeltildi. Derleme artık kesik metin bulursa hata verip duruyor. Uzun metinler ayrı satırda yazılıyor.
 - Sürü İHA sayfasının metinleri Ali'nin "çok yapay duruyor" uyarısı üzerine yeniden yazıldı: daha uzun ve somut cümleler, kalıp başlıklar yerine düz adlar.
+
+## 26.11.2026: Matris sayfası, İHA'nın içi, mesh ağ
+
+- İkinci ayrıntı sayfası Matris (`/matris/`, `/en/matris/`). Ali'nin seçtiği bölümler: neden bu işi yapıyoruz, hikâye ve zaman çizgisi, sayılarla Matris, İHA'nın içi. Rapor özeti, veri akışı şeması ve arıza senaryoları seçilmedi.
+- İHA'nın içi takımın gerçek aracını gösteriyor (Ali'nin isteği): F450 gövde, Pixhawk 2.4.8, Raspberry Pi 4, Global Shutter kamera, M8N GPS, UWB, 11,1 V 3S Li-Po, Emax 820KV motor, 30 A ESC, FS-iA10B alıcı, Hobbywing UBEC. Hepsi Ön Tasarım Raporu'ndan. Ali'nin isteğiyle donanım adları artık sitede. Çizimdeki yerleşim ve ölçüler temsilî, bunu sayfa da söylüyor.
+- Aynı çizimin kısa hali (hat düğmeleri olmadan) ana sayfadaki Matris bölümüne de kondu (Ali'nin isteği). İkisi tek bileşen: `src/components/IhaIci.astro`.
+- Mesh ağ ve menzil benzetimi Ali'nin isteğiyle Sürü İHA sayfasına kondu. Menzil değeri gerçek değil.
+- Hikâye metinleri: Ali "biraz senaryo oluştur, duruma göre düzeltiriz" dedi. Kuruluş yılı bilinmediği için yazılmadı. 2026 durakları rapordaki proje takviminden ve "Planlanan Geliştirmeler" bölümünden. "Neden" paragrafları ile "Başlangıç" ve "2024" duraklarının ikinci cümleleri taslak, takım düzeltecek (EKSIKLER).
+- Sayılar (üye, ekip, dal, finalistlik) içerik dosyasındaki verilerden hesaplanıyor, elle yazılmıyor.

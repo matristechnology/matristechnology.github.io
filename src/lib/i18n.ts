@@ -17,8 +17,9 @@ export const bolumler = {
 export type Bolum = keyof typeof bolumler;
 
 /** Ayrıntı sayfası olan bölümler ve iki dildeki adresleri. Yeni sayfa eklenince buraya da yazılır. */
-export const altSayfa: Partial<Record<Bolum, Record<Dil, string>>> & { suru: Record<Dil, string> } = {
+export const altSayfa: Partial<Record<Bolum, Record<Dil, string>>> & { suru: Record<Dil, string>; matris: Record<Dil, string> } = {
   suru: { tr: '/suru-iha/', en: '/en/swarm/' },
+  matris: { tr: '/matris/', en: '/en/matris/' },
 };
 
 const metin = {

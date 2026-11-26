@@ -1,0 +1,40 @@
+---
+// "İHA'nın içi": takımın aracının döndürülebilen 3B çizimi. Matris sayfasında tam, ana sayfada kısa haliyle (kisa) kullanılır.
+// Betik kapalıyken parçaların yazılı listesi görünür.
+import { icerik, c, type Dil } from '../lib/icerik';
+import { sm } from '../lib/i18n-suru';
+import { mm, mPaket } from '../lib/i18n-matris';
+
+interface Props { dil: Dil; kisa?: boolean }
+const { dil, kisa = false } = Astro.props;
+const I = icerik.iha;
+const parcalar = JSON.stringify(Object.fromEntries(I.parcalar.map((p) => [p.anahtar, { ad: c(p.ad, dil), model: c(p.model, dil), metin: c(p.metin, dil) }])));
+const hatlar = JSON.stringify(Object.fromEntries((['guc', 'veri', 'sinyal'] as const).map((h) => [h, { ad: c(I.hatlar[h].ad, dil), model: '', metin: c(I.hatlar[h].metin, dil) }])));
+---
+<div class="sahne-govde iha-ici js-only" data-iha-ici data-m={mPaket(dil)} data-parcalar={parcalar} data-hatlar={hatlar}>
+  <div class="sahne">
+    <canvas role="img" aria-label={mm('alan', dil)}></canvas>
+    <button type="button" class="sahne-gorunum dugme-ikon" data-gorunum aria-label={sm('gorunum', dil)} title={sm('gorunum', dil)}><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3 3 8l9 5 9-5-9-5ZM3 13l9 5 9-5"/></svg></button>
+    <span class="sahne-ipucu" aria-hidden="true">{sm('surukle', dil)}</span>
+  </div>
+  <div class="demo-kumanda">
+    <div class="demo-grup">
+      <button type="button" class="dugme kucuk birincil" data-ac aria-pressed="false">{mm('ayir', dil)}</button>
+    </div>
+    {!kisa && (
+      <div class="demo-grup" role="group" aria-label={mm('hatlar', dil)}>
+        <span class="demo-etiket">{mm('hatlar', dil)}</span>
+        {(['guc', 'veri', 'sinyal'] as const).map((h) => <button type="button" class={`dugme kucuk hat-${h}`} data-hat={h} aria-pressed="false"><i aria-hidden="true"></i>{c(I.hatlar[h].ad, dil)}</button>)}
+      </div>
+    )}
+    <div class="demo-grup" role="group" aria-label={mm('parcalar', dil)}>
+      <span class="demo-etiket">{mm('parcalar', dil)}</span>
+      {I.parcalar.map((p) => <button type="button" class="dugme kucuk etiketli" data-parca={p.anahtar} aria-pressed="false">{c(p.ad, dil)}</button>)}
+    </div>
+    <div class="rol-panel" data-parca-panel aria-live="polite"></div>
+    <p class="demo-durum kisa" role="status" data-durum></p>
+  </div>
+</div>
+<dl class="js-yok parca-yazi">
+  {I.parcalar.map((p) => <div><dt>{c(p.ad, dil)}{c(p.model, dil) && <span> · {c(p.model, dil)}</span>}</dt><dd>{c(p.metin, dil)}</dd></div>)}
+</dl>

@@ -1,0 +1,110 @@
+---
+// Matris ayrıntı sayfası: neden, hikâye (tıklanan duraklar), sayılar, İHA'nın içi.
+// Anlatım icerik.yaml (matris_sayfa, iha), arayüz metinleri src/lib/i18n-matris.ts.
+import Base from '../layouts/Base.astro';
+import IhaIci from '../components/IhaIci.astro';
+import { icerik, c, type Dil } from '../lib/icerik';
+import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+import { sm } from '../lib/i18n-suru';
+import { mm } from '../lib/i18n-matris';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const S = icerik.matris_sayfa, I = icerik.iha;
+const kimlik = (k: string) => (dil === 'tr' ? k : { neden: 'why', hikaye: 'story', sayilar: 'numbers', iha: 'uav' }[k] ?? k);
+const icindekiler = [
+  ['neden', c(S.neden.baslik, dil)],
+  ['hikaye', c(S.hikaye.baslik, dil)],
+  ['sayilar', c(S.sayilar.baslik, dil)],
+  ['iha', c(I.baslik, dil)],
+] as const;
+const dallar = Object.values(icerik.ekipler).reduce((n, e) => n + Object.keys(e.dallar).length, 0);
+const sayilar = [
+  { sayi: icerik.uyeler.length, son: '', etiket: mm('uye', dil) },
+  { sayi: Object.keys(icerik.ekipler).length, son: '', etiket: mm('ekip', dil) },
+  { sayi: dallar, son: '', etiket: mm('dal', dil) },
+  { sayi: icerik.basarilar.filter((b) => b.tur === 'finalist').length, son: '', etiket: mm('finalist', dil) },
+  ...S.sayilar.ek.map((e) => ({ sayi: e.sayi, son: e.son, etiket: c(e.etiket, dil) })),
+].filter((s) => s.sayi > 0);
+const D = S.hikaye.duraklar;
+---
+
+<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.matris[digerDil(dil)]} sayfa="diger" bolum="matris">
+  <section class="sayfa-bas kap">
+    <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
+      <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{c(S.baslik, dil)}</span>
+    </nav>
+    <h1 data-belir>{c(S.baslik, dil)}</h1>
+    <p class="tanitim" data-belir style="--i:1">{c(S.ozet, dil)}</p>
+    <ol class="icindekiler" data-belir style="--i:2">
+      {icindekiler.map(([k, ad], i) => <li><a href={`#${kimlik(k)}`}><span>{String(i + 1).padStart(2, '0')}</span>{ad}</a></li>)}
+    </ol>
+  </section>
+
+  <section class="bolum kap" id={kimlik('neden')}>
+    <h2 data-belir>{c(S.neden.baslik, dil)}</h2>
+    <div class="yazi genis-yazi" data-belir>
+      {S.neden.paragraflar.map((p) => <p>{c(p, dil)}</p>)}
+    </div>
+  </section>
+
+  {D.length > 0 && (
+    <section class="bolum kap" id={kimlik('hikaye')}>
+      <h2 data-belir>{c(S.hikaye.baslik, dil)}</h2>
+      <p class="bolum-giris js-only" data-belir>{c(S.hikaye.giris, dil)}</p>
+      <div class="hikaye" data-hikaye data-belir>
+        <div class="hikaye-serit" role="tablist" aria-label={mm('duraklar', dil)}>
+          {D.map((d, i) => (
+            <button type="button" role="tab" id={`durak-${i}`} aria-controls={`durak-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="hikaye-durak">
+              <span class="hikaye-yil">{c(d.yil, dil)}</span>
+              <span class="hikaye-ad">{c(d.baslik, dil)}</span>
+            </button>
+          ))}
+        </div>
+        <div class="hikaye-paneller">
+          {D.map((d, i) => (
+            <article class="hikaye-panel" role="tabpanel" id={`durak-panel-${i}`} aria-labelledby={`durak-${i}`} data-secili={i === 0 ? '' : undefined}>
+              <p class="hikaye-yil">{c(d.yil, dil)}</p>
+              <h3>{c(d.baslik, dil)}</h3>
+              <p>{c(d.metin, dil)}</p>
+            </article>
+          ))}
+          <div class="hikaye-gez js-only">
+            <button type="button" class="dugme kucuk" data-onceki>← {mm('onceki', dil)}</button>
+            <span class="hikaye-sira" data-sira aria-hidden="true">1 / {D.length}</span>
+            <button type="button" class="dugme kucuk" data-sonraki>{mm('sonraki', dil)} →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="bolum kap" id={kimlik('sayilar')}>
+    <h2 data-belir>{c(S.sayilar.baslik, dil)}</h2>
+    <dl class="serit sayilar" data-belir>
+      {sayilar.map((s) => <div><dd><span data-say={s.sayi}>{s.sayi}</span>{s.son}</dd><dt>{s.etiket}</dt></div>)}
+    </dl>
+  </section>
+
+  <section class="bolum kap" id={kimlik('iha')}>
+    <h2 data-belir>{c(I.baslik, dil)}</h2>
+    <p class="bolum-giris" data-belir>{c(I.giris, dil)}</p>
+    <IhaIci dil={dil} />
+    <details class="teknik" data-belir><summary>{sm('teknik', dil)}</summary>{I.teknik.map((x) => <p>{c(x, dil)}</p>)}</details>
+  </section>
+
+  <section class="kap sayfa-son">
+    <p class="demo-not">{c(I.not, dil)}</p>
+    <div class="dugmeler">
+      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
+      <a class="dugme birincil" href={altSayfa.suru[dil]}>{t('suru', dil)} →</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/iha-ici.ts';
+  import '../scripts/matris-sayfa.ts';
+</script>

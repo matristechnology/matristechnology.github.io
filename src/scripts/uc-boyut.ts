@@ -41,6 +41,16 @@ export class Kamera {
     const o = this.odak / z;
     return { x: this.cx + (dx * this.r.x + dy * this.r.y) * o, y: this.cy - (dx * this.u.x + dy * this.u.y + dz * this.u.z) * o, o, d: z };
   }
+  /** Kameranın dünyadaki yeri (arka yüzleri ayıklamak için). */
+  get konum(): V3 { return this.c; }
+  /** Ekrandaki noktadan çıkan ışının z = z0 düzlemini kestiği yer. Kesmiyorsa null. */
+  isin(x: number, y: number, z0 = 0): V3 | null {
+    const a = (x - this.cx) / this.odak, b = -(y - this.cy) / this.odak;
+    const dx = this.f.x + this.r.x * a + this.u.x * b, dy = this.f.y + this.r.y * a + this.u.y * b, dz = this.f.z + this.r.z * a + this.u.z * b;
+    if (Math.abs(dz) < 1e-6) return null;
+    const t = (z0 - this.c.z) / dz;
+    return t > 0 ? v3(this.c.x + dx * t, this.c.y + dy * t, z0) : null;
+  }
   derinlik(p: V3) {
     return (p.x - this.c.x) * this.f.x + (p.y - this.c.y) * this.f.y + (p.z - this.c.z) * this.f.z;
   }
@@ -237,7 +247,7 @@ export type Sahne = {
 
 export function sahneKur(
   kok: HTMLElement,
-  o: { adim: (dt: number) => void; ciz: (s: Sahne) => void; tikla?: (x: number, y: number) => void; gorunum?: number; uzak?: number; /** Görünürlüğü tuval yerine bu öğeden izle (yan yana iki sahne birlikte çalışsın diye). */ gozle?: Element },
+  o: { adim: (dt: number) => void; ciz: (s: Sahne) => void; tikla?: (x: number, y: number) => void; /** Basılan yerde tutulacak bir şey varsa true döner, o zaman sürükleme kamerayı döndürmez. */ tut?: (x: number, y: number) => boolean; surukle?: (x: number, y: number) => void; birak?: () => void; gorunum?: number; uzak?: number; /** Görünürlüğü tuval yerine bu öğeden izle (yan yana iki sahne birlikte çalışsın diye). */ gozle?: Element },
 ): Sahne | null {
   const tuval = kok.querySelector<HTMLCanvasElement>('canvas');
   if (!tuval) return null;
@@ -294,9 +304,12 @@ export function sahneKur(
   document.addEventListener('visibilitychange', baslat);
 
   // Sürükleyince döner. Az kıpırdayan dokunuş tıklama sayılır. Dokunmatikte dikey sürükleme sayfayı kaydırır.
-  let basX = 0, basY = 0, aci0 = 0, egim0 = 0, basili = false, kaydi = false;
+  let basX = 0, basY = 0, aci0 = 0, egim0 = 0, basili = false, kaydi = false, tutuldu = false;
   tuval.addEventListener('pointerdown', (e) => {
     basili = true; kaydi = false; basX = e.clientX; basY = e.clientY; aci0 = kamera.aci; egim0 = kamera.egim;
+    const r = tuval.getBoundingClientRect();
+    tutuldu = !!o.tut?.(e.clientX - r.left, e.clientY - r.top);
+    if (tutuldu) e.preventDefault();
     tuval.setPointerCapture(e.pointerId);
   });
   tuval.addEventListener('pointermove', (e) => {
@@ -304,6 +317,7 @@ export function sahneKur(
     const dx = e.clientX - basX, dy = e.clientY - basY;
     if (Math.hypot(dx, dy) > 5) kaydi = true;
     if (!kaydi) return;
+    if (tutuldu) { const r = tuval.getBoundingClientRect(); o.surukle?.(e.clientX - r.left, e.clientY - r.top); if (s.azalt || !calisiyor) s.ciz(); return; }
     kamera.aci = aci0 - dx * 0.008;
     if (e.pointerType === 'mouse') kamera.egim = Math.max(0.18, Math.min(1.5, egim0 + dy * 0.006));
     if (s.azalt || !calisiyor) s.ciz();
@@ -311,10 +325,11 @@ export function sahneKur(
   const birak = (e: PointerEvent) => {
     if (!basili) return;
     basili = false;
+    if (tutuldu) { tutuldu = false; o.birak?.(); }
     if (!kaydi && o.tikla) { const r = tuval.getBoundingClientRect(); o.tikla(e.clientX - r.left, e.clientY - r.top); }
   };
   tuval.addEventListener('pointerup', birak);
-  tuval.addEventListener('pointercancel', () => (basili = false));
+  tuval.addEventListener('pointercancel', () => { basili = false; if (tutuldu) { tutuldu = false; o.birak?.(); } });
 
   let gorunumNo = o.gorunum ?? 0;
   kok.querySelector<HTMLButtonElement>('[data-gorunum]')?.addEventListener('click', (e) => {

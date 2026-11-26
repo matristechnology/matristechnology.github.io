@@ -38,6 +38,22 @@ const m = {
   tTekYarim: { tr: 'Sürü ({n} İHA) alanı {s} saniyede taradı. Tek İHA düştüğü için alanın %{p} kadarında kaldı.', en: 'The swarm ({n} UAVs) surveyed the area in {s} seconds. The single UAV went down and stopped at {p}%.' },
   tSure: { tr: 'Süre', en: 'Time' },
 
+  // mesh
+  mAlan: { tr: 'Mesh ağ benzetimi. Çizgiler birbirinin menzilindeki İHA’ları bağlar. Durum aşağıda yazıyla da yazar.', en: 'Mesh network simulation. Lines join UAVs within range of each other. The state is also written below.' },
+  mSec: { tr: 'İHA seç', en: 'Pick a UAV' },
+  mUzak: { tr: 'Liderden uzaklaştır', en: 'Move away from leader' },
+  mYakin: { tr: 'Lidere yaklaştır', en: 'Move towards leader' },
+  mZincir: { tr: 'Zincir yap', en: 'Make a chain' },
+  mSifirla: { tr: 'Sıfırla', en: 'Reset' },
+  mDogrudan: { tr: 'İHA {n} liderin menzilinde. Paket doğrudan ulaşıyor.', en: 'UAV {n} is within the leader’s range. The packet arrives directly.' },
+  mAtlama: { tr: 'İHA {n} liderin menzili dışında. Paket {yol} üzerinden {k} atlamayla ulaşıyor.', en: 'UAV {n} is out of the leader’s range. The packet arrives in {k} hops through {yol}.' },
+  mKopuk: { tr: 'İHA {n} hiçbir İHA’nın menzilinde değil. Son konumunda bekliyor, bağlantı gelince dizilime döner.', en: 'UAV {n} is in range of no other UAV. It holds its last position and returns to the formation when the link is back.' },
+  mMenzil: { tr: 'Liderin menzili', en: 'Leader’s range' },
+  mBag: { tr: 'Bağlantı', en: 'Link' },
+  mYol: { tr: 'Seçili İHA’ya giden yol', en: 'Path to the selected UAV' },
+  mAtlamaKisa: { tr: 'atlama', en: 'hops' },
+  mKopukKisa: { tr: 'kopuk', en: 'no link' },
+
   // roller
   rAlan: { tr: 'Roller benzetimi. Bir İHA’ya tıklayarak ya da aşağıdaki düğmelerle rolünü görebilirsin.', en: 'Roles simulation. Click a UAV or use the buttons below to see its role.' },
   rSec: { tr: 'İHA seç', en: 'Pick a UAV' },

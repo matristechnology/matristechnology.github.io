@@ -367,6 +367,40 @@ html.js .uye:not([data-acik]) .uye-ayrinti { display: none; }
 .tarama-kumanda .demo-durum { min-height: 3.4em; }
 @media (max-width: 900px) { .tarama-kumanda { grid-template-columns: 1fr; } }
 @media (max-width: 640px) { .tarama-ikili { grid-template-columns: 1fr; } }
+/* İHA'nın içi */
+.iha-ici .sahne { aspect-ratio: 4 / 3; }
+.dugme.etiketli { font-size: 0.8125rem; padding: 0 0.7rem; }
+[data-parca-panel] h4 { margin: 0; }
+.dugme[data-hat] { gap: 0.45rem; }
+.dugme[data-hat] i { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--s-kirmizi); }
+.dugme.hat-veri i { background: var(--s-mavi); }
+.dugme.hat-sinyal i { background: var(--s-yesil); }
+.parca-model { font-family: var(--es); font-size: 0.75rem !important; letter-spacing: 0.04em; color: var(--vurgu) !important; }
+.demo-durum.kisa { min-height: 0; }
+.demo-durum.kisa:empty { display: none; }
+.parca-yazi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1rem 1.5rem; margin-top: 2rem; }
+.parca-yazi dt { font-weight: 620; }
+.parca-yazi dt span { font-family: var(--es); font-size: 0.75rem; color: var(--vurgu); font-weight: 400; }
+.parca-yazi dd { margin-top: 0.3rem; font-size: 0.9375rem; line-height: 1.5; color: var(--soluk); }
+.genis-yazi { max-width: 46em; display: grid; gap: 1rem; margin-top: 1.25rem; font-size: clamp(1.0625rem, 1.6vw, 1.1875rem); line-height: 1.6; text-wrap: pretty; }
+/* Hikâye: betik varken durak seçilir, yokken hepsi alt alta durur */
+.hikaye { position: relative; z-index: 6; margin-top: 2rem; display: grid; gap: 1.25rem; }
+.hikaye-serit { display: none; }
+html.js .hikaye-serit { display: flex; gap: 0; overflow-x: auto; scrollbar-width: thin; border-bottom: 1px solid var(--cizgi); }
+.hikaye-durak { flex: 0 0 auto; display: grid; gap: 0.25rem; text-align: left; min-height: 2.75rem; min-width: 8.5rem; max-width: 13rem; padding: 0.7rem 1rem 0.9rem 0; margin-right: 1rem; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--soluk); cursor: pointer; font: inherit; position: relative; }
+.hikaye-durak[aria-selected='true'] { color: var(--metin); border-bottom-color: var(--vurgu); }
+.hikaye-yil { font-family: var(--es); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--vurgu); }
+.hikaye-ad { font-size: 0.9375rem; line-height: 1.3; }
+.hikaye-paneller { display: grid; gap: 1rem; }
+.hikaye-panel { padding: 1.4rem 1.5rem; background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 10px; display: grid; gap: 0.6rem; max-width: 46em; }
+.hikaye-panel h3 { font-size: clamp(1.25rem, 2.6vw, 1.75rem); line-height: 1.2; letter-spacing: -0.02em; }
+.hikaye-panel p:last-child { color: var(--soluk); }
+html.js .hikaye-panel:not([data-secili]) { display: none; }
+html.js .hikaye-panel { min-height: 11rem; align-content: start; }
+.hikaye-gez { display: flex; align-items: center; gap: 0.75rem; }
+.hikaye-sira { font-family: var(--es); font-size: 0.8125rem; color: var(--soluk); font-variant-numeric: tabular-nums; }
+.sayilar { margin-top: 2rem; }
+.ana-iha { margin-top: clamp(2.5rem, 6vw, 4rem); }
 .qr-panel, .tablo-kap { grid-column: 1 / -1; }
 .qr-panel { display: grid; gap: 0.5rem; padding: 1rem 1.1rem; border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); }
 .qr-panel [data-qr-oku] { font-size: 0.9375rem; }

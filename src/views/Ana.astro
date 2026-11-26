@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import SuruDemo from '../components/SuruDemo.astro';
 import UyeKarti from '../components/UyeKarti.astro';
+import IhaIci from '../components/IhaIci.astro';
 import { icerik, c, gorunenUyeler, gorunenDanismanlar, gorunenBolumler, galeriGorseli, sponsorGorseli, type Dil } from '../lib/icerik';
 import { t, bolumler, digerDil, anaYol, altSayfa, type Bolum } from '../lib/i18n';
 
@@ -117,6 +118,12 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
         </ol>
       </>
     )}
+    <div class="ana-iha">
+      <h3 class="ara-baslik" data-belir>{c(icerik.iha.baslik, dil)}</h3>
+      <p class="bolum-giris" data-belir>{c(icerik.iha.giris, dil)}</p>
+      <IhaIci dil={dil} kisa />
+    </div>
+    <p class="ayrintili" data-belir><a class="dugme" href={altSayfa.matris[dil]}>{t('ayrintili', dil)}<span aria-hidden="true">→</span></a></p>
   </section>
 
   {var_.has('takim') && (
@@ -310,3 +317,7 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
     </section>
   )}
 </Base>
+
+<script>
+  import '../scripts/iha-ici.ts';
+</script>

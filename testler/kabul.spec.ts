@@ -364,7 +364,7 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 });
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
-  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
@@ -396,11 +396,11 @@ test.describe('D14 Sürü İHA sayfası', () => {
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
       await bekle(page, 300);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
-      expect(await page.locator('[data-tarama], [data-roller], [data-gorev], [data-konsol], [data-lider-sahne], [data-geometri]').count()).toBe(6);
+      expect(await page.locator('[data-tarama], [data-roller], [data-gorev], [data-konsol], [data-lider-sahne], [data-mesh], [data-geometri]').count()).toBe(7);
     }
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
-    await page.locator('.ayrintili a').click();
+    await page.locator('.ayrintili a[href="/suru-iha/"]').click();
     await expect(page).toHaveURL(/\/suru-iha\/$/);
     await expect(page.locator('.menu a[aria-current="page"]')).toHaveText('Sürü İHA');
     await page.locator('a[data-dil-degistir]').click();
@@ -513,6 +513,29 @@ test.describe('D14 Sürü İHA sayfası', () => {
     expect((await satir(0))[3]).toBe('+3.4 m');
   });
 
+  test('mesh ağ: menzil dışındaki İHA’ya paket aradan atlayarak ulaşıyor, tamamen uzaklaşan kopuyor', async ({ page }) => {
+    await page.goto('/suru-iha/');
+    const m = page.locator('[data-mesh]');
+    await m.scrollIntoViewIfNeeded();
+    await expect(m).toHaveAttribute('data-secili', '4');
+    await expect(m).toHaveAttribute('data-atlama', '2');
+    await expect(page.locator('[data-mesh] [data-durum]')).toContainText('İHA 2');
+    await page.locator('[data-mesh] [data-yakin]').click();
+    await page.locator('[data-mesh] [data-yakin]').click();
+    await page.locator('[data-mesh] [data-yakin]').click();
+    await expect(m).toHaveAttribute('data-atlama', '1');
+    await page.locator('[data-mesh] [data-sifirla]').click();
+    await expect(m).toHaveAttribute('data-atlama', '2');
+    for (let i = 0; i < 3; i++) await page.locator('[data-mesh] [data-uzak]').click();
+    await expect(m).toHaveAttribute('data-atlama', '-1');
+    await expect(m).toHaveAttribute('data-kopuk', '1');
+    await page.locator('[data-mesh] [data-zincir]').click();
+    await expect(m).toHaveAttribute('data-atlama', '4');
+    await expect(m).toHaveAttribute('data-kopuk', '0');
+    await page.locator('[data-mesh] [data-sec="2"]').click();
+    await expect(m).toHaveAttribute('data-atlama', '2');
+  });
+
   test('hareketi azalt: hiçbir sahne kendiliğinden oynamıyor, adım düğmesi tek adımı bitiriyor', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/suru-iha/');
@@ -531,6 +554,119 @@ test.describe('D14 Sürü İHA sayfası', () => {
     await page.goto('/suru-iha/');
     await expect(page.locator('.roller-yazi')).toBeVisible();
     await expect(page.locator('[data-gorev]')).toBeHidden();
+    await ctx.close();
+  });
+});
+
+test.describe('D15 Matris sayfası', () => {
+  test('iki dilde açılıyor, taşma yok, hata yok, ana sayfadan ve menüden ulaşılıyor', async ({ page }) => {
+    const hatalar: string[] = [];
+    page.on('pageerror', (e) => hatalar.push(e.message));
+    await page.setViewportSize({ width: 320, height: 800 });
+    for (const yol of ['/matris/', '/en/matris/']) {
+      await page.goto(yol);
+      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+      await bekle(page, 300);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+      expect(await page.locator('[data-iha-ici], [data-hikaye]').count()).toBe(2);
+    }
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+    await page.locator('.ayrintili a[href="/matris/"]').click();
+    await expect(page).toHaveURL(/\/matris\/$/);
+    await expect(page.locator('.menu a[aria-current="page"]')).toHaveText('Matris');
+    await page.locator('a[data-dil-degistir]').click();
+    await expect(page).toHaveURL(/\/en\/matris\/$/);
+    expect(hatalar).toEqual([]);
+  });
+
+  test('İHA’nın içi: parça seçiliyor, parçalara ayrılıyor, hatlar gösteriliyor, tuval boyanıyor', async ({ page }) => {
+    await page.goto('/matris/');
+    const i = page.locator('[data-iha-ici]');
+    await i.scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-iha-ici] [data-durum]')).not.toBeEmpty();
+    await page.locator('[data-iha-ici] [data-parca="otopilot"]').click();
+    await expect(i).toHaveAttribute('data-secili', 'otopilot');
+    await expect(page.locator('[data-parca-panel]')).toContainText('Pixhawk 2.4.8');
+    await page.locator('[data-iha-ici] [data-ac]').click();
+    await expect(i).toHaveAttribute('data-acik', '1');
+    await expect(page.locator('[data-iha-ici] [data-ac]')).toHaveAttribute('aria-pressed', 'true');
+    await page.locator('[data-iha-ici] [data-hat="guc"]').click();
+    await expect(i).toHaveAttribute('data-hat', 'guc');
+    await expect(i).toHaveAttribute('data-secili', '');
+    await expect(page.locator('[data-iha-ici] [data-durum]')).toContainText('UBEC');
+    await bekle(page, 600);
+    const boyali = await page.locator('[data-iha-ici] canvas').evaluate((t: HTMLCanvasElement) => {
+      const v = t.getContext('2d')!.getImageData(0, 0, t.width, t.height).data;
+      let n = 0;
+      for (let k = 3; k < v.length; k += 4) if (v[k] > 40) n++;
+      return n / (v.length / 4);
+    });
+    console.log(`İHA çizimi: tuvalin %${(boyali * 100).toFixed(1)} kadarı boyalı`);
+    expect(boyali).toBeGreaterThan(0.03);
+    // Tuvalin ortasına tıklayınca bir parça seçilir.
+    await page.locator('[data-iha-ici] [data-ac]').click();
+    await bekle(page, 1200);
+    const k = (await page.locator('[data-iha-ici] canvas').boundingBox())!;
+    await page.mouse.click(k.x + k.width / 2, k.y + k.height / 2);
+    await expect(i).not.toHaveAttribute('data-secili', '');
+  });
+
+  test('ana sayfada İHA’nın kısa hali var: parça seçiliyor, hat düğmeleri yok', async ({ page }) => {
+    await page.goto('/');
+    const i = page.locator('[data-iha-ici]');
+    await i.scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-iha-ici] [data-hat]')).toHaveCount(0);
+    await page.locator('[data-iha-ici] [data-parca="kamera"]').click();
+    await expect(page.locator('[data-parca-panel]')).toContainText('Global Shutter');
+  });
+
+  test('hikâye: durak tıklanınca yalnızca o panel görünüyor, ok tuşları ve düğmeler geziyor', async ({ page }) => {
+    await page.goto('/matris/');
+    const h = page.locator('[data-hikaye]');
+    await h.scrollIntoViewIfNeeded();
+    await expect(page.locator('.hikaye-panel:visible')).toHaveCount(1);
+    await page.locator('#durak-4').click();
+    await expect(h).toHaveAttribute('data-no', '4');
+    await expect(page.locator('.hikaye-panel:visible')).toContainText('93');
+    await page.keyboard.press('ArrowRight');
+    await expect(h).toHaveAttribute('data-no', '5');
+    await expect(page.locator('#durak-5')).toBeFocused();
+    await page.locator('[data-hikaye] [data-onceki]').click();
+    await expect(h).toHaveAttribute('data-no', '4');
+    await expect(page.locator('.hikaye-panel:visible')).toHaveCount(1);
+  });
+
+  test('sayılar sayarak doluyor ve doğru değerde duruyor', async ({ page }) => {
+    await page.goto('/matris/');
+    await page.locator('.sayilar').scrollIntoViewIfNeeded();
+    await bekle(page, 1600);
+    const d = await page.locator('[data-say]').evaluateAll((l) => l.map((e) => [e.textContent, (e as HTMLElement).dataset.say]));
+    expect(d.length).toBeGreaterThanOrEqual(4);
+    for (const [yazi, hedef] of d) expect(yazi).toBe(hedef);
+  });
+
+  test('hareketi azalt: İHA kendiliğinden dönmüyor, parçalara ayırma anında oluyor', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/matris/');
+    const i = page.locator('[data-iha-ici]');
+    await i.scrollIntoViewIfNeeded();
+    const oku = () => page.locator('[data-iha-ici] canvas').evaluate((t: HTMLCanvasElement) => t.toDataURL().length + ':' + t.toDataURL().slice(-80));
+    const a = await oku();
+    await bekle(page, 700);
+    expect(await oku()).toBe(a);
+    await page.locator('[data-iha-ici] [data-ac]').click();
+    await expect(i).toHaveAttribute('data-acik', '1');
+    expect(await oku()).not.toBe(a);
+  });
+
+  test('betik kapalıyken bütün duraklar ve parçaların yazılı listesi görünüyor', async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto('/matris/');
+    expect(await page.locator('.hikaye-panel:visible').count()).toBeGreaterThan(3);
+    await expect(page.locator('.parca-yazi')).toBeVisible();
+    await expect(page.locator('[data-iha-ici]')).toBeHidden();
     await ctx.close();
   });
 });

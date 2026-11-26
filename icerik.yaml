@@ -400,6 +400,20 @@ suru_sayfa:
         en: Each follower counts how long since the leader's last packet. UAV 1 waits 6 seconds and UAV 2 waits 7. The one whose time runs out first declares itself leader, and the other resets its timer when it hears the new leader's packet. That way two leaders never appear at once.
       - tr: Arıza durumunda yeni lider sürüyü eve döndürüyor (RTL) ve görev orada bitiyor. Görevin sürmesi için planlı devir (HANDOFF) gerekiyor. Bu durumda eski lider o anki görev bilgisini yeni lidere gönderiyor, yeni lider de görevi kendi kamerasıyla sürdürüyor.
         en: After a failure the new leader takes the swarm home (RTL) and the mission ends there. For the mission to go on, a planned handover (HANDOFF) is needed. The old leader then sends the current mission state to the new leader, which carries on with its own camera.
+  mesh:
+    baslik:
+      tr: Uzaktaki İHA'ya paket nasıl ulaşıyor?
+      en: How does a packet reach a distant UAV?
+    giris:
+      tr: Lider paketini bütün sürüye yayınlıyor. Bir İHA liderin menzilinden çıkarsa paket, arada kalan başka bir İHA üzerinden ona ulaşıyor. Buna mesh ağ deniyor. İHA'ları sürükleyerek ya da düğmelerle uzaklaştır, paketin hangi yoldan gittiğine bak.
+      en: The leader broadcasts its packet to the whole swarm. If a UAV leaves the leader's range, the packet reaches it through another UAV in between. This is called a mesh network. Drag the UAVs or use the buttons to move them away and watch which path the packet takes.
+    teknik:
+      - tr: Ağ 2,4 GHz ve 5 GHz bantlarında çalışabiliyor, parazit olursa kanal değiştiriyor. Pilotun kumandası bu ağdan ayrı, kendi 2,4 GHz radyosunu kullanıyor.
+        en: The network can run on the 2.4 GHz and 5 GHz bands and changes channel when there is interference. The pilot's remote is separate from this network and uses its own 2.4 GHz radio.
+      - tr: Bağlantısı tamamen kopan takipçi son konumunda bekliyor ve lider onu etkin listeden çıkarıyor. Bağlantı geri gelince takipçi kendiliğinden dizilime dönüyor.
+        en: A follower that loses its link completely holds its last position and the leader drops it from the active list. When the link comes back the follower returns to the formation by itself.
+      - tr: Benzetimdeki menzil gerçek değil, sahne ekrana sığsın diye seçildi.
+        en: The range in the simulation is not real, it was chosen so the scene fits the screen.
   geometri:
     baslik:
       tr: Dizilimin geometrisi
@@ -419,3 +433,218 @@ suru_sayfa:
   not:
     tr: Benzetimler takımın yaklaşımının basitleştirilmiş hali, uçuş yazılımının kendisi değil. Sayılar ve teknik bilgiler takımın 2026 Ön Tasarım Raporu'ndan ve uçuş kodundan.
     en: The simulations are a simplified version of the team's approach, not the flight software itself. The figures and technical details come from the team's 2026 Preliminary Design Report and flight code.
+
+# ─── Takımın İHA'sı ("İHA'nın içi" benzetimi, Matris sayfasında ve ana sayfada) ───────────────
+# Kaynak: takımın 2026 Ön Tasarım Raporu (gövde, sistem mimarisi, otopilot ve sensörler bölümleri).
+# anahtar değerleri çizimdeki parçalarla eşleşir (src/scripts/iha-ici.ts), değiştirme. Metinleri değiştirebilirsin.
+iha:
+  baslik:
+    tr: İHA'nın içi
+    en: Inside the UAV
+  giris:
+    tr: Sürüdeki her İHA aynı parçalardan oluşuyor. Aracı sürükleyip çevir, bir parçaya tıkla ve ne işe yaradığını oku.
+    en: Every UAV in the swarm is built from the same parts. Drag to turn the vehicle, click a part and read what it does.
+  parcalar:
+    - anahtar: govde
+      ad: { tr: Gövde, en: Frame }
+      model: F450
+      metin:
+        tr: Kolları cam elyaf takviyeli naylondan, orta plakaları kompozitten. Alt plakanın üstünde bakır yollar var, yani plaka aynı zamanda güç dağıtım kartı. Hız kontrolcüleri ve batarya doğrudan buraya lehimleniyor, kablo azalıyor. Bir kol kırılırsa birkaç dakikada değiştirilebiliyor.
+        en: The arms are glass-fibre reinforced nylon and the centre plates are composite. The bottom plate has copper tracks on it, so it doubles as the power distribution board. The speed controllers and the battery are soldered straight onto it, which means fewer cables. A broken arm can be swapped in a few minutes.
+    - anahtar: motor
+      ad: { tr: Motorlar, en: Motors }
+      model: { tr: "Emax 820KV, 4 adet", en: "Emax 820KV, 4 of them" }
+      metin:
+        tr: Dört fırçasız motor aracı havada tutuyor. Araç, motorların hızını ayrı ayrı değiştirerek yükseliyor, dönüyor ve eğiliyor.
+        en: Four brushless motors keep the vehicle in the air. It climbs, turns and tilts by changing the speed of each motor separately.
+    - anahtar: pervane
+      ad: { tr: Pervaneler, en: Propellers }
+      model: ""
+      metin:
+        tr: Karşılıklı duran pervaneler aynı yöne, yan yana duranlar ters yöne dönüyor. Bu sayede gövde kendi ekseninde dönmeden havada kalabiliyor.
+        en: Propellers opposite each other spin the same way and neighbours spin the other way. That lets the body stay in the air without spinning around itself.
+    - anahtar: esc
+      ad: { tr: Hız kontrolcüleri (ESC), en: Speed controllers (ESC) }
+      model: { tr: "30 A, 4 adet", en: "30 A, 4 of them" }
+      metin:
+        tr: Her motorun bir hız kontrolcüsü var. Otopilottan gelen PWM sinyaline göre motora giden akımı ayarlıyor.
+        en: Each motor has its own speed controller. It sets the current going to the motor according to the PWM signal from the autopilot.
+    - anahtar: batarya
+      ad: { tr: Batarya, en: Battery }
+      model: { tr: "11,1 V 3S Li-Po", en: "11.1 V 3S Li-Po" }
+      metin:
+        tr: Aracın tek enerji kaynağı. Motorları güç dağıtım kartı üzerinden, görev bilgisayarını ve otopilotu ayrı dönüştürücüler üzerinden besliyor.
+        en: The vehicle's only source of energy. It feeds the motors through the power distribution board, and the mission computer and autopilot through separate converters.
+    - anahtar: guc
+      ad: { tr: Güç dönüştürücüler, en: Power converters }
+      model: { tr: Hobbywing UBEC ve otopilot güç modülü, en: Hobbywing UBEC and autopilot power module }
+      metin:
+        tr: Görev bilgisayarına sabit 5 V'u UBEC veriyor. Otopilot kendi güç modülünden ayrı besleniyor. Böylece motorların yarattığı dalgalanma elektroniğe ulaşmıyor.
+        en: The UBEC gives the mission computer a steady 5 V. The autopilot is fed separately from its own power module. This keeps the ripple from the motors away from the electronics.
+    - anahtar: otopilot
+      ad: { tr: Otopilot, en: Autopilot }
+      model: Pixhawk 2.4.8 · ArduPilot
+      metin:
+        tr: Aracı havada dengede tutan kart. GPS ve UWB verisi burada birleşiyor, motorlara giden komut buradan çıkıyor. Kalkış, rota ve iniş gibi temel uçuş işlerini ArduPilot yazılımı yürütüyor.
+        en: The board that keeps the vehicle stable in the air. GPS and UWB data come together here and the commands to the motors leave from here. ArduPilot runs the basic flight jobs such as take-off, route and landing.
+    - anahtar: bilgisayar
+      ad: { tr: Görev bilgisayarı, en: Mission computer }
+      model: Raspberry Pi 4
+      metin:
+        tr: Sürüyle ilgili işlerin hepsi burada çalışıyor. Dizilimdeki yerin hesabı, çarpışmadan kaçınma, QR kodunun okunması ve öteki İHA'larla haberleşme bu bilgisayarın işi. Otopilotla UART üzerinden MAVLink ile konuşuyor. Yer kazanmak ve dengeyi bozmamak için 3B baskı bir taşıyıcıyla otopilotun üstünde duruyor.
+        en: Everything to do with the swarm runs here. Working out the place in the formation, avoiding collisions, reading the QR code and talking to the other UAVs are this computer's job. It talks to the autopilot with MAVLink over UART. To save space and keep the balance it sits above the autopilot on a 3D-printed carrier.
+    - anahtar: kamera
+      ad: { tr: Kamera, en: Camera }
+      model: Raspberry Pi Global Shutter
+      metin:
+        tr: Aşağı bakıyor, yerdeki QR kodlarını ve iniş dairelerini görüyor. Global shutter olduğu için karenin tamamını aynı anda çekiyor, araç hızlı giderken ya da titrerken görüntü yamulmuyor.
+        en: It looks down and sees the QR codes and landing circles on the ground. Being a global shutter it captures the whole frame at once, so the image does not skew when the vehicle moves fast or vibrates.
+    - anahtar: gps
+      ad: GPS
+      model: M8N
+      metin:
+        tr: Aracın dünya üzerindeki konumunu veriyor. Açık havada uyduları çabuk buluyor.
+        en: Gives the vehicle's position on Earth. Outdoors it finds satellites quickly.
+    - anahtar: uwb
+      ad: { tr: UWB modülü, en: UWB module }
+      model: ""
+      metin:
+        tr: Öteki İHA'lara olan mesafeyi, sinyalin gidip gelme süresinden ölçüyor. GPS zayıfladığında dizilim bu ölçümle korunuyor.
+        en: Measures the distance to the other UAVs from how long a signal takes to travel. When GPS gets weak, this measurement keeps the formation together.
+    - anahtar: wifi
+      ad: Wi-Fi
+      model: Wi-Fi 6
+      metin:
+        tr: İHA'lar birbiriyle bu ağ üzerinden konuşuyor. 2,4 GHz ve 5 GHz bantlarında çalışabiliyor, parazit olursa kanal değiştiriyor.
+        en: The UAVs talk to each other over this network. It can run on the 2.4 GHz and 5 GHz bands and changes channel when there is interference.
+    - anahtar: alici
+      ad: { tr: Kumanda alıcısı, en: RC receiver }
+      model: FS-iA10B · SBUS
+      metin:
+        tr: Araç kendi başına uçarken de pilotun kumandası bağlı duruyor. Bir sorun olursa pilot aracı elle alabiliyor. Bu bağlantı Wi-Fi'dan ayrı, kendi 2,4 GHz radyosunu kullanıyor.
+        en: The pilot's remote stays connected even while the vehicle flies itself. If something goes wrong the pilot can take over by hand. This link is separate from Wi-Fi and uses its own 2.4 GHz radio.
+  hatlar:
+    guc:
+      ad: { tr: Güç, en: Power }
+      metin:
+        tr: Batarya motorları güç dağıtım kartı ve hız kontrolcüleri üzerinden besliyor. Görev bilgisayarı UBEC'ten, otopilot kendi güç modülünden besleniyor.
+        en: The battery feeds the motors through the power distribution board and the speed controllers. The mission computer is fed from the UBEC and the autopilot from its own power module.
+    veri:
+      ad: { tr: Veri, en: Data }
+      metin:
+        tr: GPS ve UWB otopilota, kamera görev bilgisayarına bağlı. Görev bilgisayarı ile otopilot MAVLink ile konuşuyor. Öteki İHA'lara giden paketler Wi-Fi'dan çıkıyor.
+        en: GPS and UWB connect to the autopilot and the camera to the mission computer. The mission computer and the autopilot talk over MAVLink. Packets for the other UAVs leave through Wi-Fi.
+    sinyal:
+      ad: { tr: Kumanda, en: Control }
+      metin:
+        tr: Otopilot hız kontrolcülerine PWM sinyali gönderiyor. Pilotun kumandası alıcı üzerinden SBUS ile otopilota ulaşıyor.
+        en: The autopilot sends PWM signals to the speed controllers. The pilot's remote reaches the autopilot through the receiver over SBUS.
+  teknik:
+    - tr: Güç, veri ve sinyal hatları birbirinden ayrı tutuluyor. Amaç, motorların çektiği akımın yarattığı parazitin sensörlere ve haberleşmeye karışmaması.
+      en: The power, data and signal lines are kept apart from each other. The aim is to keep the noise from the current the motors draw out of the sensors and the communication.
+    - tr: Kablolar gövdeye kelepçeleniyor. Soketlerin titreşimle yerinden çıkmaması için sönümleyici sünger kullanılıyor.
+      en: The cables are clamped to the frame. Damping foam is used so that vibration does not shake the connectors loose.
+  not:
+    tr: Çizimdeki yerleşim ve ölçüler temsilî. Parçaların adları ve görevleri takımın 2026 Ön Tasarım Raporu'ndan.
+    en: The layout and sizes in the drawing are illustrative. The part names and what they do come from the team's 2026 Preliminary Design Report.
+
+# ─── Matris sayfası (/matris/, /en/matris/) ───────────────────────────────────────────────────
+# TASLAK: "neden" paragrafları ile hikâyedeki "Başlangıç" ve "2024" duraklarının ikinci cümleleri Ali'nin izniyle
+# taslak olarak yazıldı, takım okuyup düzeltecek (docs/EKSIKLER.md). Kuruluş yılı bilinmediği için yazılmadı.
+# 2026 durakları Ön Tasarım Raporu'ndaki proje takviminden (Şubat-Temmuz) ve "Planlanan Geliştirmeler" bölümünden.
+matris_sayfa:
+  baslik: Matris
+  ozet:
+    tr: Bursa Teknik Üniversitesi'nde birlikte uçan İHA'lar yapan bir öğrenci takımıyız. Bu sayfada neden bu işle uğraştığımızı, bugüne nasıl geldiğimizi ve uçurduğumuz aracın içinde ne olduğunu anlatıyoruz.
+    en: We are a student team at Bursa Technical University building UAVs that fly together. This page tells why we do it, how we got here and what is inside the vehicle we fly.
+  neden:
+    baslik:
+      tr: Neden bu işi yapıyoruz?
+      en: Why do we do this?
+    paragraflar:
+      - tr: Tek bir İHA'yı uçurmak bugün hazır parçalarla yapılabiliyor. Birkaç İHA'yı birbirine çarpmadan, tek bir komutla ve biri bozulduğunda görevi bırakmadan uçurmak hâlâ çözülmesi gereken bir mühendislik problemi. Biz bu problem üzerinde çalışıyoruz.
+        en: Flying a single UAV can be done today with off-the-shelf parts. Flying several of them with one command, without collisions and without giving up the mission when one breaks down, is still an engineering problem to be solved. That is the problem we work on.
+      - tr: Yarışma bize bir takvim veriyor. Her yıl belli bir günde, jürinin önünde, gerçek araçlarla uçmamız gerekiyor. Bu yüzden bir fikrin benzetimde çalışması bize yetmiyor, sahada da çalışması gerekiyor.
+        en: The competition gives us a calendar. Every year, on a set day, we have to fly real vehicles in front of a jury. So an idea that works in simulation is not enough for us, it has to work in the field too.
+      - tr: Takımdaki herkes öğrenci. Yazılımcı, elektronikçi ve makineci aynı aracın başında birlikte çalışıyor ve derste görmediği şeyleri burada öğreniyor. Öğrendiklerimizi bir sonraki yılın ekibine bırakmak da işimizin bir parçası.
+        en: Everyone on the team is a student. Software, electronics and mechanical people work on the same vehicle together and learn here what they do not see in class. Passing what we learn on to next year's team is part of the job too.
+  hikaye:
+    baslik:
+      tr: Bugüne nasıl geldik?
+      en: How did we get here?
+    giris:
+      tr: Bir durağa tıkla, o dönemde ne olduğunu oku.
+      en: Click a stop to read what happened then.
+    duraklar:
+      - yil: { tr: Başlangıç, en: The start }
+        baslik:
+          tr: MATRO'nun içinde bir ekip
+          en: A team inside MATRO
+        metin:
+          tr: Matris, Bursa Teknik Üniversitesi'ndeki MATRO (Makine Teknolojileri Robot ve Otomasyon) Topluluğu'nun içinde kuruldu. Farklı bölümlerden öğrenciler, tek bir İHA yerine birlikte uçan bir sürü yapmak için bir araya geldi.
+          en: Matris was founded inside the MATRO (Machine Technologies, Robotics and Automation) Society at Bursa Technical University. Students from different departments came together to build a swarm that flies as one instead of a single UAV.
+      - yil: "2024"
+        baslik:
+          tr: TEKNOFEST finali
+          en: The TEKNOFEST final
+        metin:
+          tr: Takım 2024'te TEKNOFEST Sürü İHA Yarışması'nda finale kaldı. Sahada uçmak, benzetimde görünmeyen sorunları gösterdi ve sonraki tasarımın birçok kararı buradan çıktı.
+          en: In 2024 the team reached the final of the TEKNOFEST Swarm UAV Competition. Flying in the field showed problems the simulation had hidden, and many decisions of the next design came out of it.
+      - yil: { tr: 2026 · Şubat, en: 2026 · February }
+        baslik:
+          tr: Yeni sezon ve yeni mimari
+          en: A new season and a new architecture
+        metin:
+          tr: 2026 sezonunun işi Şubat'ta literatür taramasıyla başladı. Sürü algoritmaları karşılaştırıldı, lider ve takipçilerden oluşan dağıtık bir yapıda karar kılındı ve yazılımın Python altyapısı kuruldu.
+          en: Work on the 2026 season began in February with a literature survey. Swarm algorithms were compared, a distributed structure of a leader and followers was chosen and the Python base of the software was set up.
+      - yil: "2026"
+        baslik:
+          tr: Önce benzetim
+          en: Simulation first
+        metin:
+          tr: Yazılım önce Gazebo ve ArduPilot SITL üzerinde denendi. Testler tek İHA ile başladı, çoklu İHA'ya geçti ve dizilim testleriyle sürdü.
+          en: The software was first tried on Gazebo and ArduPilot SITL. Testing began with one UAV, moved to several and went on with formation tests.
+      - yil: "2026"
+        baslik:
+          tr: "Ön Tasarım Raporu: 93 puan"
+          en: "Preliminary Design Report: 93 points"
+        metin:
+          tr: Tasarımı anlatan rapor 100 üzerinden 93 puan aldı ve Türkiye ikincisi oldu. Raporda sürünün mimarisi, haberleşmesi, çarpışmadan kaçınma yöntemi ve bir arıza olduğunda ne yapacağı anlatılıyor.
+          en: The report describing the design scored 93 out of 100 and came second in Türkiye. It covers the swarm's architecture, its communication, how it avoids collisions and what it does when something fails.
+      - yil: "2026"
+        baslik:
+          tr: Araçlar ve saha
+          en: Vehicles and the field
+        metin:
+          tr: Malzemeler alındı, İHA'lar monte edildi ve otopilotlar ayarlandı. Uçuş testleri tek İHA ile başladı, iki İHA ile sürdü ve tam sürüyle tamamlandı.
+          en: Parts were bought, the UAVs were assembled and the autopilots configured. Flight tests began with one UAV, continued with two and finished with the full swarm.
+      - yil: "2026"
+        baslik:
+          tr: İkinci final
+          en: The second final
+        metin:
+          tr: Takım 2026'da bir kez daha TEKNOFEST Sürü İHA Yarışması finalisti oldu.
+          en: In 2026 the team was once again a finalist at the TEKNOFEST Swarm UAV Competition.
+      - yil: { tr: Sırada, en: Next }
+        baslik:
+          tr: Bundan sonrası
+          en: What comes next
+        metin:
+          tr: Raporda yazdığımız sonraki işler belli. Haberleşme paketlerine kalp atışı ve yeniden deneme eklenecek, QR kodu birkaç karede üst üste okununca kabul edilecek ve gerçek Wi-Fi mesh ağında gecikme ölçülecek.
+          en: The next jobs are written in the report. Heartbeats and retries will be added to the communication packets, a QR code will be accepted once it is read in several frames in a row and latency will be measured on a real Wi-Fi mesh network.
+  sayilar:
+    baslik:
+      tr: Sayılarla Matris
+      en: Matris in numbers
+    # Üye, ekip, dal ve finalistlik sayıları yukarıdaki verilerden kendiliğinden hesaplanır. Buraya ek sayılar yazılır.
+    ek:
+      - sayi: 93
+        son: "/100"
+        etiket:
+          tr: Ön Tasarım Raporu puanı
+          en: Preliminary Design Report score
+      - sayi: 2
+        son: "."
+        etiket:
+          tr: Ön Tasarım Raporu'nda Türkiye sırası
+          en: Rank in Türkiye for the Preliminary Design Report
