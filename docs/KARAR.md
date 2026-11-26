@@ -74,5 +74,6 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 ## 26.11.2026: bölgeler, canlı üyelik, dizilimle hücum
 
 - İHA sayısı 30. Her İHA'nın sayfada bir bölgesi var, serbestken orada dolaşır, sürüden ayrılınca oraya döner.
-- Sürü kuruluyken görüş alanına giren İHA katılır, kaydırmaya gerek yok. 12 dolduysa bölgesi görüş alanından en uzak üye ayrılıp bölgesine döner. Bölgesi görüş alanından 1,6 ekran boyundan uzak kalan üye de ayrılır, sürüde en az 5 üye kaldıkça.
+- Sürü kuruluyken görüş alanına giren İHA katılır, kaydırmaya gerek yok. Sıradaki boş yuvaya kendisi uçar, sürüdekiler yerinden kıpırdamaz. 12 doluysa sürüdeki en eski üye (lider hariç) yuvasını bırakıp bölgesine döner, yeni gelen onun yuvasına girer. Bölgesinden uzaklaşan üye ayrılmaz (Ali'nin isteği, bir önceki kural kaldırıldı).
+- Her sürünün bir lideri var: kurulurken görüş alanının ortasına en yakın İHA. Lider olduğu yerde kalır, sürü onun çevresinde kurulur. Lider metin renginde ve çevresinde ince altın bir halkayla çizilir. Halka diziliminde lider ortada durur.
 - Yabancı sürü geldiğinde bizimkiler dağınıksa önce dizilime girer, yabancılara dönük. Fark ettikten sonra dizilimle hücum eder, 130 px yaklaşınca her İHA kendine en yakın yabancıyı kovalar, hedefin biraz ilerisine nişan alır. Dizilim zaten kuruluysa doğrudan hücuma geçer.

@@ -291,22 +291,39 @@ test('D9e arka plan sürüsü: serbest dolaşan araçlar ekranda toplanıyor, di
   await expect(tuval).toHaveAttribute('data-uye', '0');
 });
 
-test('D9f arka plan sürüsü: dizilim sürerken hızla kaydırınca yenileri katılıyor, bölgesi uzak kalanlar ayrılıyor', async ({ page }) => {
+test('D9f arka plan sürüsü: dizilim sürerken yenileri boş yuvaya katılıyor, sürüdekiler yerinden kıpırdamıyor, dolunca en eski ayrılıyor', async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/?dizilim');
   await page.evaluate(() => scrollTo(0, 1200));
   const tuval = page.locator('canvas[data-suru]');
   await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 12000 });
+  const lider = await tuval.getAttribute('data-lider');
+  // Sayfada izle: sürüde kalan bir İHA'nın yuvası, dizilim değişimi dışında hiç değişmemeli. Lider hep aynı.
+  await page.evaluate(() => {
+    const c = document.querySelector<HTMLCanvasElement>('canvas[data-suru]')!, w = window as any;
+    w.__ihlal = 0; w.__lider = new Set();
+    let once = new Map<string, string>(), onceAdim = '';
+    w.__izci = setInterval(() => {
+      const d = c.dataset, simdi = new Map((d.yuvalar || '').split(',').filter(Boolean).map((p) => p.split(':') as [string, string]));
+      if (d.mod === 'dizilim') w.__lider.add(d.lider);
+      if (d.adim !== 'degis' && onceAdim !== 'degis') for (const [i, s] of simdi) if (once.has(i) && once.get(i) !== s) w.__ihlal++;
+      once = simdi; onceAdim = d.adim || '';
+    }, 30);
+  });
   for (let k = 0; k < 6; k++) { await page.mouse.wheel(0, 700); await bekle(page, 250); }
   await expect.poll(async () => Number(await tuval.getAttribute('data-katilan')), { timeout: 5000 }).toBeGreaterThan(0);
-  await expect.poll(async () => Number(await tuval.getAttribute('data-ayrilan')), { timeout: 5000 }).toBeGreaterThan(0);
-  // Kaydırma durunca görüş alanında olup sürüye katılabilecek İHA kalmıyor
   await expect(tuval).toHaveAttribute('data-disarida', '0', { timeout: 5000 });
+  const sonuc = await page.evaluate(() => { const w = window as any; clearInterval(w.__izci); return { ihlal: w.__ihlal, liderler: [...w.__lider] }; });
   const uye = Number(await tuval.getAttribute('data-uye'));
-  console.log('kaydırma sonrası', JSON.stringify({ uye, katilan: await tuval.getAttribute('data-katilan'), ayrilan: await tuval.getAttribute('data-ayrilan') }));
+  console.log('kaydırma sonrası', JSON.stringify({ uye, lider, ...sonuc, katilan: await tuval.getAttribute('data-katilan'), ayrilan: await tuval.getAttribute('data-ayrilan') }));
+  expect(sonuc.ihlal).toBe(0);
+  expect(sonuc.liderler).toEqual([lider]);
   expect(uye).toBeGreaterThanOrEqual(5);
   expect(uye).toBeLessThanOrEqual(12);
+  // Sürü 12'yi aşınca en eski ayrılıyor: katılan sayısı ile sürü büyüklüğü tutarlı
+  const katilan = Number(await tuval.getAttribute('data-katilan')), ayrilan = Number(await tuval.getAttribute('data-ayrilan'));
+  expect(ayrilan).toBe(Math.max(0, katilan - (uye - Number(await tuval.getAttribute('data-ilk')))));
 });
 
 test('D9d takım: üyeler dallarında, adı izinsiz görünmüyor, süzgeç öteki ekipleri söndürüyor', async ({ page }) => {
