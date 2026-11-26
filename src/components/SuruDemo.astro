@@ -1,45 +1,67 @@
 ---
-// Oynanabilir sürü benzetimi. Metinler iki dilde data-* ile betiğe verilir (src/scripts/demo-suru.ts).
+// Oynanabilir sürü benzetimi: yarışmanın iki görevi. Metinler iki dilde data-* ile betiğe verilir (src/scripts/demo-suru.ts).
 // Betik kapalıyken tuval yerine aynı fikirleri anlatan yazılı liste görünür.
 import type { Dil } from '../lib/icerik';
 import { t } from '../lib/i18n';
 
 interface Props { dil: Dil }
 const { dil } = Astro.props;
-const fikirler = ['fikirDizilim', 'fikirDusur', 'fikirEngel', 'fikirHedef', 'fikirSayi'] as const;
-const durumlar = ['durumDizilim', 'durumDusur', 'durumDusmez', 'durumEngel', 'durumEngelYok', 'durumHedef', 'durumSayi', 'durumSinir'] as const;
-const veri = Object.fromEntries(durumlar.map((d) => [`data-${d.replace('durum', 'd-').toLowerCase()}`, t(d, dil)]));
+const fikirler = ['fikirGorev1', 'fikirLider', 'fikirAyril', 'fikirDusur', 'fikirGorev2'] as const;
+const durumlar = ['Basla', 'Gorev2', 'Kalkis', 'Git', 'Kuzey', 'Merkez', 'Oku', 'Q1', 'Q2', 'Q3', 'Q4', 'Ev', 'Inis', 'Bitti', 'Bittilider', 'Lider', 'Yerde', 'Dusmez', 'Dizilim', 'Sayi', 'Sinir', 'Suruyor', 'Kumanda', 'Hareket', 'Don', 'Evkumanda'] as const;
+const adlar = ['Baslat', 'Kalkis', 'Surdur', 'Ev', 'Suruyor', 'Evnokta', 'Kirmizi', 'Mavi', 'Kuzey', 'Lider'] as const;
+const veri = Object.fromEntries([
+  ...durumlar.map((d) => [`data-d-${d.toLowerCase()}`, t(`durum${d}`, dil)]),
+  ...adlar.map((a) => [`data-ad-${a.toLowerCase()}`, t(`ad${a}`, dil)]),
+]);
+const asamalar = ['kalkis', 'git', 'kuzey', 'merkez', 'oku', 'uygula', 'ev', 'inis'] as const;
+const pad = [['dsol', '↺'], ['ileri', '↑'], ['dsag', '↻'], ['sol', '←'], ['geri', '↓'], ['sag', '→']] as const;
 ---
 
 <div class="demo" data-belir>
   <h3 class="ara-baslik">{t('demoBaslik', dil)}</h3>
+  <p class="demo-giris">{t('demoGiris', dil)}</p>
 
-  <div class="demo-govde js-only" data-suru-demo data-dizilim="cizgi" data-sayi="7" data-engel="0" data-oturdu="0"
-    data-ad-cizgi={t('cizgi', dil)} data-ad-v={t('v', dil)} data-ad-halka={t('halka', dil)}
-    data-engel-koy={t('engel', dil)} data-engel-kaldir={t('engelKaldir', dil)} {...veri}>
+  <div class="demo-govde js-only" data-suru-demo data-gorev="1" data-asama="bekle" data-dizilim="cizgi" data-sayi="3" data-lider="0" data-qr="0" data-okunan="0" data-oturdu="0" {...veri}>
     <div class="demo-alan">
       <canvas role="img" aria-label={t('alanEtiket', dil)}></canvas>
     </div>
     <div class="demo-kumanda">
+      <div class="demo-grup" role="group" aria-label={t('gorevSec', dil)}>
+        <span class="demo-etiket">{t('gorevSec', dil)}</span>
+        <button type="button" class="dugme kucuk" data-gorev-sec="1" aria-pressed="true">{t('gorev1', dil)}</button>
+        <button type="button" class="dugme kucuk" data-gorev-sec="2" aria-pressed="false">{t('gorev2', dil)}</button>
+      </div>
+      <div class="demo-grup">
+        <button type="button" class="dugme kucuk birincil" data-baslat>{t('adBaslat', dil)}</button>
+        <button type="button" class="dugme kucuk" data-lider-dusur>{t('liderDusur', dil)}</button>
+        <button type="button" class="dugme kucuk" data-sifirla>{t('sifirla', dil)}</button>
+      </div>
+      <div class="demo-grup demo-pad" role="group" aria-label={t('kumanda', dil)} data-pad hidden>
+        <span class="demo-etiket">{t('kumanda', dil)}</span>
+        {pad.map(([yon, im]) => <button type="button" class="dugme kucuk kare" data-pad-yon={yon} aria-label={t(`pad${yon[0].toUpperCase()}${yon.slice(1)}`, dil)}>{im}</button>)}
+      </div>
+      <ol class="demo-asamalar" data-asamalar aria-label={t('asamalar', dil)}>
+        {asamalar.map((a) => <li data-a={a}>{t(`asama${a[0].toUpperCase()}${a.slice(1)}`, dil)}</li>)}
+      </ol>
+      <p class="demo-durum" role="status" data-durum>{t('durumBasla', dil)}</p>
+      <p class="demo-gosterge">
+        <span>{t('irtifa', dil)} <output data-irtifa-yaz>0 m</output></span>
+        <span>{t('liderAd', dil)} <output data-lider-yaz>0</output></span>
+        <span>QR <output data-qr-yaz>0/4</output></span>
+        <code data-komut></code>
+      </p>
       <div class="demo-grup" role="group" aria-label={t('dizilim', dil)}>
         <span class="demo-etiket">{t('dizilim', dil)}</span>
         <button type="button" class="dugme kucuk" data-dizilim-sec="cizgi" aria-pressed="true">{t('cizgi', dil)}</button>
         <button type="button" class="dugme kucuk" data-dizilim-sec="v" aria-pressed="false">{t('v', dil)}</button>
-        <button type="button" class="dugme kucuk" data-dizilim-sec="halka" aria-pressed="false">{t('halka', dil)}</button>
+        <button type="button" class="dugme kucuk" data-dizilim-sec="ok" aria-pressed="false">{t('okBasi', dil)}</button>
       </div>
       <div class="demo-grup" role="group" aria-label={t('aracSayisi', dil)}>
         <span class="demo-etiket">{t('aracSayisi', dil)}</span>
         <button type="button" class="dugme kucuk kare" data-azalt aria-label={t('azalt', dil)}>−</button>
-        <output class="demo-sayi" data-sayi-yaz>7</output>
+        <output class="demo-sayi" data-sayi-yaz>3</output>
         <button type="button" class="dugme kucuk kare" data-artir aria-label={t('artir', dil)}>+</button>
       </div>
-      <div class="demo-grup">
-        <button type="button" class="dugme kucuk" data-dusur>{t('dusur', dil)}</button>
-        <button type="button" class="dugme kucuk" data-engel-dugme aria-pressed="false">{t('engel', dil)}</button>
-        <button type="button" class="dugme kucuk" data-hedef>{t('hedef', dil)}</button>
-        <button type="button" class="dugme kucuk" data-sifirla>{t('sifirla', dil)}</button>
-      </div>
-      <p class="demo-durum" role="status" data-durum>{t('durumBasla', dil)}</p>
     </div>
   </div>
 

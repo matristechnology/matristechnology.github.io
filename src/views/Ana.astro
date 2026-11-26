@@ -21,6 +21,7 @@ const finalist = basarilar.filter((b) => b.tur === 'finalist').length;
 const serit = [
   { sayi: icerik.uyeler.length, ad: t('uye', dil) },
   { sayi: Object.keys(icerik.ekipler).length, ad: t('altEkip', dil) },
+  { sayi: Object.values(icerik.ekipler).reduce((n, e) => n + Object.keys(e.dallar).length, 0), ad: t('dal', dil) },
   { sayi: finalist, ad: t('finalistlik', dil) },
 ].filter((s) => s.sayi > 0);
 
@@ -116,14 +117,22 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
     <section class="bolum kap" {...kimlik('takim')}>
       <h2 data-belir>{t('takimBaslik', dil)}</h2>
       {c(icerik.ekip_yazisi, dil) && <p class="bolum-giris" data-belir>{c(icerik.ekip_yazisi, dil)}</p>}
-      <ul class="ekip-adlari" data-belir>
-        {Object.values(icerik.ekipler).map((e) => <li>{c(e, dil)}</li>)}
+      <ul class="ekipler">
+        {Object.values(icerik.ekipler).map((e, i) => (
+          <li data-belir style={`--i:${i}`}>
+            <h3>{c(e.ad, dil)}</h3>
+            {c(e.ozet, dil) && <p class="soluk">{c(e.ozet, dil)}</p>}
+            <ul class="dallar">
+              {Object.values(e.dallar).map((d) => <li>{c(d, dil)}</li>)}
+            </ul>
+          </li>
+        ))}
       </ul>
       {doluEkipler.length > 1 && (
         <div class="suzgec js-only" data-suzgec role="group" aria-label={t('suz', dil)}>
           <button type="button" data-ekip="" aria-pressed="true">{t('hepsi', dil)}</button>
           {doluEkipler.map((e) => (
-            <button type="button" data-ekip={e} aria-pressed="false">{c(icerik.ekipler[e], dil)}</button>
+            <button type="button" data-ekip={e} aria-pressed="false">{c(icerik.ekipler[e].ad, dil)}</button>
           ))}
         </div>
       )}

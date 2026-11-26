@@ -177,13 +177,25 @@ h3 { font-size: 1.1875rem; line-height: 1.3; font-weight: 600; letter-spacing: -
 /* ─── Sürü benzetimi ──────────────────────────────────────────────────────── */
 .demo-govde { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
 /* Tuvalin boyutu CSS ile sabit: betik yükseklik ayarlamaz, sayfa kaymaz. */
-.demo-alan { position: relative; aspect-ratio: 16 / 10; border: 1px solid var(--cizgi); border-radius: 10px; overflow: hidden; background: radial-gradient(circle, color-mix(in srgb, var(--cizgi) 70%, transparent) 1px, transparent 1.5px) 0 0 / 28px 28px, var(--yuzey); }
-.demo-alan canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: manipulation; }
+.demo-alan { position: relative; z-index: 6; /* arka plan sürüsü benzetimin üstünden geçmesin, araçlar karışmasın */ aspect-ratio: 16 / 10; border: 1px solid var(--cizgi); border-radius: 10px; overflow: hidden; background: radial-gradient(circle, color-mix(in srgb, var(--cizgi) 70%, transparent) 1px, transparent 1.5px) 0 0 / 28px 28px, var(--yuzey); }
+.demo-alan canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .demo-kumanda { display: grid; gap: 0.9rem; }
 .demo-grup { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .demo-etiket { flex-basis: 100%; font-family: var(--es); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); }
 .demo-sayi { min-width: 2.25rem; text-align: center; font-family: var(--es); font-size: 1.125rem; font-weight: 600; }
 .demo-durum { min-height: 4.8em; padding: 0.8rem 1rem; border-left: 2px solid var(--vurgu); background: var(--yuzey); font-size: 0.9375rem; line-height: 1.5; }
+.demo-giris { margin-top: 0.5rem; max-width: 46rem; color: var(--soluk); }
+.demo-giris + .demo-govde { margin-top: 1.25rem; }
+.demo-pad { display: grid; grid-template-columns: repeat(3, 2.75rem); }
+.demo-pad .demo-etiket { grid-column: 1 / -1; }
+.demo-pad .dugme { font-size: 1.125rem; }
+.demo-kumanda [aria-disabled='true'] { opacity: 0.55; }
+.demo-asamalar { display: flex; flex-wrap: wrap; gap: 0.3rem 0.35rem; font-family: var(--es); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--soluk); }
+.demo-asamalar li { padding: 0.2rem 0.5rem; border: 1px solid var(--cizgi); border-radius: 999px; }
+.demo-asamalar li[aria-current] { border-color: var(--vurgu); background: var(--vurgu); color: var(--zemin); }
+.demo-gosterge { display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; font-family: var(--es); font-size: 0.75rem; color: var(--soluk); }
+.demo-gosterge output { color: var(--metin); font-weight: 600; }
+.demo-gosterge code { flex-basis: 100%; min-height: 1.3em; color: var(--vurgu); }
 .demo-fikirler { margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 0.75rem 2rem; font-size: 0.9375rem; line-height: 1.5; color: var(--soluk); }
 .demo-fikirler li { padding-left: 1rem; position: relative; }
 .demo-fikirler li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 5px; height: 5px; border-radius: 50%; background: var(--vurgu); }
@@ -208,8 +220,14 @@ h3 { font-size: 1.1875rem; line-height: 1.3; font-weight: 600; letter-spacing: -
 @media (max-width: 560px) { .cizgi { --sol: 3.75rem; } .durak > div { padding-left: 1.25rem; } }
 
 /* ─── Takım ───────────────────────────────────────────────────────────────── */
-.ekip-adlari { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
-.ekip-adlari li { font-family: var(--es); font-size: 0.8125rem; padding: 0.35rem 0.7rem; border: 1px solid var(--cizgi); border-radius: 999px; }
+.ekipler { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin-top: 1.75rem; }
+.ekipler > li { padding: 1.25rem 1.25rem 1.4rem; border: 1px solid var(--cizgi); border-top: 2px solid var(--vurgu); border-radius: 10px; background: var(--yuzey); }
+.ekipler h3 { font-size: 1.375rem; font-weight: 620; letter-spacing: -0.02em; }
+.ekipler .soluk { margin-top: 0.35rem; font-size: 0.9375rem; line-height: 1.45; }
+/* Dallar: ekipten aşağı inen çizgiye bağlı, ağaç gibi */
+.dallar { margin-top: 1rem; margin-left: 0.3rem; border-left: 1px solid var(--cizgi); display: grid; gap: 0.55rem; padding: 0.2rem 0; }
+.dallar li { position: relative; padding-left: 1.25rem; font-family: var(--es); font-size: 0.8125rem; line-height: 1.4; }
+.dallar li::before { content: ''; position: absolute; left: 0; top: 0.7em; width: 0.8rem; border-top: 1px solid var(--cizgi); }
 .suzgec { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.75rem; }
 .suzgec button { min-height: 2.75rem; padding: 0 1rem; border: 1px solid var(--cizgi); border-radius: 999px; background: transparent; font-size: 0.9375rem; color: var(--soluk); cursor: pointer; }
 .suzgec button:hover { color: var(--metin); border-color: var(--soluk); }

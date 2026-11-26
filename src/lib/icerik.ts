@@ -27,13 +27,14 @@ const sema = z.object({
     z.object({ yil: z.union([z.string(), z.number()]).transform(String), tur: z.enum(['finalist', 'derece', 'odul']), baslik: ikiDil, ayrinti: ikiDilBos }),
   ),
   suru: z.object({ anlatim: z.object({ tr: z.array(z.string()), en: z.array(z.string()) }), yarisma: ikiDilBos }),
-  ekipler: z.record(z.string(), ikiDil),
+  ekipler: z.record(z.string(), z.object({ ad: ikiDil, ozet: ikiDilBos, dallar: z.record(z.string(), ikiDil).optional().default({}) })),
   ekip_yazisi: ikiDilBos,
   uyeler: liste(
     z.object({
       ad: metin,
       gorev: ikiDilBos,
       ekip: metin,
+      dal: metin,
       sorumlu: z.boolean().optional().default(false),
       bolum: ikiDilBos,
       fotograf: metin,
@@ -74,6 +75,8 @@ export const icerik = sonuc.data;
 
 for (const [i, u] of icerik.uyeler.entries()) {
   if (u.ekip && !(u.ekip in icerik.ekipler)) throw new Error(`icerik.yaml: ${i + 1}. üyenin ekibi (${u.ekip}) "ekipler" listesinde yok`);
+  if (u.dal && !u.ekip) throw new Error(`icerik.yaml: ${i + 1}. üyenin dalı (${u.dal}) var ama ekibi yazılmamış`);
+  if (u.dal && !(u.dal in icerik.ekipler[u.ekip].dallar)) throw new Error(`icerik.yaml: ${i + 1}. üyenin dalı (${u.dal}) "${u.ekip}" ekibinin dalları arasında yok`);
 }
 
 /** İki dilli alandan istenen dili seçer. */

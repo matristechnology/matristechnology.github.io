@@ -27,8 +27,11 @@ Denemeler Playwright. Yazı tipleri depoya gömülü (Inter Tight, JetBrains Mon
 | Arka plan sürüsündeki araç | 11 | `src/scripts/suru.ts`, `N` |
 | Dizilimde kalma süresi | 7 sn | `SURE` |
 | Dağılıp tek tek dolaşma | 8 sn | `DAGIL` |
-| Benzetimde araç sayısı | 7 ile başlar, 3 ile 12 arası | `src/scripts/demo-suru.ts` |
-| Benzetimde boşta devriye | 9 sn dokunulmazsa başlar | `demo-suru.ts` |
+| Benzetimde araç sayısı | 3 ile başlar, 3 ile 6 arası | `src/scripts/demo-suru.ts` |
+| Benzetimde alan | Ev, 4 QR noktası, kırmızı ve mavi iniş alanı. Yerleri temsili | `demo-suru.ts` içinde `EV`, `QR`, `ALAN` |
+| Benzetimde QR emirleri | QR 1: V. QR 2: 12 m ve 10 derece yatış. QR 3: 2 numaralı araç kırmızı alana iner, kalanlar ok başı. QR 4: 8 m, çizgi, eve dönüş | `demo-suru.ts` içinde `GOREV` |
+| Benzetimde hızlar | Uçuş irtifası 8 m, tırmanma 4 m/sn, bir görev yaklaşık 50 sn | `demo-suru.ts` |
+| Elektronik ve Mekanik dalları | Aviyonik, Güç sistemi, Montaj ve kablolama. Gövde tasarımı, Üretim, Uçuş testleri. Benim önerim, Ali onaylayınca kesinleşir | `icerik.yaml` içinde `ekipler` |
 | Dar ekranda sürü saydamlığı | 0,6 katı | `suru.ts`, `kis` |
 
 ## Kendi yazdığım metinler
@@ -38,10 +41,21 @@ Takımın verdiği metinler taşındı, yalnızca noktalı virgüller çıkarıl
 - "Sürü İHA nedir" bölümündeki iki paragraf ve benzetimin beş açıklama cümlesi (genel kavram anlatımı)
 - Girişteki tek cümlelik tanıtım (tanıtım dosyasındaki cümlenin kısaltılmışı)
 - "Nasıl çalışıyoruz" ve "Galeri" altındaki birer cümlelik girişler, galeri fotoğraflarının açıklamaları (fotoğrafta görünenin tarifi)
-- Tek bakışta şeridindeki sayılar veriden hesaplanır: üye kaydı sayısı (17), alt ekip sayısı (4), türü finalist olan başarı sayısı (2)
+- Tek bakışta şeridindeki sayılar veriden hesaplanır: üye kaydı sayısı (17), ekip sayısı (3), dal sayısı (10), türü finalist olan başarı sayısı (2)
 
 ## Fotoğraf seçimi
 
 Kullanılanlar: giriş için `IMG_4150` (Eylül 2026), galeri için tanıtım dosyasından 9 kare ve `IMG_4055`.
 Kullanılmayanlar ve nedeni: tek kişinin yüzünün öne çıktığı özçekimler (5 kare), hazır görsel bankası fotoğrafı (para), başka logolu "destek ihtiyaçlarımız" görseli, takım dışı kişilerin ve yetkililerin öne çıktığı kalabalık kareleri (3 kare), belediye afişli masa fotoğrafı, çok küçük kareler (502x280 İHA, 673x375 uçuş), dört kişilik WhatsApp fotoğrafı (arka planda siyasi afişler).
 Bütün görsellerden konum ve cihaz bilgisi silindi.
+
+## 26.11.2026: ekip yapısı ve benzetim
+
+- Takım üç ana ekibe ayrıldı: Yazılım, Elektronik, Mekanik. Her ekibin altında dallar var. Yazılım dalları Ali'nin verdiği üç dal (algoritma, görüntü işleme, gömülü sistemler) ve Ön Tasarım Raporu'ndaki organizasyon şemasından Haberleşme.
+- "Kendin dene" benzetimi takımın uçuş kodu ve 2026 Ön Tasarım Raporu okunarak yeniden yazıldı. Artık yarışmanın iki görevini gösteriyor.
+- Koddan alınan fikirler: lider ve takipçi düzeni, yuva hesabı (çizgi, V, ok başı), görev akışı (QR noktasına git, kuzeye dön, merkezle, oku, uygula), yatışta irtifa farkı, sürüden ayrılıp renkli alana iniş ve geri katılma, lider düşünce en küçük numaralı aracın liderliği alıp eve dönmesi.
+- Siteye bilerek konmayanlar: saha koordinatları, ağ adresleri, başvuru numarası, gerçek parametre değerleri. Benzetimdeki sayılar temsilidir.
+- Çarpışmadan kaçınma benzetimde basit bir itme kuvvetidir, koddaki ORCA yöntemi değildir.
+- Rapordaki organizasyon şemasında adı geçen üyeler siteye yazılmadı. Üye bilgisi ve izinler Ali'den gelince girilecek.
+- Arka plandaki sürü artık benzetim alanının üstünden geçmiyor, araçlar karışmasın diye.
+- Elimdeki şartname PDF'i açılmadı, sayfalar boş çıkıyor. Yarışma tanımının kaynağı takımın kendi raporu.

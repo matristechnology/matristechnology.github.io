@@ -57,47 +57,70 @@ suru:
     en:
       - A UAV swarm is a group of unmanned aerial vehicles (UAVs) that fly together and share one mission. Each vehicle knows its own position, talks to the others and adjusts its motion to the rest of the swarm.
       - No pilot flies each vehicle separately. The swarm receives a single command and the vehicles divide the work among themselves. If one vehicle drops out, the rest carry on with the mission.
-  # Yarışmanın ne istediği: teknofest.org'daki güncel şartnameden doğrulanınca yazılacak. Boşken görünmez.
-  yarisma: { tr: "", en: "" }
+  # Yarışmanın ne istediği. Kaynak: takımın 2026 Ön Tasarım Raporu, "Proje Gereksinimleri" bölümü. Boşken görünmez.
+  yarisma:
+    tr: Yarışmada en az üç İHA'dan oluşan bir sürü iki görev uçar. İlk görevde sürü kalkıştan inişe kadar kendi başına uçar, yerdeki QR kodlarını okur ve kodun söylediğini yapar. Dizilim değiştirir, yükselir ya da alçalır, bir üyesini ayırıp geri alır. İkinci görevde bütün sürü tek bir kumandayla, tek bir İHA gibi yönetilir.
+    en: In the competition a swarm of at least three UAVs flies two missions. In the first, the swarm flies on its own from take-off to landing, reads QR codes on the ground and does what each code says. It changes formation, climbs or descends, and sends one member away and takes it back. In the second, the whole swarm is flown with a single remote, like one UAV.
 
-# Alt ekipler: anahtar üyelerdeki "ekip" alanında kullanılır.
+# Ekipler: üç ana ekip, her birinin altında dallar.
+# Anahtarlar (yazilim, goruntu gibi) üyelerdeki "ekip" ve "dal" alanlarında kullanılır.
+# Dal eklemek ya da adını değiştirmek için yalnızca burayı değiştir.
 ekipler:
-  algoritma: { tr: Algoritma, en: Algorithms }
-  aviyonik: { tr: Aviyonik ve yazılım, en: Avionics and software }
-  mekanik: { tr: Mekanik ve test, en: Mechanics and testing }
-  elektronik: { tr: Elektronik, en: Electronics }
+  yazilim:
+    ad: { tr: Yazılım, en: Software }
+    ozet: { tr: Sürünün nasıl uçacağına karar veren kod., en: The code that decides how the swarm flies. }
+    dallar:
+      algoritma: { tr: Sürü algoritmaları, en: Swarm algorithms }
+      goruntu: { tr: Görüntü işleme, en: Computer vision }
+      gomulu: { tr: Gömülü sistemler, en: Embedded systems }
+      haberlesme: { tr: Haberleşme, en: Communication }
+  elektronik:
+    ad: { tr: Elektronik, en: Electronics }
+    ozet: { tr: Araçların üstündeki bütün kartlar ve kablolar., en: Every board and wire on the vehicles. }
+    dallar:
+      aviyonik: { tr: Aviyonik, en: Avionics }
+      guc: { tr: Güç sistemi, en: Power system }
+      montaj: { tr: Montaj ve kablolama, en: Assembly and wiring }
+  mekanik:
+    ad: { tr: Mekanik, en: Mechanics }
+    ozet: { tr: Gövde ve sahadaki uçuş denemeleri., en: The airframe and the flight tests in the field. }
+    dallar:
+      tasarim: { tr: Gövde tasarımı, en: Airframe design }
+      uretim: { tr: Üretim, en: Manufacturing }
+      test: { tr: Uçuş testleri, en: Flight testing }
 
 ekip_yazisi:
-  tr: Ekibimiz algoritma, aviyonik/yazılım, mekanik-test ve elektronik alanlarında görev paylaşımı yaparak çalışır. Bu yapı, sürecin düzenli ilerlemesini ve her ekip üyesinin net bir sorumlulukla katkı sunmasını sağlar.
-  en: Our team shares the work across algorithms, avionics/software, mechanics-testing and electronics. This structure keeps the process orderly and gives every member a clear responsibility.
+  tr: Takım üç ana ekipten oluşur. Her ekip kendi içinde dallara ayrılır, böylece her üyenin sorumluluğu bellidir.
+  en: The team is made up of three main groups. Each group is split into branches, so every member has a clear responsibility.
 
 # ŞABLON: 17 üye. Veri gelince her satır doldurulur.
 #   ad        boşsa kart "Üye 01" ve "yakında" gösterir
 #   gorev     örnek: { tr: Takım kaptanı, en: Team captain }
-#   ekip      algoritma | aviyonik | mekanik | elektronik
+#   ekip      yazilim | elektronik | mekanik
+#   dal       ekibin dallarından biri. Örnek: ekip: yazilim, dal: goruntu
 #   sorumlu   true ise (kaptan, ekip sorumlusu) kart öne gelir
 #   bolum     örnek: { tr: Mekatronik Mühendisliği · 3. sınıf, en: Mechatronics Engineering · 3rd year }
 #   fotograf  src/assets/uyeler/<dosya>. Yoksa baş harfler gösterilir
 #   baglanti  üyenin kendi verdiği bağlantı (LinkedIn gibi)
 #   izin      üye sitede görünmeye izin verdiyse true. Adı yazılı ama izni false olan üye sitede hiç görünmez
 uyeler:
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - { ad: "", gorev: { tr: "", en: "" }, ekip: "", dal: "", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
 
 # Danışmanlar: ad ve izin gelince görünür. İkisi de boşken bu satır sitede çıkmaz.
 danismanlar:

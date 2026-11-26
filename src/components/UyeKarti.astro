@@ -13,12 +13,13 @@ const ad = uye.sablon ? `${t('uyeSablon', dil)} ${no}` : uye.ad;
 const basHarf = uye.ad.split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
 const gorev = c(uye.gorev, dil);
 const bolum = c(uye.bolum, dil);
-const ekip = uye.ekip ? c(icerik.ekipler[uye.ekip], dil) : '';
+const ekipKaydi = uye.ekip ? icerik.ekipler[uye.ekip] : undefined;
+const ekip = ekipKaydi ? [c(ekipKaydi.ad, dil), uye.dal ? c(ekipKaydi.dallar[uye.dal], dil) : ''].filter(Boolean).join(' · ') : '';
 const ayrintiVar = !uye.sablon && !!(bolum || uye.baglanti);
 const kimlik = `uye-${no}`;
 ---
 
-<li class:list={['uye', { sablon: uye.sablon, sorumlu: uye.sorumlu }]} data-ekip={uye.ekip} data-belir style={`--i:${gecikme}`}>
+<li class:list={['uye', { sablon: uye.sablon, sorumlu: uye.sorumlu }]} data-ekip={uye.ekip} data-dal={uye.dal} data-belir style={`--i:${gecikme}`}>
   <div class="uye-foto" aria-hidden={uye.fotograf && !uye.sablon ? undefined : 'true'}>
     {!uye.sablon && uye.fotograf ? (
       <Image src={uyeGorseli(uye.fotograf)} alt={uye.ad} width={320} height={320} fit="cover" loading="lazy" />

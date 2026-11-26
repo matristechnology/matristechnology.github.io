@@ -62,12 +62,23 @@ test.describe('D3 hareketi azalt', () => {
     const a = await oku();
     await bekle(page, 700);
     expect(await oku()).toBe(a);
-    await demo.locator('[data-dizilim-sec="halka"]').click();
+    await demo.locator('[data-dizilim-sec="v"]').click();
     await expect(demo).toHaveAttribute('data-oturdu', '1');
     const b = await oku();
     expect(b).not.toBe(a);
     await bekle(page, 500);
     expect(await oku()).toBe(b);
+    // Görev de oynamadan ilerliyor: her basışta bir sonraki QR emrinin sonuna sarılıyor.
+    await demo.locator('[data-baslat]').click();
+    await expect(demo).toHaveAttribute('data-okunan', '1');
+    await expect(demo).toHaveAttribute('data-dizilim', 'v');
+    const c1 = await oku();
+    await bekle(page, 500);
+    expect(await oku()).toBe(c1);
+    for (const n of ['2', '3']) { await demo.locator('[data-baslat]').click(); await expect(demo).toHaveAttribute('data-okunan', n); }
+    await demo.locator('[data-baslat]').click();
+    await expect(demo).toHaveAttribute('data-asama', 'bitti');
+    await expect(demo).toHaveAttribute('data-okunan', '4');
   });
 });
 
@@ -102,8 +113,8 @@ test('D5 fare kullanmadan: menü, benzetim düğmeleri ve galeri klavyeyle çal�
   await expect(demo).toHaveAttribute('data-dizilim', 'v');
   await demo.locator('[data-artir]').focus();
   await page.keyboard.press('Space');
-  await expect(demo).toHaveAttribute('data-sayi', '8');
-  await expect(demo.locator('[data-durum]')).toContainText('8');
+  await expect(demo).toHaveAttribute('data-sayi', '4');
+  await expect(demo.locator('[data-durum]')).toContainText('4');
   // Galeri: Enter ile açılır, ok tuşlarıyla gezilir, Esc ile kapanır, odak fotoğrafa döner
   const ilk = page.locator('[data-galeri] a').first();
   await ilk.focus();
@@ -167,55 +178,108 @@ test('D6b iki temada da metin okunaklı (karşıtlık en az 4,5)', async ({ page
   }
 });
 
-test('D9 benzetim: dizilim değişince araçlar yeni dizilime varıyor, araç düşünce boşluk kapanıyor', async ({ page }) => {
+test('D9 benzetim: QR görevi baştan sona uçuyor, lider düşünce yenisi seçiliyor, kumanda sürüyü birlikte taşıyor', async ({ page }) => {
+  test.setTimeout(120_000);
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
   const demo = page.locator('[data-suru-demo]');
   await demo.scrollIntoViewIfNeeded();
-  await demo.locator('[data-sifirla]').click();
-  await expect(demo).toHaveAttribute('data-oturdu', '1', { timeout: 8000 });
-  // Tuvalden oku: tam boyalı vurgu rengi piksellerin yayılımı ve dikey eksende araç kümeleri.
+  await demo.evaluate((e: HTMLElement) => (e.dataset.hiz = '5')); // deneme uzun sürmesin: benzetim 5 kat hızlı akar
+  // İz beklemeleri her karede yoklanır: hızlı akan benzetimde kısa süren bir aşama kaçmasın.
+  const izBekle = (iz: Record<string, string>, sure = 30_000, hiz = '') =>
+    page.waitForFunction(([iz, hiz]) => {
+      const e = document.querySelector<HTMLElement>('[data-suru-demo]')!;
+      if (!Object.entries(iz as Record<string, string>).every(([k, v]) => e.dataset[k] === v)) return false;
+      if (hiz) e.dataset.hiz = hiz as string;
+      return true;
+    }, [iz, hiz] as const, { timeout: sure, polling: 'raf' });
+  const asama = (a: string, sure = 30_000) => izBekle({ asama: a }, sure);
+  // Tuvalden oku. Lider vurgu renginde, takipçiler metin renginde çizilir: ikisinin ağırlık merkezi ve yayılımı.
   const olc = () =>
     demo.locator('canvas').evaluate((c: HTMLCanvasElement) => {
       const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
-      const xs: number[] = [], ys: number[] = [], satir = new Array(c.height).fill(0);
+      const lider: number[][] = [], takipci: number[][] = [];
       for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) {
         const i = (y * c.width + x) * 4;
-        if (d[i + 3] > 200 && d[i] > 180 && d[i + 2] < 160) { xs.push(x); ys.push(y); satir[y]++; }
+        if (d[i + 3] < 225) continue;
+        if (d[i] > 200 && d[i + 1] > 160 && d[i + 2] < 150) lider.push([x / c.width, y / c.height]);
+        else if (d[i] > 215 && d[i + 1] > 215 && d[i + 2] > 205) takipci.push([x / c.width, y / c.height]);
       }
-      const yay = (v: number[]) => { const o = v.reduce((a, b) => a + b, 0) / v.length; return Math.sqrt(v.reduce((a, b) => a + (b - o) ** 2, 0) / v.length); };
-      const kumeler: number[] = []; let bas = -1;
-      satir.forEach((n, y) => { if (n > 0 && bas < 0) bas = y; if ((n === 0 || y === c.height - 1) && bas >= 0) { kumeler.push((bas + y) / 2); bas = -1; } });
-      const aralik = kumeler.slice(1).map((k, i) => k - kumeler[i]);
-      return { piksel: xs.length, yayX: +yay(xs).toFixed(1), yayY: +yay(ys).toFixed(1), kume: kumeler.length, enBuyuk: Math.max(...aralik), enKucuk: Math.min(...aralik) };
+      const ort = (v: number[][], k: number) => +(v.reduce((a, b) => a + b[k], 0) / (v.length || 1)).toFixed(3);
+      const yay = (v: number[][], k: number) => { const o = ort(v, k); return +Math.sqrt(v.reduce((a, b) => a + (b[k] - o) ** 2, 0) / (v.length || 1)).toFixed(3); };
+      return { lx: ort(lider, 0), ly: ort(lider, 1), tx: ort(takipci, 0), ty: ort(takipci, 1), tyayX: yay(takipci, 0), tyayY: yay(takipci, 1), liderPx: lider.length, takipciPx: takipci.length };
     });
-  const cizgi = await olc();
-  console.log('çizgi, 7 araç', JSON.stringify(cizgi));
-  expect(cizgi.kume).toBe(7);
-  expect(cizgi.yayY / cizgi.yayX).toBeGreaterThan(4);
 
-  await demo.locator('[data-dusur]').click();
-  await expect(demo).toHaveAttribute('data-sayi', '6');
-  await bekle(page, 1000); // düşen aracın izi silinsin
+  // Yerde: çizgi dizilimi, takipçiler liderin iki yanında, aynı hizada
   await expect(demo).toHaveAttribute('data-oturdu', '1', { timeout: 8000 });
-  const dustu = await olc();
-  console.log('bir araç düştü', JSON.stringify(dustu));
-  expect(dustu.kume).toBe(6);
-  expect(dustu.enBuyuk / dustu.enKucuk).toBeLessThan(1.25); // boşluk kapandı: aralıklar eşit
-  await expect(demo.locator('[data-durum]')).toContainText('6');
+  await bekle(page, 200);
+  const yerde = await olc();
+  console.log('yerde', JSON.stringify(yerde));
+  expect(yerde.liderPx).toBeGreaterThan(20);
+  expect(Math.abs(yerde.ty - yerde.ly)).toBeLessThan(0.02);
+  expect(yerde.tyayX).toBeGreaterThan(yerde.tyayY * 3);
 
-  await demo.locator('[data-dizilim-sec="halka"]').click();
-  await expect(demo).toHaveAttribute('data-oturdu', '1', { timeout: 8000 });
-  const halka = await olc();
-  console.log('halka', JSON.stringify(halka));
-  const oran = halka.yayY / halka.yayX;
-  expect(oran).toBeGreaterThan(0.75);
-  expect(oran).toBeLessThan(1.33);
+  // Görev 1: QR 1 okununca V dizilimi, lider QR 1'in üstünde, takipçiler önünde (kuzeyde)
+  await demo.locator('[data-baslat]').click();
+  await izBekle({ okunan: '1' }, 30_000);
+  expect(await demo.getAttribute('data-dizilim')).toBe('v');
+  await expect(demo.locator('[data-komut]')).toContainText('frm v');
+  await expect(demo).toHaveAttribute('data-qr', '2');
+  // QR 3: bir araç sürüden ayrılıyor, sonra geri katılıyor
+  await izBekle({ okunan: '2' }, 30_000);
+  await expect(demo.locator('[data-irtifa-yaz]')).toHaveText('12 m');
+  await izBekle({ okunan: '3' }, 40_000);
+  expect(await demo.getAttribute('data-dizilim')).toBe('ok');
+  await asama('bitti', 60_000);
+  await expect(demo).toHaveAttribute('data-okunan', '4');
+  const bitti = await olc();
+  console.log('görev bitti', JSON.stringify(bitti));
+  expect(Math.abs(bitti.lx - yerde.lx)).toBeLessThan(0.01); // lider kalktığı ev noktasına indi
+  expect(Math.abs(bitti.ly - yerde.ly)).toBeLessThan(0.01);
+  expect(Math.abs(bitti.ty - bitti.ly)).toBeLessThan(0.02); // çizgi dizilimiyle indi
 
-  // Engel: sürü engelin öbür yanına geçiyor, hiçbir araç engelin içinde kalmıyor
-  await demo.locator('[data-engel-dugme]').click();
-  await expect(demo).toHaveAttribute('data-engel', '1');
-  await expect(demo).toHaveAttribute('data-oturdu', '1', { timeout: 12000 });
+  // V dizilimi tuvalde: QR 1 emri uygulanırken sürü kuzeye bakıyor, takipçiler liderin önünde (yukarıda) ve iki yanında
+  await demo.locator('[data-baslat]').click();
+  await izBekle({ asama: 'oku', qr: '1' }, 30_000, '1'); // QR 1 okunurken gerçek hıza dön
+  await izBekle({ asama: 'uygula', dizilim: 'v' }, 10_000);
+  await bekle(page, 1150);
+  expect(await demo.getAttribute('data-asama')).toBe('uygula');
+  const v = await olc();
+  console.log('V, QR 1 üstünde', JSON.stringify(v));
+  expect(v.ly - v.ty).toBeGreaterThan(0.05);
+  expect(v.tyayX).toBeGreaterThan(v.tyayY * 3);
+  expect(Math.abs(v.lx - 0.3)).toBeLessThan(0.04); // lider QR 1 noktasında
+  expect(Math.abs(v.ly - 0.3)).toBeLessThan(0.04);
+  await izBekle({ asama: 'git', qr: '2' }, 10_000);
+
+  // Lider düşüyor: en küçük numaralı araç lider oluyor, sürü eve dönüp iniyor
+  await demo.evaluate((e: HTMLElement) => (e.dataset.hiz = '5'));
+  await demo.locator('[data-lider-dusur]').click();
+  await expect(demo).toHaveAttribute('data-lider', '1');
+  await expect(demo).toHaveAttribute('data-sayi', '2');
+  await expect(demo.locator('[data-durum]')).toContainText('(1)');
+  await asama('bitti', 40_000);
+  const yeniLider = await olc();
+  console.log('yeni liderle indi', JSON.stringify(yeniLider));
+  expect(Math.abs(yeniLider.lx - yerde.lx)).toBeLessThan(0.01);
+  expect(Math.abs(yeniLider.ly - yerde.ly)).toBeLessThan(0.01);
+
+  // Görev 2: kumandayla ileri komutu bütün sürüyü birlikte kuzeye taşıyor, dizilim bozulmuyor
+  await demo.locator('[data-gorev-sec="2"]').click();
+  await demo.locator('[data-pad-yon="ileri"]').click();
+  await expect(demo.locator('[data-durum]')).toContainText(/havada|in the air/); // yerdeyken komut işlemez
+  await demo.locator('[data-baslat]').click();
+  await asama('kumanda');
+  await expect(demo).toHaveAttribute('data-oturdu', '1', { timeout: 10_000 });
+  const once = await olc();
+  await demo.locator('[data-pad-yon="ileri"]').click();
+  await bekle(page, 300);
+  await expect(demo).toHaveAttribute('data-oturdu', '1', { timeout: 10_000 });
+  const sonra = await olc();
+  console.log('kumanda ileri', JSON.stringify({ once, sonra }));
+  expect(once.ly - sonra.ly).toBeGreaterThan(0.1);
+  expect(Math.abs(once.ty - once.ly - (sonra.ty - sonra.ly))).toBeLessThan(0.02);
+  expect(Math.abs(once.lx - sonra.lx)).toBeLessThan(0.02);
 });
 
 test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
