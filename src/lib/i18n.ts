@@ -124,7 +124,7 @@ const metin = {
   iletisimBaslik: { tr: 'İletişim', en: 'Contact' },
   iletisimGiris: { tr: 'Destek, iş birliği ya da takıma katılmak için bize ulaşın.', en: 'Reach us about support, partnerships or joining the team.' },
   basvur: { tr: 'Başvur', en: 'Apply' },
-  altBilgi: { tr: 'Bursa Teknik Üniversitesi · MATRO Topluluğu', en: 'Bursa Technical University · MATRO Society' },
+  altBilgi: { tr: 'Matris Technology', en: 'Matris Technology' },
   yukari: { tr: 'Başa dön', en: 'Back to top' },
   ayrintili: { tr: 'Ayrıntılı incele', en: 'Explore in depth' },
   yok404: { tr: 'Bu sayfa sürüden ayrılmış.', en: 'This page has left the swarm.' },
