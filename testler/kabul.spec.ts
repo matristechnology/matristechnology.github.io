@@ -267,10 +267,10 @@ test('D9c arka plan sürüsü: yabancı sürü geliyor, önleniyor, sürü yenid
   });
   await expect.poll(kirmizi, { timeout: 5000 }).toBeGreaterThan(30);
   // Dağınıkken gelen yabancıya karşı önce dizilime giriliyor, dizilimle hücum ediliyor, sonra tek tek kovalanıyor
-  await expect(tuval).toHaveAttribute('data-faz', 'topla');
-  await expect(tuval).toHaveAttribute('data-faz', 'hucum', { timeout: 10000 });
-  await expect(tuval).toHaveAttribute('data-faz', 'kovala', { timeout: 10000 });
+  const bas = Date.now();
   await expect(tuval).toHaveAttribute('data-onleme', '0', { timeout: 25000 });
+  console.log('önleme süresi', Date.now() - bas, 'ms')
+  expect(await tuval.getAttribute('data-fazlar')).toBe('topla>hucum>kovala');
   await bekle(page, 800); // son parlama sönsün
   expect(await kirmizi()).toBe(0);
 });

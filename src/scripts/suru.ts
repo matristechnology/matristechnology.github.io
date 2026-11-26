@@ -57,7 +57,8 @@ if (tuval) {
   const cagri = { x: 0, y: 0, t: -9999 };
   const birimHesap = () => Math.max(26, Math.min(40, en / 30));
   const surude = () => mod === 'toplan' || mod === 'dizilim' || (mod === 'onleme' && faz !== 'kovala');
-  const iz = () => { veri.mod = mod; veri.uye = String(uyeler.length); veri.bicim = String(bicim); veri.faz = mod === 'onleme' ? faz : ''; veri.katilan = String(katilanSayac); veri.ayrilan = String(ayrilanSayac); };
+  let fazlar = '';
+  const iz = () => { if (mod === 'onleme' && !fazlar.endsWith(faz)) fazlar += (fazlar ? '>' : '') + faz; veri.fazlar = fazlar; veri.mod = mod; veri.uye = String(uyeler.length); veri.bicim = String(bicim); veri.faz = mod === 'onleme' ? faz : ''; veri.katilan = String(katilanSayac); veri.ayrilan = String(ayrilanSayac); };
 
   // Yuvalar: lidere göre (ileri, yan) birim uzaklıkları. k yuva numarası (0 lider), n üye sayısı.
   const yuva = (b: number, k: number, n: number, t: number): [number, number] => {
@@ -211,7 +212,7 @@ if (tuval) {
     }
     // Bizimkiler dizilimde değilse önce dizilime girer. Dizilimdeyse sürü olduğu gibi hücuma hazırlanır.
     if (mod === 'serbest') surunuKur(t);
-    adimlar = []; mod = 'onleme'; faz = 'topla'; onlemeBas = t; adimT = t; veri.onleme = '1'; sonUyeKontrol = t + 600; iz();
+    adimlar = []; mod = 'onleme'; faz = 'topla'; fazlar = ''; onlemeBas = t; adimT = t; veri.onleme = '1'; sonUyeKontrol = t + 600; iz();
   }
   const yabanciOrtasi = () => ({ x: yabancilar.reduce((a, y) => a + y.x, 0) / yabancilar.length, y: yabancilar.reduce((a, y) => a + y.y - scrollY, 0) / yabancilar.length });
   function onlemeAdimi(t: number, dt: number) {
@@ -245,7 +246,7 @@ if (tuval) {
     }
     if (t - onlemeBas > FARK && faz === 'kovala') for (let i = yabancilar.length - 1; i >= 0; i--) { // yakalanan düşer
       const y = yabancilar[i];
-      if (uyeler.some((u) => Math.hypot(u.x - y.x, u.y - y.y) < 15)) { patlamalar.push({ x: y.x, y: y.y, t }); yabancilar.splice(i, 1); }
+      if (uyeler.some((u) => Math.hypot(u.x - y.x, u.y - y.y) < 16)) { patlamalar.push({ x: y.x, y: y.y, t }); yabancilar.splice(i, 1); }
     }
     if (t - onlemeBas > 22000) yabancilar.length = 0; // emniyet: takılırsa bırak
     if (!yabancilar.length) { veri.onleme = '0'; sonrakiBaskin = t + rastgele(40000, 70000); dagil(t); }
@@ -293,10 +294,11 @@ if (tuval) {
         if (uzak > 50) yonlendir(u, sx, ty, 2.2, 560, 4, dt); // uzaktan gelir, yaklaşınca yavaşlar
         else yonlendir(u, sx, ty, 6, 700, 10, dt, merkez.vx, merkez.vy); // yuvasını sıkı tutar
       } else if (kovalar) { // her İHA bir yabancıyı kovalar, yaklaştıkça hız kesmez
-        const y = yabancilar[u.i % yabancilar.length], ex = y.x - u.x, ey = y.y - u.y, m = Math.hypot(ex, ey) || 1;
-        u.vx += (ex / m) * (1050 + m * 2) * dt; u.vy += (ey / m) * (1050 + m * 2) * dt;
-        const h = Math.hypot(u.vx, u.vy);
-        if (h > 420) { u.vx *= 420 / h; u.vy *= 420 / h; }
+        const y = yabancilar.reduce((a, b) => (Math.hypot(b.x - u.x, b.y - u.y) < Math.hypot(a.x - u.x, a.y - u.y) ? b : a)); // en yakındaki
+        // Hedefin biraz ilerisine nişan alır, hızı o yöne çevrilir: çevresinde dönüp durmaz, üstüne gider.
+        const on = Math.min(0.4, Math.hypot(y.x - u.x, y.y - u.y) / 600), nx = y.x + y.vx * on - u.x, ny = y.y + y.vy * on - u.y, m = Math.hypot(nx, ny) || 1;
+        const o = Math.min(1, dt * 7);
+        u.vx += ((nx / m) * 430 - u.vx) * o; u.vy += ((ny / m) * 430 - u.vy) * o;
       } else { // serbest: bölgesinde noktaya git, asılı kal, yenisini seç. Bölgesinden uzaktaysa hızlı döner.
         if (!u.tx && !u.ty) yeniHedef(u);
         const uzak = Math.hypot(u.tx - u.x, u.ty - u.y);
