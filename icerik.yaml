@@ -855,6 +855,7 @@ calisma_sayfa:
           tr: Bu son aşama. Sırada yarışma var.
           en: This is the last stage. The competition comes next.
         fotograf: saha.jpg
+    # Ali 26.11.2026'da "Teknik ayrıntı" kutusunu kaldırttı: aşağıdaki düzeltmeler sayfada gösterilmiyor, metin duruyor.
     duzeltme_baslik:
       tr: Denemelerde bulup düzelttiklerimiz
       en: What we found and fixed in trials

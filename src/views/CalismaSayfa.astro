@@ -5,7 +5,6 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { icerik, c, galeriGorseli, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
-import { sm } from '../lib/i18n-suru';
 
 interface Props { dil: Dil }
 const { dil } = Astro.props;
@@ -64,12 +63,6 @@ const icindekiler = [
         </li>
       ))}
     </ol>
-    {S.asamalar.duzeltmeler.length > 0 && (
-      <details class="teknik" data-belir>
-        <summary>{sm('teknik', dil)}: {c(S.asamalar.duzeltme_baslik, dil)}</summary>
-        {S.asamalar.duzeltmeler.map((d) => <p>{c(d, dil)}</p>)}
-      </details>
-    )}
   </section>
 
   {S.atolye.goster && (
