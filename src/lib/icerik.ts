@@ -138,6 +138,14 @@ const sema = z.object({
     linkedin: metin,
     katil: ikiDilBos,
     basvuru: metin,
+    takim_eposta: metin,
+    kaptan_eposta: metin,
+  }),
+  iletisim_sayfa: z.object({
+    baslik: ikiDil,
+    ozet: ikiDilBos,
+    kartlar: z.object({ baslik: ikiDil, kopyala: ikiDil, kopyalandi: ikiDil, yaz: ikiDil, yakinda: ikiDil, sponsor: z.object({ ad: ikiDil, metin: ikiDil, konu: ikiDil }), takim: z.object({ ad: ikiDil, metin: ikiDil, konu: ikiDil }), kaptan: z.object({ ad: ikiDil, metin: ikiDil, konu: ikiDil }), instagram: z.object({ ad: ikiDil, metin: ikiDil, dugme: ikiDil }), linkedin: z.object({ ad: ikiDil, metin: ikiDil, dugme: ikiDil }) }),
+    konum: z.object({ baslik: ikiDil, ad: ikiDil, yer: ikiDil, metin: ikiDil, enlem: z.number(), boylam: z.number(), ac: ikiDil, tarif: ikiDil, harita_ad: ikiDil }),
   }),
 });
 

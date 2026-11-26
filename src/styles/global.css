@@ -462,6 +462,29 @@ pre[data-qr-json], .paket { margin: 0; padding: 0.7rem 0.8rem; min-height: 2.8em
 }
 @media (max-width: 480px) { .sahne { aspect-ratio: 4 / 3.4; } .kaydirici { grid-template-columns: 5rem minmax(0, 1fr) 3rem; } .sayac { grid-template-columns: 3rem minmax(0, 1fr) 3.2rem; } .sayac small { display: none; } }
 
+/* İletişim sayfası */
+.ulas-kartlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: 0.75rem; margin-top: 1.75rem; }
+.ulas-kart { display: grid; gap: 0.55rem; align-content: start; grid-template-rows: auto 1fr auto auto; padding: 1.25rem 1.2rem 1.3rem; border: 1px solid var(--cizgi); border-top: 2px solid var(--vurgu); border-radius: 10px; background: var(--yuzey); transition: border-color 0.2s, transform 0.2s; }
+.ulas-kart:hover { border-color: var(--soluk); border-top-color: var(--vurgu); }
+.ulas-kart strong { font-size: 1.125rem; font-weight: 620; }
+.ulas-kart p { font-size: 0.9375rem; }
+.ulas-adres { display: inline-flex; align-items: center; min-height: 2.75rem; font-family: var(--es); font-size: 0.875rem; overflow-wrap: anywhere; }
+.ulas-kart .dugmeler { margin-top: 0; gap: 0.5rem; }
+.ulas-kart [data-oldu] { border-color: var(--vurgu); color: var(--vurgu); }
+.ulas-kart.bos { border-style: dashed; border-top-style: dashed; border-top-color: var(--cizgi); background: transparent; }
+.ulas-yakinda { justify-self: start; padding: 0.25rem 0.6rem; border: 1px dashed var(--cizgi); border-radius: 999px; font-family: var(--es); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); }
+.ulas-durum { min-height: 1.5rem; margin-top: 0.75rem; font-size: 0.875rem; color: var(--vurgu); }
+.konum { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1.5rem 2.5rem; align-items: center; margin-top: 1.75rem; }
+.konum-yazi { display: grid; gap: 1rem; }
+.konum-ad { display: grid; gap: 0.2rem; }
+.konum-ad strong { font-size: 1.375rem; font-weight: 620; letter-spacing: -0.01em; }
+.harita { position: relative; aspect-ratio: 16 / 10; border: 1px solid var(--cizgi); border-radius: 10px; overflow: hidden; background: var(--yuzey); }
+.harita iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity 0.4s; }
+.harita[data-hazir] iframe { opacity: 1; }
+.harita-igne { position: absolute; left: 50%; top: 50%; width: 0.9rem; height: 0.9rem; margin: -0.45rem; border-radius: 50%; background: var(--vurgu); box-shadow: 0 0 0 0.45rem color-mix(in srgb, var(--vurgu) 22%, transparent); }
+.harita[data-hazir] .harita-igne { display: none; }
+@media (max-width: 760px) { .konum { grid-template-columns: 1fr; } .harita { aspect-ratio: 4 / 3; } }
+
 /* ─── Hareket ─────────────────────────────────────────────────────────────── */
 /* Başlangıç gizliliği html.anim sınıfına bağlı: betik çalışmazsa içerik görünür kalır. Yalnızca konum ve saydamlık canlanır. */
 html.anim [data-belir] { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease-out, transform 0.65s var(--yumusak); transition-delay: calc(var(--i, 0) * 80ms); }

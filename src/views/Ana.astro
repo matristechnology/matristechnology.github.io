@@ -318,6 +318,7 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
         {iletisim.instagram && <li><span class="soluk">Instagram</span><a href={iletisim.instagram} rel="noopener">{iletisim.instagram_ad || 'Instagram'}</a></li>}
         {iletisim.linkedin && <li><span class="soluk">LinkedIn</span><a href={iletisim.linkedin} rel="noopener">LinkedIn</a></li>}
       </ul>
+      <p class="ayrintili" data-belir><a class="dugme" href={altSayfa.iletisim[dil]}>{t('ayrintili', dil)}<span aria-hidden="true">→</span></a></p>
     </section>
   )}
 </Base>

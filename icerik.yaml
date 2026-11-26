@@ -251,6 +251,71 @@ iletisim:
   # Kimler başvurabilir, nasıl başvurulur. Boşken görünmez.
   katil: { tr: "", en: "" }
   basvuru: ""
+  # Genel sorular ve basın için takım adresi, isteyen için takım kaptanının adresi. Boşsa kartı çıkmaz.
+  takim_eposta: matristechnology@gmail.com
+  kaptan_eposta: ali.yilmazbgs@gmail.com
+
+# ─── İletişim sayfası (/iletisim/, /en/contact/) ─────────────────────────────────────────────
+# Kart metinleri taslak. Telefon ve açık adres yazılmaz. Konum: üniversitenin yerleşkesi, OpenStreetMap'ten alındı.
+iletisim_sayfa:
+  baslik:
+    tr: İletişim
+    en: Contact
+  ozet:
+    tr: Sponsorluk, genel sorular ya da takımla tanışmak için bize buradan ulaşabilirsiniz.
+    en: Reach us here about sponsorship, general questions or getting to know the team.
+  kartlar:
+    baslik:
+      tr: Bize ulaşın
+      en: Get in touch
+    kopyala: { tr: Adresi kopyala, en: Copy address }
+    kopyalandi: { tr: Kopyalandı, en: Copied }
+    yaz: { tr: E-posta yaz, en: Write an email }
+    yakinda: { tr: Yakında, en: Coming soon }
+    sponsor:
+      ad: { tr: Sponsorluk ve destek, en: Sponsorship and support }
+      metin:
+        tr: Sponsorluk, malzeme desteği ve iş birliği teklifleri için sponsorluk sorumlumuza yazın.
+        en: Write to our sponsorship lead about sponsorship, equipment support and partnerships.
+      konu: { tr: Matris sponsorluk, en: Matris sponsorship }
+    takim:
+      ad: { tr: Genel sorular ve basın, en: General questions and press }
+      metin:
+        tr: Takım, yarışma, etkinlik daveti ya da haber için takım adresine yazın.
+        en: Write to the team address about the team, the competition, event invitations or press.
+      konu: { tr: Matris takımına soru, en: Question for team Matris }
+    kaptan:
+      ad: { tr: Takım kaptanı, en: Team captain }
+      metin:
+        tr: Doğrudan takım kaptanına ulaşmak isterseniz bu adresi kullanabilirsiniz.
+        en: Use this address if you would like to reach the team captain directly.
+      konu: { tr: Matris takım kaptanına, en: To the Matris team captain }
+    instagram:
+      ad: { tr: Instagram, en: Instagram }
+      metin:
+        tr: Atölyeden ve test sahasından güncel paylaşımlar burada.
+        en: Recent posts from the workshop and the test field.
+      dugme: { tr: Profili aç, en: Open profile }
+    linkedin:
+      ad: { tr: LinkedIn, en: LinkedIn }
+      metin:
+        tr: Takımın LinkedIn sayfası.
+        en: The team's LinkedIn page.
+      dugme: { tr: Sayfayı aç, en: Open page }
+  konum:
+    baslik:
+      tr: Neredeyiz?
+      en: Where are we?
+    ad: { tr: Bursa Teknik Üniversitesi, en: Bursa Technical University }
+    yer: { tr: "Mimar Sinan Yerleşkesi, Yıldırım, Bursa", en: "Mimar Sinan Campus, Yıldırım, Bursa" }
+    metin:
+      tr: Matris, Bursa Teknik Üniversitesi'nde MATRO Topluluğu çatısı altında çalışıyor. Bizi ziyaret etmek isterseniz önce yazın, günü birlikte ayarlayalım.
+      en: Matris works at Bursa Technical University under the MATRO student society. If you would like to visit, write to us first and we will set a day together.
+    enlem: 40.18861
+    boylam: 29.12978
+    ac: { tr: Büyük haritada aç, en: Open the larger map }
+    tarif: { tr: Yol tarifi al, en: Get directions }
+    harita_ad: { tr: Bursa Teknik Üniversitesi'nin haritadaki yeri, en: Bursa Technical University on the map }
 
 # ─── Sürü İHA sayfası (/suru-iha/, /en/swarm/) ───────────────────────────────────────────────
 # Kaynak: takımın 2026 Ön Tasarım Raporu ve uçuş kodu. Benzetimlerin düğme ve durum metinleri src/lib/i18n-suru.ts içinde.

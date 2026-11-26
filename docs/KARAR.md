@@ -120,3 +120,10 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Üst menü (Ali, 26.11.2026): ayrıntı sayfası olan başlıklar (Sürü İHA, Matris, Takım, Çalışmalar, Galeri) artık ana sayfada da o sayfayı açıyor. Başa "Ana Sayfa" eklendi. Destek ve İletişim sayfaları yapılana kadar ana sayfadaki bölümlerine iniyor.
 - Destek sayfası (/destek/, /en/support/) Ali'nin seçtikleriyle kuruldu: neden Matris, destek türleri, sponsor paketleri tablosu, logonun görüneceği yerler (çizimle), 3B model üzerinde ihtiyaç grupları, sponsor şablon kutuları, sık sorulanlar. Düğme sponsorluk sorumlusunun adresine konusu ve gövdesi dolu taslak açar, seçilen tür ve paket gövdeye yazılır. Sayfada tutar, telefon ve IBAN yok. Menüdeki Destek ve "Destek ol" artık bu sayfayı açıyor.
 - 3B modele "vurgu" eklendi: birden çok parça birlikte öne çıkarılabiliyor (ihtiyaç grupları bunu kullanıyor).
+
+## İletişim sayfası (27.11.2026)
+
+- Ali'nin seçtiği bölümler: iletişim kartları ve haritada üniversitenin yeri.
+- Sponsorluk konuları sponsorluk sorumlusuna, genel sorular ve basın takım adresine gider. Ali takım kaptanı olarak kendi adresinin de yayımlanmasını istedi, kartta ad yazmıyor.
+- Harita OpenStreetMap gömmesi. Sayfanın açılışını bekletmesin diye bölüm ekrana yaklaşınca yüklenir, betik kapalıyken yerine bağlantılar durur.
+- Üst menüde İletişim artık bu sayfayı açıyor. Yedi başlığın hepsinin ayrıntı sayfası var.

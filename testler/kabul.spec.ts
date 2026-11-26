@@ -365,13 +365,13 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
   test.setTimeout(120000); // on iki sayfa ve her birindeki bağlantılar: canlı adreste 30 saniyeyi aşabiliyor
-  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/', '/galeri/', '/en/gallery/', '/destek/', '/en/support/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/', '/galeri/', '/en/gallery/', '/destek/', '/en/support/', '/iletisim/', '/en/contact/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
       if (h.startsWith('#')) expect(await page.locator(`[id="${h.slice(1)}"]`).count(), h).toBe(1);
       else if (h.startsWith('/')) expect((await request.get(h.split('#')[0])).status(), h).toBe(200);
-      else expect(h, h).toMatch(/^(mailto:[^@\s?]+@[^@\s?]+\.[a-z]+(\?subject=[^\s]*)?$|https:\/\/(www\.)?(instagram|linkedin)\.com\/)/);
+      else expect(h, h).toMatch(/^(mailto:[^@\s?]+@[^@\s?]+\.[a-z]+(\?subject=[^\s]*)?$|https:\/\/(www\.)?(instagram|linkedin)\.com\/|https:\/\/www\.openstreetmap\.org\/\?mlat=|https:\/\/www\.google\.com\/maps\/dir\/)/);
     }
   }
   expect((await request.get('/olmayan-sayfa/')).status()).toBe(404);
@@ -873,7 +873,7 @@ test('D19 üst menü: başlıklar ayrıntı sayfalarını açar, Ana Sayfa giri�
   const menu = page.locator('.menu');
   await expect(menu.locator('a').first()).toHaveText('Ana Sayfa');
   await expect(menu.locator('a[aria-current="page"]')).toHaveText('Ana Sayfa');
-  for (const [ad, yol] of [['Sürü İHA', '/suru-iha/'], ['Matris', '/matris/'], ['Takım', '/takim/'], ['Çalışmalar', '/calismalar/'], ['Galeri', '/galeri/']]) {
+  for (const [ad, yol] of [['Sürü İHA', '/suru-iha/'], ['Matris', '/matris/'], ['Takım', '/takim/'], ['Çalışmalar', '/calismalar/'], ['Galeri', '/galeri/'], ['Destek', '/destek/'], ['İletişim', '/iletisim/']]) {
     await expect(menu.getByRole('link', { name: ad, exact: true })).toHaveAttribute('href', yol);
   }
   await menu.getByRole('link', { name: 'Takım', exact: true }).click();
@@ -957,6 +957,70 @@ test.describe('D20 Destek sayfası', () => {
     await expect(page.locator('#ihtiyac dl.js-yok')).toContainText('Raspberry Pi 5');
     await expect(page.locator('[data-yer-panel]:visible')).toHaveCount(3);
     await expect(page.locator('[data-destek-dugme]')).toHaveAttribute('href', /^mailto:/);
+    await b.close();
+  });
+});
+
+
+test.describe('D21 İletişim sayfası', () => {
+  test('sayfa iki dilde açılır, menüden ve ana sayfadan ulaşılır, 320 pikselde taşmaz', async ({ page }) => {
+    for (const yol of ['/iletisim/', '/en/contact/']) {
+      await page.goto(yol);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('[data-ulas]')).toHaveCount(5);
+    }
+    await page.goto('/');
+    await expect(page.locator('.ayrintili a[href="/iletisim/"]')).toBeVisible();
+    await page.locator('.menu').getByRole('link', { name: 'İletişim', exact: true }).click();
+    await expect(page).toHaveURL(/\/iletisim\/$/);
+    await expect(page.locator('.menu a[aria-current="page"]')).toHaveText('İletişim');
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/iletisim/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('kartlar: üç adres konulu taslak açar, LinkedIn boş şablon, telefon ve IBAN yok', async ({ page }) => {
+    await page.goto('/iletisim/');
+    const k = page.locator('[data-iletisim]');
+    for (const ad of ['sponsor', 'takim', 'kaptan']) {
+      await expect(k.locator(`[data-ulas="${ad}"] [data-yaz]`)).toHaveAttribute('href', /^mailto:[^?@]+@[^?]+\?subject=.+/);
+    }
+    await expect(k.locator('[data-ulas="takim"] .ulas-adres')).toHaveText('matristechnology@gmail.com');
+    await expect(k.locator('[data-ulas="instagram"] a')).toHaveAttribute('href', /instagram\.com/);
+    await expect(k.locator('[data-ulas="linkedin"][data-ulas-sablon]')).toContainText('Yakında');
+    await expect(k.locator('[data-ulas="linkedin"] a')).toHaveCount(0);
+    expect(await page.locator('main').innerText()).not.toMatch(/IBAN|\+90|\b0?5\d{2}[ .]?\d{3}/);
+  });
+
+  test('adresi kopyala: panoya yazar ve durumu söyler', async ({ page, context, browserName }) => {
+    test.skip(browserName !== 'chromium', 'pano izni yalnızca Chromium\'da verilebiliyor');
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto('/iletisim/');
+    const k = page.locator('[data-iletisim]'), d = k.locator('[data-ulas="takim"] [data-kopyala]');
+    await d.click();
+    await expect(k).toHaveAttribute('data-kopyalanan', 'matristechnology@gmail.com');
+    await expect(d).toHaveText('Kopyalandı');
+    await expect(k.locator('[data-kopya-durum]')).toContainText('matristechnology@gmail.com');
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('matristechnology@gmail.com');
+    await expect(d).toHaveText('Adresi kopyala', { timeout: 5000 });
+  });
+
+  test('harita: bölüme gelince istenir, üniversitenin yerini işaretler', async ({ page }) => {
+    await page.goto('/iletisim/');
+    const h = page.locator('[data-harita]');
+    await h.scrollIntoViewIfNeeded();
+    await expect(h).toHaveAttribute('data-istendi', '1');
+    await expect(h.locator('iframe')).toHaveAttribute('src', /openstreetmap\.org\/export\/embed\.html\?bbox=.+marker=40\.18861%2C29\.12978/);
+    await expect(page.locator('[data-tarif]')).toHaveAttribute('href', /destination=40\.18861%2C29\.12978/);
+  });
+
+  test('betik kapalıyken adresler ve harita bağlantıları görünür', async ({ browser }) => {
+    const b = await browser.newContext({ javaScriptEnabled: false });
+    const page = await b.newPage();
+    await page.goto('/iletisim/');
+    await expect(page.locator('[data-ulas="sponsor"] .ulas-adres')).toBeVisible();
+    await expect(page.locator('[data-buyuk-harita]')).toBeVisible();
+    await expect(page.locator('[data-harita]')).toBeHidden();
     await b.close();
   });
 });
