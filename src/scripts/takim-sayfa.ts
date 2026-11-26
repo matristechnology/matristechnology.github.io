@@ -78,7 +78,7 @@ if (sema) {
 // ── Takıma katıl ──
 const katil = document.querySelector<HTMLElement>('[data-katil]');
 if (katil) {
-  const M = oku<Record<string, string>>(katil.dataset.m, {}), dallar = oku<Record<string, { ad: string; metin: string }>>(katil.dataset.dallar, {});
+  const dallar = oku<Record<string, { ad: string; metin: string }>>(katil.dataset.dallar, {});
   const dugmeler = [...katil.querySelectorAll<HTMLButtonElement>('[data-dal]')], panel = katil.querySelector<HTMLElement>('[data-katil-panel]');
   const bag = katil.querySelector<HTMLAnchorElement>('[data-katil-dugme]');
   let secili = '';
@@ -86,7 +86,7 @@ if (katil) {
     const d = dallar[secili];
     katil.dataset.secili = secili;
     dugmeler.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.dal === secili)));
-    if (panel) { panel.replaceChildren(); if (d) panel.append(el('h3', '', d.ad), el('p', '', d.metin)); else panel.append(el('p', '', M.dalSecilmedi)); }
+    if (panel) { panel.replaceChildren(); if (d) panel.append(el('h3', '', d.ad), el('p', '', d.metin)); }
     if (bag) bag.href = `mailto:${katil.dataset.eposta}?subject=${encodeURIComponent(katil.dataset.konu ?? '')}&body=${encodeURIComponent((katil.dataset.govde ?? '').replace('{dal}', d?.ad ?? ''))}`;
   };
   dugmeler.forEach((b) => b.addEventListener('click', () => { secili = secili === b.dataset.dal ? '' : (b.dataset.dal ?? ''); yaz(); }));

@@ -19,7 +19,6 @@ const m = {
   uye: { tr: 'Üye', en: 'Member' },
   isimYakinda: { tr: 'İsim yakında', en: 'Name coming soon' },
   profil: { tr: 'Profil', en: 'Profile' },
-  dalSecilmedi: { tr: 'Bir dal seçersen e-postaya yazılır. Seçmeden de yazabilirsin.', en: 'Pick a branch and it is written into the email. You can also write without picking one.' },
   dallar: { tr: 'Dallar', en: 'Branches' },
 } as const;
 
