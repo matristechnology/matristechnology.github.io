@@ -202,3 +202,116 @@ iletisim:
   # Kimler başvurabilir, nasıl başvurulur. Boşken görünmez.
   katil: { tr: "", en: "" }
   basvuru: ""
+
+# ─── Sürü İHA sayfası (/suru-iha/, /en/swarm/) ───────────────────────────────────────────────
+# Kaynak: takımın 2026 Ön Tasarım Raporu ve uçuş kodu. Benzetimlerin düğme ve durum metinleri src/lib/i18n-suru.ts içinde.
+# "teknik" maddeleri sayfada "Teknik ayrıntı" kutusunda kapalı durur.
+suru_sayfa:
+  baslik: { tr: Sürü İHA, en: Swarm UAV }
+  ozet:
+    tr: İHA'ya neden ihtiyaç duyulur, tek İHA yerine neden sürü kullanılır ve Matris'in sürüsü nasıl düşünür? Her bölümde bir benzetim var, kendin dene.
+    en: Why do we need UAVs, why a swarm instead of a single UAV, and how does the Matris swarm think? Each section has a simulation to try.
+  neden:
+    - baslik: { tr: Neden İHA?, en: Why UAVs? }
+      metin:
+        tr: İHA, içinde pilot olmadan uçan hava aracıdır. İnsanın gitmesinin tehlikeli, zor ya da pahalı olduğu yerlere gider. Deprem sonrası bir enkaz alanı, orman yangını ya da yüksek bir köprünün altı bunlara örnektir. Tarla, boru hattı ya da kıyı gibi geniş ve tekrarlayan işleri de yorulmadan yapar.
+        en: A UAV is an aircraft that flies with no pilot on board. It goes where sending a person is dangerous, hard or expensive, such as a site after an earthquake, a forest fire or the underside of a tall bridge. It also handles wide, repetitive jobs like fields, pipelines and coastlines without tiring.
+    - baslik: { tr: Neden tek değil de sürü?, en: Why a swarm rather than one? }
+      metin:
+        tr: Tek İHA'nın pili, kamerası ve taşıyabileceği yük sınırlıdır. Birlikte uçan birkaç İHA aynı alanı daha kısa sürede tarar ve işi bölüşür. Birinin arızası görevi durdurmaz. Sürüyü tek bir operatör yönetir, her araca ayrı pilot gerekmez.
+        en: A single UAV has limited battery, camera and payload. Several UAVs flying together cover the same area faster and share the work. One failure does not stop the mission. A single operator runs the swarm, with no pilot needed for each vehicle.
+    - baslik: { tr: Sürüyü zor yapan ne?, en: What makes a swarm hard? }
+      metin:
+        tr: Araçlar birbirine çarpmamalı ve sürekli haberleşmeli. Her araç kendinin ve ötekilerin nerede olduğunu bilmeli, kararı kimin vereceği de belli olmalı. Bu sayfadaki benzetimler Matris'in bu dört soruya verdiği cevapları gösterir.
+        en: The vehicles must not collide and must keep talking to each other. Each one has to know where it is and where the others are, and it must be clear who makes the decisions. The simulations on this page show how Matris answers these four questions.
+  cevaplar:
+    - soru: { tr: Çarpışmamak, en: Not colliding }
+      cevap: { tr: Her İHA ORCA algoritmasıyla kendi hızını düzeltir. Risk yokken algoritma hiç karışmaz., en: Each UAV corrects its own velocity with the ORCA algorithm. When there is no risk the algorithm stays out of the way. }
+    - soru: { tr: Haberleşmek, en: Talking }
+      cevap: { tr: Wi-Fi 6 üzerinden UDP ile. Lider saniyede 20, takipçiler 5 paket gönderir. Wi-Fi Mesh menzil dışında kalanın verisini başka İHA üzerinden taşır., en: UDP over Wi-Fi 6. The leader sends 20 packets a second, the followers 5. Wi-Fi Mesh relays data for a UAV that drifts out of range. }
+    - soru: { tr: Yerini bilmek, en: Knowing where you are }
+      cevap: { tr: GPS mutlak konumu verir. UWB, İHA'lar arasındaki mesafeyi sinyalin uçuş süresinden ölçer ve GPS zayıfken de dizilimi korur., en: GPS gives the absolute position. UWB measures the distance between UAVs from the signal's time of flight and keeps the formation even when GPS is weak. }
+    - soru: { tr: Karar vermek, en: Deciding }
+      cevap: { tr: Lider ve takipçiler. Görevi lider yönetir, her takipçi kendi yerini kendisi hesaplar. Her İHA lider olabilir., en: Leader and followers. The leader runs the mission and each follower works out its own position. Any UAV can become the leader. }
+  tarama:
+    baslik: { tr: "Bir alanı taramak: tek İHA ve sürü", en: "Surveying an area: one UAV versus a swarm" }
+    giris: { tr: Aynı alanı 1 ile 6 arasında İHA ile tara. Tarama sürerken birini düşür ve ne olduğuna bak., en: Survey the same area with 1 to 6 UAVs. Take one down mid-survey and see what happens. }
+    teknik:
+      - { tr: Alan 12 × 8 kareye ayrılır ve 8 şerit halinde taranır. Şeritler İHA'lar arasında sırayla paylaştırılır., en: The area is split into 12 × 8 squares and surveyed in 8 strips. The strips are shared out among the UAVs in order. }
+      - { tr: Bir İHA düşerse yarım kalan şeridi ve sırası gelmemiş şeritleri işi en az kalan İHA'lara verilir. Hız ve süreler temsilîdir., en: If a UAV goes down, its half-done strip and its remaining strips go to the UAVs with the least work left. Speeds and times are illustrative. }
+  yarisma:
+    baslik: { tr: Yarışma ne istiyor?, en: What does the competition ask for? }
+    giris: { tr: "TEKNOFEST Sürü İHA Yarışması'nda en az üç İHA'dan oluşan bir sürü iki görev uçar.", en: "At the TEKNOFEST Swarm UAV Competition a swarm of at least three UAVs flies two missions." }
+    gorevler:
+      - baslik: { tr: "Görev 1: Dinamik sürü kabiliyeti", en: "Mission 1: Dynamic swarm capability" }
+        maddeler:
+          - { tr: Bütün İHA'lar belirlenen dizilimde aynı anda kalkar. Kalkıştan inişe kadar her şey otonomdur., en: All UAVs take off together in a given formation. Everything from take-off to landing is autonomous. }
+          - { tr: Sürüdeki en az bir İHA yerdeki QR kodlarını görüntü işlemeyle okur., en: At least one UAV in the swarm reads the QR codes on the ground with computer vision. }
+          - { tr: "Kod sürüye yeni bir dizilim (çizgi, V, ok başı), irtifa ya da öne-arkaya, sağa-sola yatış verebilir. Bunlar yapılırken merkez ve aralıklar korunur.", en: "A code can give the swarm a new formation (line, V, arrowhead), an altitude, or a forward-back or left-right tilt. The centre and the spacing are kept while it does so." }
+          - { tr: Kod bir İHA'yı sürüden ayırabilir. Araç kırmızı ya da mavi daireye iner, bekler ve geri katılır. Yedek varsa boşluğa girebilir., en: "A code can send one UAV out of the swarm: it lands on a red or blue circle, waits and rejoins. A reserve, if there is one, can fill the gap." }
+          - { tr: Her kod bir sonraki QR'ın numarasını verir. Son koddan sonra sürü dizilimi bozmadan eve döner ve iner., en: "Each code gives the number of the next QR. After the last one the swarm flies home in formation and lands." }
+      - baslik: { tr: "Görev 2: Yarı otonom sürü kontrolü", en: "Mission 2: Semi-autonomous swarm control" }
+        maddeler:
+          - { tr: Bütün sürü tek bir kumandayla, tek bir İHA gibi yönetilir., en: The whole swarm is flown with one remote, like a single UAV. }
+          - { tr: Hareket modunda sürü ileri, geri, sağa ve sola gider, yükselip alçalır. Yaw komutunda merkez yerinde kalır, hepsi birlikte döner., en: "In move mode the swarm goes forward, back, left and right, and climbs or descends. On a yaw command the centre stays put and they all turn together." }
+          - { tr: Manevra modunda bütün dizilim öne-arkaya ya da sağa-sola eğilir., en: In manoeuvre mode the whole formation tilts forward-back or left-right. }
+          - { tr: Sürü hiçbir harekette kopmamalıdır. Senkron bozulursa görev başarısız sayılır., en: The swarm must never come apart. Losing sync counts as a failed mission. }
+  roller:
+    baslik: { tr: "Sürü nasıl düşünür: üç rol", en: "How the swarm thinks: three roles" }
+    giris: { tr: Matris'te her İHA aynı yazılımı çalıştırır, hangisinin lider olacağı uçuşta belirlenir. Başlangıçta en küçük numaralı İHA liderdir. Bir İHA'ya tıkla ya da düğmeyle seç., en: "At Matris every UAV runs the same software, and which one leads is decided in flight. At the start the lowest-numbered UAV leads. Click a UAV or pick one with the buttons." }
+    lider:
+      ad: { tr: Lider, en: Leader }
+      metin: { tr: "Görevi yönetir. Rotayı, QR komutlarını ve görev durumunu bilir, kararları bütün sürüye yayınlar.", en: "Runs the mission. It knows the route, the QR commands and the mission state, and broadcasts its decisions to the whole swarm." }
+      isler:
+        - { tr: Rotayı ve görev durum makinesini yürütür, en: Runs the route and the mission state machine }
+        - { tr: QR kodunu okur ve içindeki komutu çözer, en: Reads the QR code and decodes the command in it }
+        - { tr: Saniyede 20 kez yaklaşık 500 baytlık durum paketi yayınlar, en: Broadcasts a state packet of about 500 bytes 20 times a second }
+    takipci:
+      ad: { tr: Takipçi, en: Follower }
+      metin: { tr: "Liderin yayınından kendi yerini kendisi hesaplar ve kendi otopilotuna gönderir. Merkezî bir bilgisayar gerekmez.", en: "Works out its own position from the leader's broadcast and sends it to its own autopilot. No central computer is needed." }
+      isler:
+        - { tr: Yuvasının hedef konumunu yerel olarak hesaplar, en: Computes its slot's target position locally }
+        - { tr: Çarpışma riskini ORCA ile düzeltir, en: Corrects collision risk with ORCA }
+        - { tr: Saniyede 5 kez yaklaşık 200 baytlık konum ve durum bildirir, en: Reports position and state in about 200 bytes 5 times a second }
+        - { tr: Ayrılma emri gelirse daireye iniş akışını kendi yürütür, en: Runs the landing-circle flow by itself when told to separate }
+    yedek:
+      ad: { tr: Yedek, en: Reserve }
+      metin: { tr: "Evde, yerde bekler. Lider SUBSTITUTE komutunu gönderince motorlarını çalıştırır ve boş kalan yuvaya girer.", en: "Waits on the ground at home. When the leader sends SUBSTITUTE it starts its motors and takes the empty slot." }
+      isler:
+        - { tr: Yerde, motorları kapalı bekler, en: Waits on the ground with motors off }
+        - { tr: Çağrılınca kalkıp boş yuvaya uçar, en: Lifts off and flies to the empty slot when called }
+        - { tr: Sürüye katılınca takipçi gibi çalışır, en: Works as a follower once it joins }
+    teknik:
+      - { tr: "Sürünün anlık haberleşme yükü yaklaşık 15 KB/s. Yer kontrol istasyonu yalnızca görevi başlatmak için kullanılır, uçuştaki bütün kararlar sürünün içinde verilir.", en: "The swarm's live traffic is about 15 KB/s. The ground station is only used to start the mission, and every decision in flight is made inside the swarm." }
+      - { tr: Görüntü işleme İHA'nın üstünde yapılır, bu yüzden video akışı yoktur. Her İHA'da Pixhawk otopilot ile Raspberry Pi 4 görev bilgisayarı MAVLink üzerinden konuşur., en: "Computer vision runs on board, so there is no video stream. On each UAV a Pixhawk autopilot and a Raspberry Pi 4 mission computer talk over MAVLink." }
+  gorev:
+    baslik: { tr: "Görev 1, adım adım", en: "Mission 1, step by step" }
+    giris: { tr: "Sürü kalkıştan inişe kadar kendi başına uçar. Altı QR'lı örnek bir alanda Başlat'a bas ya da adım adım ilerle.", en: "The swarm flies on its own from take-off to landing. Press Start on a sample area with six QR codes, or go step by step." }
+    teknik:
+      - { tr: "Liderin durum makinesi: IDLE → GO_TO_QR → FACE_NORTH → CENTER_QR → EXECUTING. Ayrılan takipçininki: GO_TO_MARKED → SEARCH_CIRCLE → CENTER_CIRCLE → REJOIN_GROUND → REJOIN_FLYING.", en: "The leader's state machine: IDLE → GO_TO_QR → FACE_NORTH → CENTER_QR → EXECUTING. A separating follower's: GO_TO_MARKED → SEARCH_CIRCLE → CENTER_CIRCLE → REJOIN_GROUND → REJOIN_FLYING." }
+      - { tr: "QR okuma: görüntü 640×480'e küçültülür. Gri tonlama, eşikleme, Gaussian bulanıklaştırma ve Otsu eşikleme sırayla denenir, kodu PyZbar çözer. İçerik JSON olarak ayrıştırılır.", en: "QR reading: the image is scaled to 640×480. Greyscale, thresholding, Gaussian blur and Otsu thresholding are tried in turn and PyZbar decodes the code. The content is parsed as JSON." }
+      - { tr: Ayrılan İHA iniş dairesini HSV renk maskesi ve kontur analiziyle bulur., en: The separating UAV finds its landing circle with an HSV colour mask and contour analysis. }
+      - { tr: Kod okunamazsa sürü bulunduğu yerde bekler ve okuyana kadar yavaşça alçalır., en: If the code cannot be read the swarm holds its position and slowly descends until it can. }
+  konsol:
+    baslik: { tr: Komut konsolu, en: Command console }
+    giris: { tr: "Lider sürüye kısa komutlar yayınlar. Bir komuta bas, sürü uygulasın, giden paketi yanda gör. Bazı komutlar yalnızca doğru anda işe yarar. Örneğin STAY_GROUNDED ancak ayrılan İHA yerde beklerken kullanılabilir.", en: "The leader broadcasts short commands to the swarm. Press one, watch the swarm carry it out and see the packet beside it. Some commands only make sense at the right moment. STAY_GROUNDED, for example, only works while a separated UAV is waiting on the ground." }
+    teknik:
+      - { tr: Paketler takımın uçuş kodundaki biçimin kısaltılmışıdır. Gerçek paketlerde roller, yuva ofsetleri ve başlangıç noktası da gider., en: "The packets are a shortened form of the team's flight code. The real ones also carry roles, slot offsets and the origin." }
+      - { tr: "Yatış komutunda (PITCH_ROLL) her takipçi, dizilim merkezine uzaklığına göre bir irtifa farkı alır. Böylece bütün dizilim tek bir düzlem gibi eğilir.", en: "On a tilt command (PITCH_ROLL) each follower takes an altitude offset based on its distance from the formation centre, so the whole formation tilts like one plane." }
+  lider:
+    baslik: { tr: Lider düşerse, en: If the leader goes down }
+    giris: { tr: "Lider iki şekilde sürüden çıkabilir. Biri beklenmedik bir arızadır, öteki görevin gerektirdiği planlı bir ayrılmadır. İkisini de dene.", en: "The leader can leave the swarm in two ways. One is an unexpected failure, the other a planned departure the mission calls for. Try both." }
+    teknik:
+      - { tr: "Kademeli zaman aşımı: her takipçi liderin yayınını izler. İHA 1 6 s, İHA 2 7 s bekler. Böylece aynı anda yalnızca bir İHA lider olur, yayını alan ötekiler sayaçlarını sıfırlar.", en: "Staggered timeout: each follower watches the leader's broadcast. UAV 1 waits 6 s and UAV 2 waits 7 s, so only one UAV becomes leader and the others reset their timers when they hear it." }
+      - { tr: "Arızada görev RTL ile sona erer. Görevin tam devamı yalnızca planlı devirde (HANDOFF) mümkündür: o anki görev durumu yeni lidere aktarılır, yeni lider kendi kamerasıyla devam eder.", en: "On a failure the mission ends with RTL. A full carry-on is only possible with a planned handover (HANDOFF): the current mission state goes to the new leader, which carries on with its own camera." }
+  geometri:
+    baslik: { tr: Dizilimin geometrisi, en: The geometry of a formation }
+    giris: { tr: "Her takipçi yerini lidere göre iki sayıyla bilir: ne kadar önde ve ne kadar yanda olduğu. Sürü dönünce bu iki sayı aynı açıyla döner. Kaydırıcılarla dene.", en: "Each follower knows its place relative to the leader as two numbers: how far ahead and how far to the side. When the swarm turns, both numbers turn by the same angle. Try the sliders." }
+    teknik:
+      - { tr: "x = cos θ · ileri − sin θ · yan, y = sin θ · ileri + cos θ · yan. Burada θ sürünün yönüdür (0° doğu, 90° kuzey).", en: "x = cos θ · forward − sin θ · side, y = sin θ · forward + cos θ · side, where θ is the swarm's heading (0° east, 90° north)." }
+      - { tr: "Çizgide ofsetler (0, ±k·a), V'de (k·a, ±k·a), ok başında (−k·a, ±k·a). k yuvanın katı, a aralıktır. Tek numaralı yuvalar bir yanda, çiftler öbür yanda durur.", en: "Offsets are (0, ±k·a) for a line, (k·a, ±k·a) for a V and (−k·a, ±k·a) for an arrowhead, where k is the slot's rank and a the spacing. Odd slots sit on one side, even slots on the other." }
+      - { tr: "Yatışta her İHA'nın irtifa farkı, dizilim merkezine uzaklığı ile tan(açı) · 2'nin çarpımıdır.", en: "When tilting, each UAV's altitude offset is its distance from the formation centre times tan(angle) · 2." }
+      - { tr: Varsayılan aralık ve seyir irtifası 8 m. Her İHA görev boyunca kendi yuvasını korur., en: The default spacing and cruise altitude are 8 m. Each UAV keeps its own slot for the whole mission. }
+  not:
+    tr: Bu sayfadaki benzetimler takımın yaklaşımını sadeleştirerek anlatır, gerçek uçuş yazılımı değildir. Bilgiler takımın 2026 Ön Tasarım Raporu'ndan ve uçuş kodundan alınmıştır.
+    en: The simulations on this page are a simplified picture of the team's approach, not the actual flight software. The information comes from the team's 2026 Preliminary Design Report and flight code.

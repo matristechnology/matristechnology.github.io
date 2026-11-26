@@ -364,7 +364,7 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 });
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
-  for (const yol of ['/', '/en/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
@@ -384,4 +384,142 @@ test('E3 üye kartı ayrıntısı düğmeyle açılıyor (ayrıntısı olan üye
   await page.keyboard.press('Enter');
   await expect(dugme).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('.uye[data-acik] .uye-ayrinti').first()).toBeVisible();
+});
+
+test.describe('D14 Sürü İHA sayfası', () => {
+  test('iki dilde açılıyor, taşma yok, hata yok, ana sayfadan ve menüden ulaşılıyor', async ({ page }) => {
+    const hatalar: string[] = [];
+    page.on('pageerror', (e) => hatalar.push(e.message));
+    await page.setViewportSize({ width: 320, height: 800 });
+    for (const yol of ['/suru-iha/', '/en/swarm/']) {
+      await page.goto(yol);
+      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+      await bekle(page, 300);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+      expect(await page.locator('[data-tarama], [data-roller], [data-gorev], [data-konsol], [data-lider-sahne], [data-geometri]').count()).toBe(6);
+    }
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+    await page.locator('.ayrintili a').click();
+    await expect(page).toHaveURL(/\/suru-iha\/$/);
+    await expect(page.locator('.menu a[aria-current="page"]')).toHaveText('Sürü İHA');
+    await page.locator('a[data-dil-degistir]').click();
+    await expect(page).toHaveURL(/\/en\/swarm\/$/);
+    expect(hatalar).toEqual([]);
+  });
+
+  test('Görev 1 baştan sona: QR sırası doğru, komutlar uygulanıyor, sürü iniyor', async ({ page }) => {
+    await page.goto('/suru-iha/');
+    const g = page.locator('[data-gorev]');
+    await g.scrollIntoViewIfNeeded();
+    await page.locator('[data-gorev] [data-hiz="4"]').click();
+    await page.locator('[data-gorev] [data-oynat]').click();
+    await expect(g).toHaveAttribute('data-okunan', '1', { timeout: 15000 });
+    await expect(page.locator('[data-gorev] [data-qr-json]')).toContainText('"frm","v",8');
+    await expect(g).toHaveAttribute('data-faz', 'bitti', { timeout: 60000 });
+    await expect(g).toHaveAttribute('data-okunan', '1,3,4,5,2');
+    await expect(g).toHaveAttribute('data-tip', 'OKBASI');
+    await expect(page.locator('[data-gorev] li[data-adim].bitti')).toHaveCount(7);
+  });
+
+  test('tarama biter, düşen İHA’nın işini kalanlar üstlenir, tek İHA düşerse yarım kalır', async ({ page }) => {
+    await page.goto('/suru-iha/');
+    const t = page.locator('[data-tarama]');
+    await t.scrollIntoViewIfNeeded();
+    await page.locator('[data-tarama] [data-basla]').click();
+    await bekle(page, 1500);
+    await page.locator('[data-tarama] [data-dusur]').click();
+    await expect(t).toHaveAttribute('data-dusen', '1');
+    await expect(t).toHaveAttribute('data-durum', 'bitti', { timeout: 40000 });
+    await expect(t).toHaveAttribute('data-oran', '100');
+    await page.locator('[data-tarama] [data-basla]').click();
+    await page.locator('[data-tarama] [data-azalt]').click();
+    await page.locator('[data-tarama] [data-azalt]').click();
+    await expect(t).toHaveAttribute('data-sayi', '1');
+    await page.locator('[data-tarama] [data-basla]').click();
+    await bekle(page, 2000);
+    await page.locator('[data-tarama] [data-dusur]').click();
+    await expect(t).toHaveAttribute('data-durum', 'yarim', { timeout: 5000 });
+  });
+
+  test('konsol: komutlar doğru anda kabul ediliyor, paket doğru', async ({ page }) => {
+    await page.goto('/suru-iha/');
+    const k = page.locator('[data-konsol]'), paket = page.locator('[data-konsol] [data-paket]');
+    await k.scrollIntoViewIfNeeded();
+    const bas = (s: string) => page.locator(`[data-konsol] ${s}`).click();
+    await bas('[data-k="ALTITUDE"][data-arg="2"]');
+    await expect(k).toHaveAttribute('data-havada', '0');
+    await bas('[data-k="TAKEOFF"]');
+    await expect(paket).toContainText('"cmd":"TAKEOFF"');
+    await bas('[data-k="ALTITUDE"][data-arg="2"]');
+    await expect(paket).toHaveText('{"cmd":"ALTITUDE","altitude":10}');
+    await bas('[data-k="FORMATION"][data-arg="V"]');
+    await expect(k).toHaveAttribute('data-tip', 'V');
+    await bas('[data-k="SEPARATE"][data-arg="b"]');
+    await expect(paket).toContainText('"color":"MAVI"');
+    await expect(k).toHaveAttribute('data-ayrilma', 'BEKLE', { timeout: 20000 });
+    await bas('[data-k="STAY_GROUNDED"]');
+    await expect(k).toHaveAttribute('data-bos-yuva', '2');
+    await bas('[data-k="SUBSTITUTE"]');
+    await expect(paket).toContainText('"cmd":"SUBSTITUTE","drone_id":3,"slot":2');
+    await expect(k).toHaveAttribute('data-yedek', 'dizide');
+    await bas('[data-k="DISARM"]');
+    await expect(paket).toContainText('SUBSTITUTE');
+  });
+
+  test('lider arızasında kademeli zaman aşımıyla İHA 1 lider oluyor ve sürü eve iniyor', async ({ page }) => {
+    await page.goto('/suru-iha/');
+    const l = page.locator('[data-lider-sahne]');
+    await l.scrollIntoViewIfNeeded();
+    await page.locator('[data-lider-sahne] [data-ariza]').click();
+    await expect(l).toHaveAttribute('data-faz', 'ariza');
+    await bekle(page, 4000);
+    await expect(l).toHaveAttribute('data-faz', 'ariza');
+    await expect(l).toHaveAttribute('data-lider', '1', { timeout: 5000 });
+    await expect(l).toHaveAttribute('data-faz', 'evde', { timeout: 25000 });
+  });
+
+  test('planlı devirde (HANDOFF) görev sürüyor, eski lider ayrılıp iniyor', async ({ page }) => {
+    await page.goto('/suru-iha/');
+    const l = page.locator('[data-lider-sahne]');
+    await l.scrollIntoViewIfNeeded();
+    await page.locator('[data-lider-sahne] [data-devir]').click();
+    await expect(l).toHaveAttribute('data-lider', '1');
+    await expect(page.locator('[data-lider-sahne] [data-paket]')).toContainText('"new_leader_id":1');
+    await expect(l).toHaveAttribute('data-faz', 'devir-son', { timeout: 25000 });
+  });
+
+  test('geometri tablosu ofsetleri ve döndürmeyi doğru hesaplıyor', async ({ page }) => {
+    await page.goto('/suru-iha/');
+    const satir = (n: number) => page.locator(`[data-geometri] tbody tr:nth-child(${n + 1}) td`).allTextContents();
+    expect(await satir(1)).toEqual(['1', '(8.0, 8.0)', '(-8.0, 8.0)', '+0.0 m']);
+    await page.locator('[data-geometri] [data-tip="CIZGI"]').click();
+    await page.locator('#g-yon').fill('0');
+    expect(await satir(2)).toEqual(['2', '(0.0, -8.0)', '(0.0, -8.0)', '+0.0 m']);
+    await page.locator('#g-pitch').fill('10');
+    await page.locator('[data-geometri] [data-tip="V"]').click();
+    // V, 5 İHA: ileri ofsetlerin ortalaması 9,6. Yuva 0 merkezin 9,6 m gerisinde: +9,6 · tan10° · 2 = +3,4 m
+    expect((await satir(0))[3]).toBe('+3.4 m');
+  });
+
+  test('hareketi azalt: hiçbir sahne kendiliğinden oynamıyor, adım düğmesi tek adımı bitiriyor', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/suru-iha/');
+    const g = page.locator('[data-gorev]');
+    await g.scrollIntoViewIfNeeded();
+    await page.locator('[data-gorev] [data-sonraki]').click();
+    await expect(g).toHaveAttribute('data-adim-no', '1');
+    await page.locator('[data-gorev] [data-sonraki]').click();
+    await expect(g).toHaveAttribute('data-okunan', '1');
+    await expect(g).toHaveAttribute('data-adim-no', '2');
+  });
+
+  test('betik kapalıyken rollerin yazılı anlatımı görünüyor', async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto('/suru-iha/');
+    await expect(page.locator('.roller-yazi')).toBeVisible();
+    await expect(page.locator('[data-gorev]')).toBeHidden();
+    await ctx.close();
+  });
 });

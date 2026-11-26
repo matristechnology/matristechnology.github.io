@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import SuruDemo from '../components/SuruDemo.astro';
 import UyeKarti from '../components/UyeKarti.astro';
 import { icerik, c, gorunenUyeler, gorunenDanismanlar, gorunenBolumler, galeriGorseli, sponsorGorseli, type Dil } from '../lib/icerik';
-import { t, bolumler, digerDil, anaYol, type Bolum } from '../lib/i18n';
+import { t, bolumler, digerDil, anaYol, altSayfa, type Bolum } from '../lib/i18n';
 
 interface Props { dil: Dil }
 const { dil } = Astro.props;
@@ -85,6 +85,7 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
       </div>
     )}
     <SuruDemo dil={dil} />
+    <p class="ayrintili" data-belir><a class="dugme" href={altSayfa.suru[dil]}>{t('ayrintili', dil)}<span aria-hidden="true">→</span></a></p>
   </section>
 
   <section class="bolum kap" {...kimlik('matris')}>

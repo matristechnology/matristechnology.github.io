@@ -16,6 +16,11 @@ export const bolumler = {
 } as const;
 export type Bolum = keyof typeof bolumler;
 
+/** Ayrıntı sayfası olan bölümler ve iki dildeki adresleri. Yeni sayfa eklenince buraya da yazılır. */
+export const altSayfa: Partial<Record<Bolum, Record<Dil, string>>> & { suru: Record<Dil, string> } = {
+  suru: { tr: '/suru-iha/', en: '/en/swarm/' },
+};
+
 const metin = {
   icerigeGec: { tr: 'İçeriğe geç', en: 'Skip to content' },
   menu: { tr: 'Menü', en: 'Menu' },
@@ -114,6 +119,7 @@ const metin = {
   basvur: { tr: 'Başvur', en: 'Apply' },
   altBilgi: { tr: 'Bursa Teknik Üniversitesi · MATRO Topluluğu', en: 'Bursa Technical University · MATRO Society' },
   yukari: { tr: 'Başa dön', en: 'Back to top' },
+  ayrintili: { tr: 'Ayrıntılı incele', en: 'Explore in depth' },
   yok404: { tr: 'Bu sayfa sürüden ayrılmış.', en: 'This page has left the swarm.' },
   anaSayfa: { tr: 'Ana sayfaya dön', en: 'Back to the home page' },
 } as const;

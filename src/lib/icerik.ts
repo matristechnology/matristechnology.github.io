@@ -12,6 +12,9 @@ const ikiDilBos = ikiDil.optional().default('');
 const metin = z.string().nullish().transform((v) => v ?? '');
 const liste = <T extends z.ZodTypeAny>(oge: T) => z.array(oge).nullish().transform((v) => v ?? []);
 
+const bolum = z.object({ baslik: ikiDil, giris: ikiDilBos, teknik: liste(ikiDil) });
+const rol = z.object({ ad: ikiDil, metin: ikiDil, isler: liste(ikiDil) });
+
 const sema = z.object({
   site: z.object({ adres: z.string(), baslik: ikiDil, aciklama: ikiDil }),
   takim: z.object({
@@ -53,6 +56,20 @@ const sema = z.object({
     ihtiyaclar: liste(z.object({ grup: ikiDil, ogeler: z.array(z.string()) })),
     dosya: metin,
     sponsorlar: liste(z.object({ ad: z.string(), logo: metin, baglanti: metin })),
+  }),
+  suru_sayfa: z.object({
+    baslik: ikiDil,
+    ozet: ikiDilBos,
+    neden: liste(z.object({ baslik: ikiDil, metin: ikiDil })),
+    cevaplar: liste(z.object({ soru: ikiDil, cevap: ikiDil })),
+    tarama: bolum,
+    yarisma: bolum.extend({ gorevler: liste(z.object({ baslik: ikiDil, maddeler: liste(ikiDil) })) }),
+    roller: bolum.extend({ lider: rol, takipci: rol, yedek: rol }),
+    gorev: bolum,
+    konsol: bolum,
+    lider: bolum,
+    geometri: bolum,
+    not: ikiDilBos,
   }),
   iletisim: z.object({
     eposta: metin,

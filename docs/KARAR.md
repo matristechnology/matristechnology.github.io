@@ -77,3 +77,15 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Sürü kuruluyken görüş alanına giren İHA katılır, kaydırmaya gerek yok. Sıradaki boş yuvaya kendisi uçar, sürüdekiler yerinden kıpırdamaz. 12 doluysa sürüdeki en eski üye (lider hariç) yuvasını bırakıp bölgesine döner, yeni gelen onun yuvasına girer. Bölgesinden uzaklaşan üye ayrılmaz (Ali'nin isteği, bir önceki kural kaldırıldı).
 - Her sürünün bir lideri var: kurulurken görüş alanının ortasına en yakın İHA. Lider olduğu yerde kalır, sürü onun çevresinde kurulur. Lider metin renginde ve çevresinde ince altın bir halkayla çizilir. Halka diziliminde lider ortada durur.
 - Yabancı sürü geldiğinde bizimkiler dağınıksa önce dizilime girer, yabancılara dönük. Fark ettikten sonra dizilimle hücum eder, 130 px yaklaşınca her İHA kendine en yakın yabancıyı kovalar, hedefin biraz ilerisine nişan alır. Dizilim zaten kuruluysa doğrudan hücuma geçer.
+
+## 26.11.2026: ayrıntı sayfaları, ilk sayfa Sürü İHA
+
+- Ali'nin isteği: menüdeki yedi başlığın her biri için ayrı, daha ayrıntılı ve daha etkileşimli bir sayfa. Ana sayfa olduğu gibi kalıyor, Sürü İHA bölümünün altına yalnızca "Ayrıntılı incele" bağlantısı eklendi. Sayfalar tek tek, Ali'ye sorularak yapılıyor.
+- Sürü İHA sayfası `/suru-iha/` ve `/en/swarm/`. Ali'nin seçtiği bölümler: roller, Görev 1 oynatıcısı, komut konsolu, lider düşerse, dizilim geometrisi. Görev 2'deki "sürüyü sen uçur" bölümü seçilmedi. Başta "neden İHA, neden sürü" anlatımı ve alan tarama benzetimi var, bunlara Ali "sen karar ver" dedi.
+- Dil: her bölüm sade bir cümleyle açılır, komut adları, durum makineleri ve formüller "Teknik ayrıntı" kutusunda kapalı durur.
+- Görünüm eğik 3B (Ali'nin seçimi). 3B kütüphanesi kullanılmadı, 2B tuval üstünde elle yazılmış perspektif izdüşüm var (`src/scripts/uc-boyut.ts`). Sayfa hızlı kalıyor, telefonda da çalışıyor. Ziyaretçi sürükleyerek ya da düğmeyle görünümü değiştirebiliyor.
+- Uçuş modeli (`src/scripts/suru-model.ts`) takımın uçuş kodundan alındı: dizilim ofsetleri, 8 m aralık ve irtifa, yatışta irtifa ofseti (tan(açı) · 2), yuvaların korunması, lider seçiminde 5 + numara saniyelik kademeli zaman aşımı, QR içeriğinin kısa biçimi (`frm`, `alt`, `mnv`, `leav`, takım numarası 1), komut paketlerinin alanları.
+- Ön Tasarım Raporu'ndaki döndürme formülünün ikinci satırında işaret hatası var (sin·x − cos·y). Sayfada koddaki doğru biçim kullanıldı: y = sin θ · ileri + cos θ · yan.
+- Görev 1'deki QR noktalarının yeri, rota ve QR içerikleri örnektir, sayfada da öyle yazıyor. Süreler kısaltıldı, İHA'lar görünsün diye büyük çizildi.
+- "Neden İHA" kartlarındaki örnekler (enkaz, yangın, köprü, tarla, boru hattı) genel bilgidir, takıma ait bir iddia değildir. Takıma ait sayı ve teknik bilgilerin hepsi Ön Tasarım Raporu'ndan.
+- Ayrıntı sayfalarında menü, sayfası olan bölüm için o sayfaya, öteki bölümler için ana sayfadaki yerine gider.

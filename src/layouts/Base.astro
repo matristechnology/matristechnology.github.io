@@ -3,7 +3,7 @@ import '../styles/global.css';
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 import { icerik, c, gorunenBolumler, type Dil } from '../lib/icerik';
-import { t, anaYol, digerDil, bolumler } from '../lib/i18n';
+import { t, anaYol, digerDil, bolumler, altSayfa, type Bolum } from '../lib/i18n';
 
 interface Props {
   dil: Dil;
@@ -12,8 +12,10 @@ interface Props {
   /** Bu sayfanın öteki dildeki adresi */
   karsiYol: string;
   sayfa: 'ana' | 'diger';
+  /** Ayrıntı sayfasında bulunulan bölüm: menüde işaretlenir. */
+  bolum?: Bolum;
 }
-const { dil, baslik, aciklama, karsiYol, sayfa } = Astro.props;
+const { dil, baslik, aciklama, karsiYol, sayfa, bolum } = Astro.props;
 const diger = digerDil(dil);
 const site = icerik.site.adres;
 const buAdres = new URL(Astro.url.pathname, site).href;
@@ -21,7 +23,8 @@ const karsiAdres = new URL(karsiYol, site).href;
 const ogGorsel = new URL(`/og-${dil}.png`, site).href;
 const ana = anaYol(dil);
 const sira = gorunenBolumler();
-const bag = (b: (typeof sira)[number]) => `${sayfa === 'ana' ? '' : ana}#${bolumler[b][dil]}`;
+// Ana sayfada menü bölümlere kayar. Ayrıntı sayfalarında, sayfası olan bölüm o sayfaya, öteki bölümler ana sayfadaki yerine gider.
+const bag = (b: (typeof sira)[number]) => (sayfa !== 'ana' && altSayfa[b] ? altSayfa[b]![dil] : `${sayfa === 'ana' ? '' : ana}#${bolumler[b][dil]}`);
 const ad = icerik.takim.ad;
 ---
 
@@ -84,7 +87,7 @@ const ad = icerik.takim.ad;
         <nav class="menu" aria-label={t('anaMenu', dil)}>
           <ul>
             {sira.map((b) => (
-              <li><a href={bag(b)} data-bolum={bolumler[b][dil]}>{t(b, dil)}</a></li>
+              <li><a href={bag(b)} data-bolum={bolumler[b][dil]} aria-current={bolum === b ? 'page' : undefined}>{t(b, dil)}</a></li>
             ))}
           </ul>
         </nav>
@@ -107,7 +110,7 @@ const ad = icerik.takim.ad;
             </summary>
             <ul>
               {sira.map((b) => (
-                <li><a href={bag(b)}>{t(b, dil)}</a></li>
+                <li><a href={bag(b)} aria-current={bolum === b ? 'page' : undefined}>{t(b, dil)}</a></li>
               ))}
             </ul>
           </details>
