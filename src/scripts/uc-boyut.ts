@@ -237,7 +237,7 @@ export type Sahne = {
 
 export function sahneKur(
   kok: HTMLElement,
-  o: { adim: (dt: number) => void; ciz: (s: Sahne) => void; tikla?: (x: number, y: number) => void; gorunum?: number; uzak?: number },
+  o: { adim: (dt: number) => void; ciz: (s: Sahne) => void; tikla?: (x: number, y: number) => void; gorunum?: number; uzak?: number; /** Görünürlüğü tuval yerine bu öğeden izle (yan yana iki sahne birlikte çalışsın diye). */ gozle?: Element },
 ): Sahne | null {
   const tuval = kok.querySelector<HTMLCanvasElement>('canvas');
   if (!tuval) return null;
@@ -290,7 +290,7 @@ export function sahneKur(
     calisiyor = true; son = performance.now();
     requestAnimationFrame(kare);
   };
-  new IntersectionObserver((k) => { gorunur = k[0].isIntersecting; kok.dataset.calisiyor = gorunur ? '1' : '0'; baslat(); }).observe(tuval);
+  new IntersectionObserver((k) => { gorunur = k[0].isIntersecting; kok.dataset.calisiyor = gorunur ? '1' : '0'; baslat(); }).observe(o.gozle ?? tuval);
   document.addEventListener('visibilitychange', baslat);
 
   // Sürükleyince döner. Az kıpırdayan dokunuş tıklama sayılır. Dokunmatikte dikey sürükleme sayfayı kaydırır.

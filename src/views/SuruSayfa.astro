@@ -68,13 +68,20 @@ const plan = [
   <section class="bolum kap" id={kimlik('tarama')}>
     <h2 data-belir>{c(S.tarama.baslik, dil)}</h2>
     <p class="bolum-giris" data-belir>{c(S.tarama.giris, dil)}</p>
-    <div class="sahne-govde js-only" data-tarama data-m={m}>
-      <div class="sahne">
-        <canvas role="img" aria-label={sm('tAlan', dil)}></canvas>
-        <button type="button" class="sahne-gorunum dugme-ikon" data-gorunum aria-label={sm('gorunum', dil)} title={sm('gorunum', dil)}><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3 3 8l9 5 9-5-9-5ZM3 13l9 5 9-5"/></svg></button>
-        <span class="sahne-ipucu" aria-hidden="true">{sm('surukle', dil)}</span>
+    <div class="tarama js-only" data-tarama data-m={m}>
+      <div class="tarama-ikili">
+        {(['tek', 'suru'] as const).map((p) => (
+          <div class="tarama-panel" data-panel={p}>
+            <div class="tarama-bas">
+              <span class="tarama-ad">{sm(p === 'tek' ? 'tTek' : 'tSuru', dil)}{p === 'suru' && <> · <span data-sayi-yaz>3</span> {dil === 'tr' ? 'İHA' : 'UAVs'}</>}</span>
+              <span class="tarama-sure" data-sure>{dil === 'tr' ? '0,0' : '0.0'} s</span>
+              <span class="tarama-oran" data-oran>%0</span>
+            </div>
+            <div class="sahne"><canvas role="img" aria-label={sm(p === 'tek' ? 'tAlanTek' : 'tAlanSuru', dil)}></canvas></div>
+          </div>
+        ))}
       </div>
-      <div class="demo-kumanda">
+      <div class="tarama-kumanda">
         <div class="demo-grup" role="group" aria-label={sm('tSayi', dil)}>
           <span class="demo-etiket">{sm('tSayi', dil)}</span>
           <button type="button" class="dugme kucuk kare" data-azalt aria-label={sm('tAzalt', dil)}>−</button>
@@ -84,6 +91,7 @@ const plan = [
         <div class="demo-grup">
           <button type="button" class="dugme kucuk birincil" data-basla>{sm('basla', dil)}</button>
           <button type="button" class="dugme kucuk" data-dusur disabled>{sm('tDusur', dil)}</button>
+          <button type="button" class="dugme kucuk" data-dusur-tek disabled>{sm('tDusurTek', dil)}</button>
         </div>
         <p class="demo-durum" role="status" data-durum></p>
       </div>

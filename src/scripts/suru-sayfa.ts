@@ -65,109 +65,125 @@ function ayrilmaIlerle(y: Ayrilma, s: Suru, dt: number): AyrilmaAsama | null {
   return y.asama !== once ? y.asama : null;
 }
 
-/* ════ 1. Alan tarama: tek İHA ile sürü ═══════════════════════════════════════════════════ */
+/* ════ 1. Alan tarama: solda tek İHA, sağda sürü, ikisi aynı anda başlar ══════════════════ */
 {
   const kok = $(document, '[data-tarama]');
-  if (kok) {
-    const M = metinler(kok), durumYaz = $(kok, '[data-durum]')!, sayiYaz = $(kok, '[data-sayi-yaz]')!;
-    const basDugme = $<HTMLButtonElement>(kok, '[data-basla]')!, dusDugme = $<HTMLButtonElement>(kok, '[data-dusur]')!;
+  const tekKok = kok && $(kok, '[data-panel="tek"]'), suruKok = kok && $(kok, '[data-panel="suru"]');
+  if (kok && tekKok && suruKok) {
+    const M = metinler(kok), durumYaz = $(kok, '[data-durum]')!, sayiYaz = $$(kok, '[data-sayi-yaz]');
+    const basDugme = $<HTMLButtonElement>(kok, '[data-basla]')!, dusDugme = $<HTMLButtonElement>(kok, '[data-dusur]')!, dusTekDugme = $<HTMLButtonElement>(kok, '[data-dusur-tek]')!;
     const SX = 12, SY = 8, H = 4, X0 = -24, Y0 = -16, HIZ = 12, IRTIFA = 6;
     type Tarayici = { p: V3; yaw: number; sira: number[]; yol: V3[]; dustu: boolean; vz: number; eg: number };
-    let n = 3, taranan = new Uint8Array(SX * SY), ihalar: Tarayici[] = [], durum: 'hazir' | 'surer' | 'bitti' | 'yarim' = 'hazir', sure = 0, sonYaz = 0;
+    type Durum = 'hazir' | 'surer' | 'bitti' | 'yarim';
     const seritUclari = (j: number): [V3, V3] => [v3(X0 + H / 2, Y0 + H / 2 + j * H, IRTIFA), v3(X0 + SX * H - H / 2, Y0 + H / 2 + j * H, IRTIFA)];
-    const evKonumu = (i: number, adet: number) => v3((i - (adet - 1) / 2) * 5, Y0 - 7, 0);
-    const paylas = (adet: number) => Array.from({ length: adet }, (_, i) => Array.from({ length: SY }, (_, j) => j).filter((j) => Math.floor((j * adet) / SY) === i));
-    /** Bir İHA'nın şerit listesini bitirmesi için gereken yol (metre). Tek İHA süresini hesaplamak için. */
-    const yolBoyu = (bas: V3, sira: number[]) => {
-      let p = bas, top = 0;
-      for (const j of sira) {
-        const [a, b] = seritUclari(j), [g, c] = Math.hypot(a.x - p.x, a.y - p.y) <= Math.hypot(b.x - p.x, b.y - p.y) ? [a, b] : [b, a];
-        top += Math.hypot(g.x - p.x, g.y - p.y) + Math.hypot(c.x - g.x, c.y - g.y);
-        p = c;
-      }
-      return top;
+    /** Bir tarama: kendi alanı, kendi İHA'ları, kendi süresi. Şeritler İHA'lara sırayla paylaştırılır. */
+    const taramaYap = (adet: number) => {
+      const t = {
+        adet, taranan: new Uint8Array(SX * SY), sure: 0, durum: 'hazir' as Durum, dusen: 0,
+        ihalar: Array.from({ length: adet }, (_, i): Tarayici => ({
+          p: v3((i - (adet - 1) / 2) * 5, Y0 - 7, 0), yaw: Math.PI / 2,
+          sira: Array.from({ length: SY }, (_, j) => j).filter((j) => Math.floor((j * adet) / SY) === i), yol: [], dustu: false, vz: 0, eg: 0,
+        })),
+        oran: () => Math.round((t.taranan.reduce((a, b) => a + b, 0) / t.taranan.length) * 100),
+        canli: () => t.ihalar.filter((u) => !u.dustu),
+        adim: (dt: number) => {
+          for (const u of t.ihalar) if (u.dustu) { u.vz -= 9.8 * dt; u.p.z = Math.max(0, u.p.z + u.vz * dt); u.eg = Math.min(0.5, u.eg + dt); }
+          if (t.durum !== 'surer') return;
+          t.sure += dt;
+          for (const u of t.ihalar) {
+            if (u.dustu) continue;
+            if (!u.yol.length) {
+              const j = u.sira.shift();
+              if (j === undefined) continue;
+              const [a, b] = seritUclari(j);
+              u.yol = Math.hypot(a.x - u.p.x, a.y - u.p.y) <= Math.hypot(b.x - u.p.x, b.y - u.p.y) ? [a, b] : [b, a];
+            }
+            const h = u.yol[0], dx = h.x - u.p.x, dy = h.y - u.p.y, d = Math.hypot(dx, dy), yol = HIZ * dt;
+            if (d > 0.01) u.yaw = Math.atan2(dy, dx);
+            if (d <= yol) { u.p.x = h.x; u.p.y = h.y; u.yol.shift(); } else { u.p.x += (dx / d) * yol; u.p.y += (dy / d) * yol; }
+            u.p.z += (IRTIFA - u.p.z) * Math.min(1, dt * 4);
+            const i = Math.floor((u.p.x - X0) / H), j = Math.floor((u.p.y - Y0) / H);
+            if (u.p.z > IRTIFA * 0.7 && i >= 0 && i < SX && j >= 0 && j < SY) t.taranan[j * SX + i] = 1;
+          }
+          if (t.taranan.every((v) => v)) t.durum = 'bitti';
+          else if (!t.canli().length) t.durum = 'yarim';
+        },
+        /** En çok işi kalan İHA düşer. Yarım şeridi ve başlamadığı şeritler, işi en az kalanlara verilir. */
+        dusur: () => {
+          const canli = t.canli();
+          if (!canli.length) return;
+          const is = (u: Tarayici) => u.sira.length + (u.yol.length ? 1 : 0);
+          const kurban = canli.reduce((a, b) => (is(b) > is(a) ? b : a));
+          kurban.dustu = true; kurban.vz = 0; t.dusen++;
+          const kalan = [...(kurban.yol.length ? [Math.max(0, Math.min(SY - 1, Math.round((kurban.p.y - Y0 - H / 2) / H)))] : []), ...kurban.sira];
+          kurban.sira = []; kurban.yol = [];
+          const digerleri = t.canli();
+          for (const j of kalan) { if (!digerleri.length) break; digerleri.reduce((a, b) => (b.sira.length < a.sira.length ? b : a)).sira.push(j); }
+        },
+      };
+      return t;
     };
-    const tekSure = () => yolBoyu(evKonumu(0, 1), paylas(1)[0]) / HIZ;
-    const kur = () => {
-      taranan = new Uint8Array(SX * SY); sure = 0; durum = 'hazir';
-      const p = paylas(n);
-      ihalar = p.map((sira, i) => ({ p: evKonumu(i, n), yaw: Math.PI / 2, sira: [...sira], yol: [], dustu: false, vz: 0, eg: 0 }));
-      yaz();
+    let n = 3, tek = taramaYap(1), suru = taramaYap(n), basladi = false, sonYaz = 0, olay = '';
+    const sn = (x: number) => x.toFixed(1);
+    const tr = document.documentElement.lang === 'tr', goster = (x: number, b = 1) => (tr ? x.toFixed(b).replace('.', ',') : x.toFixed(b));
+    const panelYaz = (p: HTMLElement, t: ReturnType<typeof taramaYap>) => {
+      $(p, '[data-sure]')!.textContent = `${goster(t.sure)} s`;
+      $(p, '[data-oran]')!.textContent = `%${t.oran()}`;
+      p.toggleAttribute('data-bitti', t.durum === 'bitti'); p.toggleAttribute('data-yarim', t.durum === 'yarim');
     };
-    const oran = () => Math.round((taranan.reduce((a, b) => a + b, 0) / taranan.length) * 100);
     const yaz = () => {
-      sayiYaz.textContent = String(n);
-      kok.dataset.durum = durum; kok.dataset.sayi = String(n); kok.dataset.oran = String(oran());
-      basDugme.textContent = durum === 'hazir' ? M.basla : M.bastan;
-      dusDugme.disabled = durum !== 'surer';
-      const y = { n, p: oran(), s: yuvarla(sure).toLocaleString(document.documentElement.lang), s1: yuvarla(tekSure()).toLocaleString(document.documentElement.lang) };
-      if (durum === 'hazir') durumYaz.textContent = doldur(M.tHazir, y);
-      else if (durum === 'surer') durumYaz.textContent = doldur(M.tSurer, y);
-      else if (durum === 'bitti') durumYaz.textContent = doldur(M.tBitti, y);
+      sayiYaz.forEach((e) => (e.textContent = String(n)));
+      panelYaz(tekKok, tek); panelYaz(suruKok, suru);
+      kok.dataset.tek = tek.durum; kok.dataset.suru = suru.durum; kok.dataset.sayi = String(n); kok.dataset.dusen = String(suru.dusen);
+      kok.dataset.tekOran = String(tek.oran()); kok.dataset.suruOran = String(suru.oran());
+      kok.dataset.tekSure = sn(tek.sure); kok.dataset.suruSure = sn(suru.sure);
+      const surer = tek.durum === 'surer' || suru.durum === 'surer';
+      basDugme.textContent = basladi ? M.bastan : M.basla;
+      dusDugme.disabled = suru.durum !== 'surer' || suru.canli().length < 2;
+      dusTekDugme.disabled = tek.durum !== 'surer';
+      const y = { n, s: goster(suru.sure), s1: goster(tek.sure), p: tek.oran(), k: goster(tek.sure / (suru.sure || 1)) };
+      let m = '';
+      if (!basladi) m = doldur(M.tHazir, y);
+      else if (!surer) m = tek.durum === 'yarim' ? doldur(M.tTekYarim, y) : doldur(M.tBitti, y);
+      else if (tek.durum === 'yarim') m = doldur(M.tTekDustu, y);
+      else if (suru.durum === 'bitti') m = doldur(M.tSuruOnce, y);
+      else m = olay || M.tIkisi;
+      if (durumYaz.textContent !== m) durumYaz.textContent = m;
     };
-    const adim = (dt: number) => {
-      if (durum !== 'surer') return;
-      sure += dt;
-      for (const u of ihalar) {
-        if (u.dustu) { u.vz -= 9.8 * dt; u.p.z = Math.max(0, u.p.z + u.vz * dt); u.eg = Math.min(0.5, u.eg + dt); continue; }
-        if (!u.yol.length) {
-          const j = u.sira.shift();
-          if (j === undefined) { u.p.z = Math.max(IRTIFA * 0.6, u.p.z); continue; }
-          const [a, b] = seritUclari(j);
-          u.yol = Math.hypot(a.x - u.p.x, a.y - u.p.y) <= Math.hypot(b.x - u.p.x, b.y - u.p.y) ? [a, b] : [b, a];
-        }
-        const h = u.yol[0], dx = h.x - u.p.x, dy = h.y - u.p.y, d = Math.hypot(dx, dy), yol = HIZ * dt;
-        if (d > 0.01) u.yaw = Math.atan2(dy, dx);
-        if (d <= yol) { u.p.x = h.x; u.p.y = h.y; u.yol.shift(); } else { u.p.x += (dx / d) * yol; u.p.y += (dy / d) * yol; }
-        u.p.z += (IRTIFA - u.p.z) * Math.min(1, dt * 4);
-        const i = Math.floor((u.p.x - X0) / H), j = Math.floor((u.p.y - Y0) / H);
-        if (u.p.z > IRTIFA * 0.7 && i >= 0 && i < SX && j >= 0 && j < SY) taranan[j * SX + i] = 1;
-      }
-      if (taranan.every((v) => v)) { durum = 'bitti'; yaz(); }
-      else if (ihalar.every((u) => u.dustu)) { durum = 'yarim'; yaz(); durumYaz.textContent = M.tTekDustu; }
-      else if (sure - sonYaz > 0.5) { sonYaz = sure; yaz(); }
+    const kur = () => { tek = taramaYap(1); suru = taramaYap(n); basladi = false; olay = ''; yaz(); };
+    const bitti = () => tek.durum !== 'surer' && suru.durum !== 'surer';
+    const alanCiz = (s: Sahne, t: ReturnType<typeof taramaYap>) => {
+      const c = s.cizer, r = c.r;
+      s.kamera.hedef = v3(0, -4, 2);
+      c.izgara(X0, X0 + SX * H, Y0, Y0 + SY * H, H);
+      for (let j = 0; j < SY; j++) for (let i = 0; i < SX; i++) if (t.taranan[j * SX + i]) c.dortgen(v3(X0 + i * H + H / 2, Y0 + j * H + H / 2, 0), H / 2 - 0.15, r.vurgu, null, 0.32);
+      c.dortgen(v3(0, 0, 0), (SX * H) / 2, null, r.soluk, 0.6);
+      const sirali = [...t.ihalar].sort((a, b) => s.kamera.derinlik(b.p) - s.kamera.derinlik(a.p));
+      for (const u of sirali) c.iha({ p: u.p, yaw: u.yaw, egP: u.dustu ? u.eg : t.durum === 'surer' ? 0.18 : 0, egR: u.dustu ? u.eg : 0, renk: r.vurgu, motor: !u.dustu && t.durum === 'surer', dustu: u.dustu, kol: 2 });
     };
-    const s = sahneKur(kok, {
-      adim,
-      gorunum: 0,
-      uzak: 74,
-      ciz: (s) => {
-        const c = s.cizer, r = c.r;
-        s.kamera.hedef = v3(0, -4, 2);
-        c.izgara(X0, X0 + SX * H, Y0, Y0 + SY * H, H);
-        for (let j = 0; j < SY; j++) for (let i = 0; i < SX; i++) if (taranan[j * SX + i]) c.dortgen(v3(X0 + i * H + H / 2, Y0 + j * H + H / 2, 0), H / 2 - 0.15, r.vurgu, null, 0.32);
-        c.dortgen(v3(0, 0, 0), (SX * H) / 2, null, r.soluk, 0.6);
-        const sirali = [...ihalar].sort((a, b) => s.kamera.derinlik(b.p) - s.kamera.derinlik(a.p));
-        for (const u of sirali) c.iha({ p: u.p, yaw: u.yaw, egP: u.dustu ? u.eg : 0.18, egR: u.dustu ? u.eg : 0, renk: r.vurgu, motor: !u.dustu && durum !== 'hazir', dustu: u.dustu });
-        const ctx = c.ctx;
-        ctx.font = "600 12px 'JetBrains Mono Variable', ui-monospace, monospace"; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillStyle = r.metin;
-        ctx.fillText(`${M.tSure} ${sure.toFixed(1)} s · %${oran()}`, 12, 12);
+    // İki panel tek saatle ilerler: adımı yalnızca soldaki sahne atar, sağdaki yalnızca çizer. İkisi de bölüm görünürken çalışır.
+    const sol = sahneKur(tekKok, {
+      uzak: 80, gozle: kok,
+      adim: (dt) => {
+        tek.adim(dt); suru.adim(dt);
+        if (basladi && (bitti() || performance.now() - sonYaz > 100)) { sonYaz = performance.now(); yaz(); }
       },
+      ciz: (s) => alanCiz(s, tek),
     });
-    const yenile = () => { if (s && (s.azalt || kok.dataset.calisiyor !== '1')) s.sar(() => durum !== 'surer', 120); };
-    $(kok, '[data-azalt]')?.addEventListener('click', () => { if (n > 1) { n--; kur(); s?.ciz(); } });
-    $(kok, '[data-artir]')?.addEventListener('click', () => { if (n < 6) { n++; kur(); s?.ciz(); } });
+    const sag = sahneKur(suruKok, { uzak: 80, gozle: kok, adim: () => {}, ciz: (s) => alanCiz(s, suru) });
+    const yenile = () => {
+      if (sol?.azalt) { sol.sar(bitti, 200); for (let i = 0; i < 60; i++) { tek.adim(1 / 30); suru.adim(1 / 30); } }
+      yaz(); sol?.ciz(); sag?.ciz();
+    };
+    $(kok, '[data-azalt]')?.addEventListener('click', () => { if (n > 3) { n--; kur(); yenile(); } });
+    $(kok, '[data-artir]')?.addEventListener('click', () => { if (n < 6) { n++; kur(); yenile(); } });
     basDugme.addEventListener('click', () => {
-      if (durum === 'hazir') { durum = 'surer'; yaz(); } else kur();
-      yenile(); s?.ciz();
-    });
-    dusDugme.addEventListener('click', () => {
-      if (durum !== 'surer') return;
-      const canli = ihalar.filter((u) => !u.dustu);
-      // En çok işi kalan İHA düşer. Kalan şeritleri (yarım şerit dahil) en az işi kalanlara dağıtılır.
-      const kurban = canli.reduce((a, b) => (b.sira.length + (b.yol.length ? 1 : 0) > a.sira.length + (a.yol.length ? 1 : 0) ? b : a));
-      kurban.dustu = true; kurban.vz = 0;
-      const kalan = [...(kurban.yol.length ? [Math.round((kurban.p.y - Y0 - H / 2) / H)] : []), ...kurban.sira];
-      kurban.sira = []; kurban.yol = [];
-      const digerleri = ihalar.filter((u) => !u.dustu);
-      for (const j of kalan) {
-        if (!digerleri.length) break;
-        digerleri.reduce((a, b) => (b.sira.length < a.sira.length ? b : a)).sira.push(j);
-      }
-      if (digerleri.length) durumYaz.textContent = M.tDustu;
-      kok.dataset.dusen = String(ihalar.filter((u) => u.dustu).length);
+      if (basladi) kur();
+      else { basladi = true; tek.durum = 'surer'; suru.durum = 'surer'; }
       yenile();
     });
+    dusDugme.addEventListener('click', () => { if (suru.durum !== 'surer') return; suru.dusur(); olay = M.tDustu; yenile(); });
+    dusTekDugme.addEventListener('click', () => { if (tek.durum !== 'surer') return; tek.dusur(); tek.durum = 'yarim'; yenile(); });
     kur();
   }
 }

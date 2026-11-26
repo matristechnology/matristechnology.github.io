@@ -82,7 +82,17 @@ const sema = z.object({
   }),
 });
 
-const sonuc = sema.safeParse(parse(ham));
+const veri = parse(ham);
+// { tr: ..., en: ... } içinde tırnaksız yazılan metin ilk virgülde kesilir, kalan parça boş bir anahtar olur
+// ve şema onu sessizce atar. Bu yüzden boşluk içeren boş anahtar bulunca derleme durur.
+const kesik: string[] = [];
+const gez = (o: unknown, yol: string): void => {
+  if (Array.isArray(o)) o.forEach((x, i) => gez(x, `${yol}[${i}]`));
+  else if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) { if (v === null && /\s/.test(k)) kesik.push(`${yol}: "${k.slice(0, 40)}..."`); gez(v, `${yol}.${k}`); }
+};
+gez(veri, '');
+if (kesik.length) throw new Error(`icerik.yaml: bu metinler virgülde kesilmiş, tırnak içine al ya da ayrı satıra yaz:\n  ${kesik.join('\n  ')}`);
+const sonuc = sema.safeParse(veri);
 if (!sonuc.success) {
   const satirlar = sonuc.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
   throw new Error(`icerik.yaml biçim hatası:\n${satirlar}`);

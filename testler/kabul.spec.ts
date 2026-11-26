@@ -422,24 +422,35 @@ test.describe('D14 Sürü İHA sayfası', () => {
     await expect(page.locator('[data-gorev] li[data-adim].bitti')).toHaveCount(7);
   });
 
-  test('tarama biter, düşen İHA’nın işini kalanlar üstlenir, tek İHA düşerse yarım kalır', async ({ page }) => {
+  test('tarama: tek İHA ile sürü aynı anda başlıyor, sürü önce bitiriyor, düşen İHA’nın işini kalanlar alıyor', async ({ page }) => {
+    test.setTimeout(90000); // tek İHA alanı yaklaşık 34 sn'de tarıyor
     await page.goto('/suru-iha/');
     const t = page.locator('[data-tarama]');
     await t.scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-tarama] canvas')).toHaveCount(2);
+    await page.locator('[data-tarama] [data-azalt]').click();
+    await expect(t).toHaveAttribute('data-sayi', '3');
     await page.locator('[data-tarama] [data-basla]').click();
+    await expect(t).toHaveAttribute('data-tek', 'surer');
+    await expect(t).toHaveAttribute('data-suru', 'surer');
     await bekle(page, 1500);
     await page.locator('[data-tarama] [data-dusur]').click();
     await expect(t).toHaveAttribute('data-dusen', '1');
-    await expect(t).toHaveAttribute('data-durum', 'bitti', { timeout: 40000 });
-    await expect(t).toHaveAttribute('data-oran', '100');
+    await expect(t).toHaveAttribute('data-suru', 'bitti', { timeout: 40000 });
+    await expect(t).toHaveAttribute('data-suru-oran', '100');
+    // Sürü bitirdiğinde tek İHA hâlâ tarıyor olmalı.
+    await expect(t).toHaveAttribute('data-tek', 'surer');
+    await expect(t).toHaveAttribute('data-tek', 'bitti', { timeout: 40000 });
+    const [tekSure, suruSure] = [Number(await t.getAttribute('data-tek-sure')), Number(await t.getAttribute('data-suru-sure'))];
+    console.log(`tarama: sürü ${suruSure} sn (biri düştü), tek İHA ${tekSure} sn`);
+    expect(tekSure).toBeGreaterThan(suruSure * 1.2);
+    // Tek İHA düşerse iş yarım kalır.
     await page.locator('[data-tarama] [data-basla]').click();
-    await page.locator('[data-tarama] [data-azalt]').click();
-    await page.locator('[data-tarama] [data-azalt]').click();
-    await expect(t).toHaveAttribute('data-sayi', '1');
     await page.locator('[data-tarama] [data-basla]').click();
-    await bekle(page, 2000);
-    await page.locator('[data-tarama] [data-dusur]').click();
-    await expect(t).toHaveAttribute('data-durum', 'yarim', { timeout: 5000 });
+    await bekle(page, 2500);
+    await page.locator('[data-tarama] [data-dusur-tek]').click();
+    await expect(t).toHaveAttribute('data-tek', 'yarim');
+    await expect(page.locator('[data-tarama] [data-panel="tek"]')).toHaveAttribute('data-yarim', '');
   });
 
   test('konsol: komutlar doğru anda kabul ediliyor, paket doğru', async ({ page }) => {

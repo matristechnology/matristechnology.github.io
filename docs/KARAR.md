@@ -89,3 +89,6 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Görev 1'deki QR noktalarının yeri, rota ve QR içerikleri örnektir, sayfada da öyle yazıyor. Süreler kısaltıldı, İHA'lar görünsün diye büyük çizildi.
 - "Neden İHA" kartlarındaki örnekler (enkaz, yangın, köprü, tarla, boru hattı) genel bilgidir, takıma ait bir iddia değildir. Takıma ait sayı ve teknik bilgilerin hepsi Ön Tasarım Raporu'ndan.
 - Ayrıntı sayfalarında menü, sayfası olan bölüm için o sayfaya, öteki bölümler için ana sayfadaki yerine gider.
+- Alan tarama iki panele ayrıldı (Ali'nin isteği): solda tek İHA, sağda 3 ile 6 arası İHA'lık sürü. Tek düğmeyle aynı anda başlarlar, süre her panelin üstünde yazar. İki panel tek saatle ilerler, böylece fark gerçek. Sürüden ya da tek İHA'dan biri düşürülebilir.
+- `icerik.yaml` içinde `{ tr: ..., en: ... }` biçiminde tırnaksız yazılan metin ilk virgülde kesiliyormuş, şema da kalan parçayı sessizce atıyormuş. Sürü İHA sayfasında 15 metin, ana sayfada 2 metin (İngilizce "2nd in Türkiye, Preliminary Design Report" başlığı ve ilk galeri fotoğrafının açıklaması) kesik çıkıyordu. Hepsi düzeltildi. Derleme artık kesik metin bulursa hata verip duruyor. Uzun metinler ayrı satırda yazılıyor.
+- Sürü İHA sayfasının metinleri Ali'nin "çok yapay duruyor" uyarısı üzerine yeniden yazıldı: daha uzun ve somut cümleler, kalıp başlıklar yerine düz adlar.

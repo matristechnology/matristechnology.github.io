@@ -354,6 +354,19 @@ html.js .uye:not([data-acik]) .uye-ayrinti { display: none; }
 .sahne canvas:active { cursor: grabbing; }
 .sahne-gorunum { position: absolute; top: 0.5rem; right: 0.5rem; background: color-mix(in srgb, var(--yuzey) 85%, transparent); border: 1px solid var(--cizgi); }
 .sahne-ipucu { position: absolute; left: 0.75rem; bottom: 0.6rem; font-family: var(--es); font-size: 0.6875rem; color: var(--soluk); pointer-events: none; }
+.tarama { --s-kirmizi: #ff6b5e; position: relative; z-index: 6; margin-top: 2rem; display: grid; gap: 1.25rem; }
+:root[data-theme='light'] .tarama { --s-kirmizi: #c4302b; }
+.tarama-ikili { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.tarama-bas { display: flex; align-items: baseline; gap: 0.75rem; padding: 0 0.15rem 0.5rem; }
+.tarama-ad { font-family: var(--es); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); margin-right: auto; }
+.tarama-sure { font-size: clamp(1.5rem, 3.4vw, 2.25rem); line-height: 1; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tarama-oran { font-family: var(--es); font-size: 0.8125rem; color: var(--vurgu); min-width: 3.2em; text-align: right; font-variant-numeric: tabular-nums; }
+.tarama-panel[data-bitti] .tarama-sure { color: var(--vurgu); }
+.tarama-panel[data-yarim] .tarama-sure { color: var(--s-kirmizi); }
+.tarama-kumanda { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 1rem 1.5rem; align-items: start; }
+.tarama-kumanda .demo-durum { min-height: 3.4em; }
+@media (max-width: 900px) { .tarama-kumanda { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .tarama-ikili { grid-template-columns: 1fr; } }
 .qr-panel, .tablo-kap { grid-column: 1 / -1; }
 .qr-panel { display: grid; gap: 0.5rem; padding: 1rem 1.1rem; border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); }
 .qr-panel [data-qr-oku] { font-size: 0.9375rem; }
