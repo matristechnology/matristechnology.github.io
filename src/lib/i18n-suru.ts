@@ -11,7 +11,7 @@ const m = {
   devam: { tr: 'Sürdür', en: 'Resume' },
   bastan: { tr: 'Baştan', en: 'Restart' },
   teknik: { tr: 'Teknik ayrıntı', en: 'Technical detail' },
-  temsili: { tr: 'Benzetim temsilîdir: süreler kısaltılmış, araçlar görünsün diye büyük çizilmiştir.', en: 'The simulation is illustrative: times are shortened and vehicles are drawn larger than life.' },
+  temsili: { tr: 'Simülasyon temsilîdir: süreler kısaltılmış, araçlar görünsün diye büyük çizilmiştir.', en: 'The simulation is illustrative: times are shortened and vehicles are drawn larger than life.' },
   lider: { tr: 'Lider', en: 'Leader' },
   takipci: { tr: 'Takipçi', en: 'Follower' },
   yedek: { tr: 'Yedek', en: 'Reserve' },
@@ -20,8 +20,8 @@ const m = {
   OKBASI: { tr: 'Ok başı', en: 'Arrowhead' },
 
   // tarama
-  tAlanTek: { tr: 'Tek İHA ile alan tarama benzetimi. Sarı kareler taranan bölümü gösterir. Süre ve yüzde üstte yazıyla da yazar.', en: 'Area survey simulation with a single UAV. Yellow squares show the surveyed part. Time and percentage are also written above.' },
-  tAlanSuru: { tr: 'Sürü ile alan tarama benzetimi. Sarı kareler taranan bölümü gösterir. Süre ve yüzde üstte yazıyla da yazar.', en: 'Area survey simulation with a swarm. Yellow squares show the surveyed part. Time and percentage are also written above.' },
+  tAlanTek: { tr: 'Tek İHA ile alan tarama simülasyonu. Sarı kareler taranan bölümü gösterir. Süre ve yüzde üstte yazıyla da yazar.', en: 'Area survey simulation with a single UAV. Yellow squares show the surveyed part. Time and percentage are also written above.' },
+  tAlanSuru: { tr: 'Sürü ile alan tarama simülasyonu. Sarı kareler taranan bölümü gösterir. Süre ve yüzde üstte yazıyla da yazar.', en: 'Area survey simulation with a swarm. Yellow squares show the surveyed part. Time and percentage are also written above.' },
   tTek: { tr: 'Tek İHA', en: 'Single UAV' },
   tSuru: { tr: 'Sürü', en: 'Swarm' },
   tSayi: { tr: 'Sürüdeki İHA sayısı', en: 'UAVs in the swarm' },
@@ -39,7 +39,7 @@ const m = {
   tSure: { tr: 'Süre', en: 'Time' },
 
   // mesh
-  mAlan: { tr: 'Mesh ağ benzetimi. Çizgiler birbirinin menzilindeki İHA’ları bağlar. Durum aşağıda yazıyla da yazar.', en: 'Mesh network simulation. Lines join UAVs within range of each other. The state is also written below.' },
+  mAlan: { tr: 'Mesh ağ simülasyonu. Çizgiler birbirinin menzilindeki İHA’ları bağlar. Durum aşağıda yazıyla da yazar.', en: 'Mesh network simulation. Lines join UAVs within range of each other. The state is also written below.' },
   mSec: { tr: 'İHA seç', en: 'Pick a UAV' },
   mUzak: { tr: 'Liderden uzaklaştır', en: 'Move away from leader' },
   mYakin: { tr: 'Lidere yaklaştır', en: 'Move towards leader' },
@@ -55,7 +55,7 @@ const m = {
   mKopukKisa: { tr: 'kopuk', en: 'no link' },
 
   // roller
-  rAlan: { tr: 'Roller benzetimi. Bir İHA’ya tıklayarak ya da aşağıdaki düğmelerle rolünü görebilirsin.', en: 'Roles simulation. Click a UAV or use the buttons below to see its role.' },
+  rAlan: { tr: 'Roller simülasyonu. Bir İHA’ya tıklayarak ya da aşağıdaki düğmelerle rolünü görebilirsin.', en: 'Roles simulation. Click a UAV or use the buttons below to see its role.' },
   rSec: { tr: 'İHA seç', en: 'Pick a UAV' },
   rCagir: { tr: 'Yedeği sürüye kat', en: 'Bring the reserve in' },
   rIndir: { tr: 'Yedeği geri indir', en: 'Send the reserve back' },
@@ -66,7 +66,7 @@ const m = {
   rBildirim: { tr: 'Takipçi 5 Hz bildirim', en: 'Follower report 5 Hz' },
 
   // görev 1
-  gAlan: { tr: 'Görev 1 benzetimi: altı QR noktalı yarışma alanı. Olan biten adım listesinde ve durum satırında yazıyla da anlatılır.', en: 'Mission 1 simulation: competition area with six QR points. What happens is also described in the step list and the status line.' },
+  gAlan: { tr: 'Görev 1 simülasyonu: altı QR noktalı yarışma alanı. Olan biten adım listesinde ve durum satırında yazıyla da anlatılır.', en: 'Mission 1 simulation: competition area with six QR points. What happens is also described in the step list and the status line.' },
   gAdim: { tr: 'Sonraki adım', en: 'Next step' },
   gHiz: { tr: 'Hız', en: 'Speed' },
   gAdimlar: { tr: 'Görev adımları', en: 'Mission steps' },
@@ -97,7 +97,7 @@ const m = {
   adEv: { tr: 'Eve dönüş ve iniş', en: 'Return and landing' },
 
   // konsol
-  kAlan: { tr: 'Komut konsolu benzetimi. Bir komuta basınca sürü uygular, giden paket yanda görünür.', en: 'Command console simulation. Press a command and the swarm carries it out. The sent packet appears beside it.' },
+  kAlan: { tr: 'Komut konsolu simülasyonu. Bir komuta basınca sürü uygular, giden paket yanda görünür.', en: 'Command console simulation. Press a command and the swarm carries it out. The sent packet appears beside it.' },
   kTum: { tr: 'Bütün sürüye', en: 'To the whole swarm' },
   kTek: { tr: 'Tek İHA’ya', en: 'To one UAV' },
   kPaket: { tr: 'Son gönderilen paket', en: 'Last packet sent' },
@@ -131,7 +131,7 @@ const m = {
   kGerekYok: { tr: 'Şu an bu komutu gerektiren bir durum yok.', en: 'Nothing calls for this command right now.' },
 
   // lider düşerse
-  lAlan: { tr: 'Lider değişimi benzetimi. Takipçilerin kalp atışı sayaçları yanda yazıyla görünür.', en: 'Leader change simulation. The followers’ heartbeat timers are shown in text beside it.' },
+  lAlan: { tr: 'Lider değişimi simülasyonu. Takipçilerin kalp atışı sayaçları yanda yazıyla görünür.', en: 'Leader change simulation. The followers’ heartbeat timers are shown in text beside it.' },
   lAriza: { tr: 'Liderde arıza', en: 'Leader fails' },
   lDevir: { tr: 'Planlı devir (HANDOFF)', en: 'Planned handover (HANDOFF)' },
   lSayac: { tr: 'Son kalp atışından beri', en: 'Since last heartbeat' },

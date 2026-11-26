@@ -47,7 +47,7 @@ const metin = {
   yarisma: { tr: 'Yarışma ne istiyor?', en: 'What does the competition ask for?' },
   demoBaslik: { tr: 'Kendin dene', en: 'Try it yourself' },
   demoNot: {
-    tr: 'Bu benzetim takımın yaklaşımını sadeleştirerek anlatır. Gerçek uçuş yazılımı değildir, ölçüler ve hızlar temsilidir.',
+    tr: 'Bu simülasyon takımın yaklaşımını sadeleştirerek anlatır. Gerçek uçuş yazılımı değildir, ölçüler ve hızlar temsilidir.',
     en: 'This simulation is a simplified picture of the team’s approach. It is not the actual flight software, and the distances and speeds are illustrative.',
   },
   dizilim: { tr: 'Dizilim', en: 'Formation' },
@@ -64,7 +64,7 @@ const metin = {
   hedef: { tr: 'Hedef göster', en: 'Give a target' },
   sifirla: { tr: 'Baştan başlat', en: 'Start over' },
   alanEtiket: {
-    tr: 'Sürü benzetimi. Alana tıklayarak sürüye hedef gösterebilirsin. Olan biten yandaki durum satırında yazıyla da anlatılır.',
+    tr: 'Sürü simülasyonu. Alana tıklayarak sürüye hedef gösterebilirsin. Olan biten yandaki durum satırında yazıyla da anlatılır.',
     en: 'Swarm simulation. Click the area to give the swarm a target. What happens is also described in the status line beside it.',
   },
   fikirDizilim: { tr: 'Lider ve takipçiler: sarı araç liderdir. Her takipçi dizilimdeki yerini liderin konumuna göre kendisi hesaplar. Çizgi, V ve ok başı dizilimleri kullanılır.', en: 'Leader and followers: the yellow vehicle leads. Each follower works out its own slot from the leader’s position. Line, V and arrowhead formations are used.' },

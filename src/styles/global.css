@@ -369,6 +369,11 @@ html.js .uye:not([data-acik]) .uye-ayrinti { display: none; }
 @media (max-width: 640px) { .tarama-ikili { grid-template-columns: 1fr; } }
 /* İHA'nın içi */
 .iha-ici .sahne { aspect-ratio: 4 / 3; }
+.iha-ici .sahne { background: radial-gradient(120% 90% at 50% 35%, color-mix(in srgb, var(--metin) 13%, var(--yuzey)), var(--yuzey) 70%); }
+:root[data-theme='light'] .iha-ici .sahne { background: radial-gradient(120% 90% at 50% 35%, #fff, color-mix(in srgb, var(--metin) 9%, var(--zemin)) 85%); }
+.iha-etiket { position: absolute; transform: translate(-50%, -130%); padding: 0.15rem 0.5rem; border-radius: 4px; background: color-mix(in srgb, var(--zemin) 88%, transparent); border: 1px solid var(--vurgu); color: var(--vurgu); font-family: var(--es); font-size: 0.75rem; font-weight: 600; white-space: nowrap; pointer-events: none; }
+.iha-ici.webgl-yok { grid-template-columns: 1fr; }
+.iha-ici.webgl-yok .sahne { display: none; }
 .dugme.etiketli { font-size: 0.8125rem; padding: 0 0.7rem; }
 [data-parca-panel] h4 { margin: 0; }
 .dugme[data-hat] { gap: 0.45rem; }

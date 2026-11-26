@@ -584,6 +584,8 @@ test.describe('D15 Matris sayfası', () => {
     await page.goto('/matris/');
     const i = page.locator('[data-iha-ici]');
     await i.scrollIntoViewIfNeeded();
+    await expect(i).toHaveAttribute('data-hazir', '1', { timeout: 20000 });
+    expect(Number(await i.getAttribute('data-ucgen'))).toBeGreaterThan(20000);
     await expect(page.locator('[data-iha-ici] [data-durum]')).not.toBeEmpty();
     await page.locator('[data-iha-ici] [data-parca="otopilot"]').click();
     await expect(i).toHaveAttribute('data-secili', 'otopilot');
@@ -597,13 +599,16 @@ test.describe('D15 Matris sayfası', () => {
     await expect(page.locator('[data-iha-ici] [data-durum]')).toContainText('UBEC');
     await bekle(page, 600);
     const boyali = await page.locator('[data-iha-ici] canvas').evaluate((t: HTMLCanvasElement) => {
-      const v = t.getContext('2d')!.getImageData(0, 0, t.width, t.height).data;
+      // Çizim WebGL ile yapılıyor, pikselleri okumak için 2B bir tuvale kopyalanır.
+      const k = document.createElement('canvas'); k.width = t.width; k.height = t.height;
+      const c = k.getContext('2d')!; c.drawImage(t, 0, 0);
+      const v = c.getImageData(0, 0, k.width, k.height).data;
       let n = 0;
       for (let k = 3; k < v.length; k += 4) if (v[k] > 40) n++;
       return n / (v.length / 4);
     });
     console.log(`İHA çizimi: tuvalin %${(boyali * 100).toFixed(1)} kadarı boyalı`);
-    expect(boyali).toBeGreaterThan(0.03);
+    expect(boyali).toBeGreaterThan(0.08);
     // Tuvalin ortasına tıklayınca bir parça seçilir.
     await page.locator('[data-iha-ici] [data-ac]').click();
     await bekle(page, 1200);
@@ -651,6 +656,7 @@ test.describe('D15 Matris sayfası', () => {
     await page.goto('/matris/');
     const i = page.locator('[data-iha-ici]');
     await i.scrollIntoViewIfNeeded();
+    await expect(i).toHaveAttribute('data-hazir', '1', { timeout: 20000 });
     const oku = () => page.locator('[data-iha-ici] canvas').evaluate((t: HTMLCanvasElement) => t.toDataURL().length + ':' + t.toDataURL().slice(-80));
     const a = await oku();
     await bekle(page, 700);

@@ -212,7 +212,7 @@ suru_sayfa:
     tr: Sürü İHA
     en: Swarm UAV
   ozet:
-    tr: Tek bir İHA birçok işi yapabiliyor. Peki neden birkaç İHA'yı birlikte uçurmaya uğraşıyoruz? Bu sayfada bunu ve Matris'in sürüsünün yarışmada nasıl uçtuğunu, her bölümde oynayabileceğin bir benzetimle anlatıyoruz.
+    tr: Tek bir İHA birçok işi yapabiliyor. Peki neden birkaç İHA'yı birlikte uçurmaya uğraşıyoruz? Bu sayfada bunu ve Matris'in sürüsünün yarışmada nasıl uçtuğunu, her bölümde oynayabileceğin bir simülasyonle anlatıyoruz.
     en: A single UAV can do a lot. So why go to the trouble of flying several together? This page explains that, and how the Matris swarm flies at the competition, with a simulation you can play with in every section.
   neden:
     - baslik:
@@ -268,7 +268,7 @@ suru_sayfa:
     teknik:
       - tr: Alan 12 × 8 kareye ayrılıyor ve 8 şerit halinde taranıyor. Şeritler sürüdeki İHA'lara sırayla paylaştırılıyor.
         en: The area is split into 12 × 8 squares and surveyed in 8 strips. The strips are shared out among the swarm's UAVs in order.
-      - tr: Bir İHA düşerse yarım kalan şeridi ve henüz başlamadığı şeritler, işi en az kalan İHA'lara veriliyor. Hızlar ve süreler gerçek değil, benzetim için kısaltıldı.
+      - tr: Bir İHA düşerse yarım kalan şeridi ve henüz başlamadığı şeritler, işi en az kalan İHA'lara veriliyor. Hızlar ve süreler gerçek değil, simülasyon için kısaltıldı.
         en: If a UAV goes down, its half-done strip and the strips it had not started go to the UAVs with the least work left. Speeds and times are not real, they are shortened for the simulation.
   yarisma:
     baslik:
@@ -412,7 +412,7 @@ suru_sayfa:
         en: The network can run on the 2.4 GHz and 5 GHz bands and changes channel when there is interference. The pilot's remote is separate from this network and uses its own 2.4 GHz radio.
       - tr: Bağlantısı tamamen kopan takipçi son konumunda bekliyor ve lider onu etkin listeden çıkarıyor. Bağlantı geri gelince takipçi kendiliğinden dizilime dönüyor.
         en: A follower that loses its link completely holds its last position and the leader drops it from the active list. When the link comes back the follower returns to the formation by itself.
-      - tr: Benzetimdeki menzil gerçek değil, sahne ekrana sığsın diye seçildi.
+      - tr: Simülasyondaki menzil gerçek değil, sahne ekrana sığsın diye seçildi.
         en: The range in the simulation is not real, it was chosen so the scene fits the screen.
   geometri:
     baslik:
@@ -431,7 +431,7 @@ suru_sayfa:
       - tr: Takımın kodunda varsayılan aralık da seyir irtifası da 8 m. Her İHA görev boyunca hep aynı yuvada kalıyor.
         en: In the team's code the default spacing and the cruise altitude are both 8 m. Each UAV stays in the same slot for the whole mission.
   not:
-    tr: Benzetimler takımın yaklaşımının basitleştirilmiş hali, uçuş yazılımının kendisi değil. Sayılar ve teknik bilgiler takımın 2026 Ön Tasarım Raporu'ndan ve uçuş kodundan.
+    tr: Simülasyonlar takımın yaklaşımının basitleştirilmiş hali, uçuş yazılımının kendisi değil. Sayılar ve teknik bilgiler takımın 2026 Ön Tasarım Raporu'ndan ve uçuş kodundan.
     en: The simulations are a simplified version of the team's approach, not the flight software itself. The figures and technical details come from the team's 2026 Preliminary Design Report and flight code.
 
 # ─── Takımın İHA'sı ("İHA'nın içi" benzetimi, Matris sayfasında ve ana sayfada) ───────────────
@@ -549,8 +549,9 @@ iha:
     en: The layout and sizes in the drawing are illustrative. The part names and what they do come from the team's 2026 Preliminary Design Report.
 
 # ─── Matris sayfası (/matris/, /en/matris/) ───────────────────────────────────────────────────
-# TASLAK: "neden" paragrafları ile hikâyedeki "Başlangıç" ve "2024" duraklarının ikinci cümleleri Ali'nin izniyle
-# taslak olarak yazıldı, takım okuyup düzeltecek (docs/EKSIKLER.md). Kuruluş yılı bilinmediği için yazılmadı.
+# "neden" paragraflarının ilk üçü ve "Sırada" durağı Ali'nin 26.11.2026'da söylediklerinden.
+# TASLAK: hikâyedeki "Başlangıç" durağı ve "2024" durağının ikinci cümlesi taslak, takım okuyup düzeltecek (docs/EKSIKLER.md).
+# Kuruluş yılı bilinmediği için yazılmadı.
 # 2026 durakları Ön Tasarım Raporu'ndaki proje takviminden (Şubat-Temmuz) ve "Planlanan Geliştirmeler" bölümünden.
 matris_sayfa:
   baslik: Matris
@@ -562,12 +563,14 @@ matris_sayfa:
       tr: Neden bu işi yapıyoruz?
       en: Why do we do this?
     paragraflar:
-      - tr: Tek bir İHA'yı uçurmak bugün hazır parçalarla yapılabiliyor. Birkaç İHA'yı birbirine çarpmadan, tek bir komutla ve biri bozulduğunda görevi bırakmadan uçurmak hâlâ çözülmesi gereken bir mühendislik problemi. Biz bu problem üzerinde çalışıyoruz.
-        en: Flying a single UAV can be done today with off-the-shelf parts. Flying several of them with one command, without collisions and without giving up the mission when one breaks down, is still an engineering problem to be solved. That is the problem we work on.
-      - tr: Yarışma bize bir takvim veriyor. Her yıl belli bir günde, jürinin önünde, gerçek araçlarla uçmamız gerekiyor. Bu yüzden bir fikrin benzetimde çalışması bize yetmiyor, sahada da çalışması gerekiyor.
-        en: The competition gives us a calendar. Every year, on a set day, we have to fly real vehicles in front of a jury. So an idea that works in simulation is not enough for us, it has to work in the field too.
-      - tr: Takımdaki herkes öğrenci. Yazılımcı, elektronikçi ve makineci aynı aracın başında birlikte çalışıyor ve derste görmediği şeyleri burada öğreniyor. Öğrendiklerimizi bir sonraki yılın ekibine bırakmak da işimizin bir parçası.
-        en: Everyone on the team is a student. Software, electronics and mechanical people work on the same vehicle together and learn here what they do not see in class. Passing what we learn on to next year's team is part of the job too.
+      - tr: Matris'in ilk hedefi bu ekiple TEKNOFEST'te derece almak. Bunun yanında iyi bir takım ortamı kurmak ve burada güzel arkadaşlıklar edinmek de bizim için önemli.
+        en: The first goal of Matris is to win a ranking at TEKNOFEST with this team. Building a good team environment and making good friends here matters to us as well.
+      - tr: Yalnızca TEKNOFEST ile sınırlı kalmıyoruz. Matris olarak başka yarışmalarda ve projelerde de yer alıyoruz.
+        en: We do not stop at TEKNOFEST. As Matris we also take part in other competitions and projects.
+      - tr: Matris'in amacı herkesin kendine bir şey katması ve birlikte bir şeyler başarmak.
+        en: The aim of Matris is for everyone to gain something for themselves and to achieve things together.
+      - tr: Üzerinde çalıştığımız iş de kolay değil. Tek bir İHA'yı uçurmak bugün hazır parçalarla yapılabiliyor. Birkaç İHA'yı birbirine çarpmadan, tek bir komutla ve biri bozulduğunda görevi bırakmadan uçurmak hâlâ çözülmesi gereken bir mühendislik problemi.
+        en: The work itself is not easy either. Flying a single UAV can be done today with off-the-shelf parts. Flying several of them with one command, without collisions and without giving up the mission when one breaks down, is still an engineering problem to be solved.
   hikaye:
     baslik:
       tr: Bugüne nasıl geldik?
@@ -588,7 +591,7 @@ matris_sayfa:
           tr: TEKNOFEST finali
           en: The TEKNOFEST final
         metin:
-          tr: Takım 2024'te TEKNOFEST Sürü İHA Yarışması'nda finale kaldı. Sahada uçmak, benzetimde görünmeyen sorunları gösterdi ve sonraki tasarımın birçok kararı buradan çıktı.
+          tr: Takım 2024'te TEKNOFEST Sürü İHA Yarışması'nda finale kaldı. Sahada uçmak, simülasyonda görünmeyen sorunları gösterdi ve sonraki tasarımın birçok kararı buradan çıktı.
           en: In 2024 the team reached the final of the TEKNOFEST Swarm UAV Competition. Flying in the field showed problems the simulation had hidden, and many decisions of the next design came out of it.
       - yil: { tr: 2026 · Şubat, en: 2026 · February }
         baslik:
@@ -599,7 +602,7 @@ matris_sayfa:
           en: Work on the 2026 season began in February with a literature survey. Swarm algorithms were compared, a distributed structure of a leader and followers was chosen and the Python base of the software was set up.
       - yil: "2026"
         baslik:
-          tr: Önce benzetim
+          tr: Önce simülasyonda denedik
           en: Simulation first
         metin:
           tr: Yazılım önce Gazebo ve ArduPilot SITL üzerinde denendi. Testler tek İHA ile başladı, çoklu İHA'ya geçti ve dizilim testleriyle sürdü.
@@ -630,8 +633,8 @@ matris_sayfa:
           tr: Bundan sonrası
           en: What comes next
         metin:
-          tr: Raporda yazdığımız sonraki işler belli. Haberleşme paketlerine kalp atışı ve yeniden deneme eklenecek, QR kodu birkaç karede üst üste okununca kabul edilecek ve gerçek Wi-Fi mesh ağında gecikme ölçülecek.
-          en: The next jobs are written in the report. Heartbeats and retries will be added to the communication packets, a QR code will be accepted once it is read in several frames in a row and latency will be measured on a real Wi-Fi mesh network.
+          tr: 2026'da finalist olduk. Yeni sezonda bunun üstüne koyarak, bu kez derece hedefiyle sahaya çıkacağız. Gümbür gümbür geliyoruz.
+          en: We were finalists in 2026. Next season we build on that and take the field aiming for a ranking this time. We are coming in strong.
   sayilar:
     baslik:
       tr: Sayılarla Matris
