@@ -1,0 +1,234 @@
+---
+// Destek ayrıntı sayfası: neden destek, destek türleri, sponsor paketleri, logonun görüneceği yerler,
+// 3B model üzerinde ihtiyaç listesi, sponsorlar, sık sorulanlar ve dolu e-posta taslağı açan düğme.
+// Anlatım icerik.yaml (destek_sayfa, destek, basarilar). Tutar yazılmaz.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { icerik, c, sponsorGorseli, type Dil } from '../lib/icerik';
+import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+import { sm } from '../lib/i18n-suru';
+import { mm } from '../lib/i18n-matris';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const S = icerik.destek_sayfa, D = icerik.destek, P = S.paketler;
+const kimlik = (k: string) => (dil === 'tr' ? k : { neden: 'why', turler: 'ways', paketler: 'packages', logo: 'logo', ihtiyac: 'needs', sponsorlar: 'sponsors', sss: 'faq', yaz: 'write' }[k] ?? k);
+const y = {
+  tr: { hak: 'Sunduğumuz', yok: 'Yok', sec: 'Bu paketi seç', secildi: 'Seçildi', logonuz: 'LOGONUZ', karsilandi: 'karşılandı', gruplar: 'İhtiyaç grupları', paketSec: 'Paket seç', yerler: 'Logonun yeri', turSec: 'Destek türü' },
+  en: { hak: 'What we offer', yok: 'No', sec: 'Pick this package', secildi: 'Picked', logonuz: 'YOUR LOGO', karsilandi: 'covered', gruplar: 'Need groups', paketSec: 'Pick a package', yerler: 'Logo placement', turSec: 'Kind of support' },
+}[dil];
+const eposta = icerik.iletisim.eposta;
+const posta = `mailto:${eposta}?subject=${encodeURIComponent(c(S.iletisim.konu, dil))}&body=${encodeURIComponent(c(S.iletisim.govde, dil).replace('{tur}', '').replace('{paket}', ''))}`;
+const gruplar = D.ihtiyaclar.map((g, i) => ({ ad: c(g.grup, dil), parcalar: S.ihtiyac.parcalar[i] ?? [] }));
+const adlar = Object.fromEntries(icerik.iha.parcalar.map((p) => [p.anahtar, c(p.ad, dil)]));
+const icindekiler = [
+  ['neden', c(S.neden.baslik, dil)],
+  ['turler', c(S.turler.baslik, dil)],
+  ['paketler', c(P.baslik, dil)],
+  ['logo', c(S.logo.baslik, dil)],
+  ['ihtiyac', c(S.ihtiyac.baslik, dil)],
+  ['sponsorlar', c(S.sponsorlar.baslik, dil)],
+  ['sss', c(S.sss.baslik, dil)],
+];
+---
+
+<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.destek[digerDil(dil)]} sayfa="diger" bolum="destek">
+  <section class="sayfa-bas kap">
+    <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
+      <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{c(S.baslik, dil)}</span>
+    </nav>
+    <h1 data-belir>{c(S.baslik, dil)}</h1>
+    <p class="tanitim" data-belir style="--i:1">{c(S.ozet, dil)}</p>
+    <ol class="icindekiler" data-belir style="--i:2">
+      {icindekiler.map(([k, ad], i) => <li><a href={`#${kimlik(k)}`}><span>{String(i + 1).padStart(2, '0')}</span>{ad}</a></li>)}
+    </ol>
+  </section>
+
+  <div data-destek data-eposta={eposta} data-konu={c(S.iletisim.konu, dil)} data-govde={c(S.iletisim.govde, dil)}>
+  <section class="bolum kap" id={kimlik('neden')}>
+    <h2 data-belir>{c(S.neden.baslik, dil)}</h2>
+    <div class="yazi genis-yazi" data-belir>
+      {S.neden.paragraflar.map((p) => <p>{c(p, dil)}</p>)}
+    </div>
+    <ul class="dereceler">
+      {icerik.basarilar.map((b, i) => (
+        <li data-belir style={`--i:${i}`} class:list={[{ derece: b.tur === 'derece' }]}>
+          <span class="hikaye-yil">{b.yil}</span>
+          <strong>{c(b.baslik, dil)}</strong>
+          <span class="soluk">{c(b.ayrinti, dil)}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bolum kap" id={kimlik('turler')}>
+    <h2 data-belir>{c(S.turler.baslik, dil)}</h2>
+    <p class="bolum-giris js-only" data-belir>{c(S.turler.giris, dil)}</p>
+    <ul class="tur-kartlar" data-turler>
+      {S.turler.liste.map((x, i) => (
+        <li data-belir style={`--i:${i}`}>
+          <button type="button" class="tur-kart" data-tur={c(x.ad, dil)} aria-pressed="false">
+            <span class="surec-no" aria-hidden="true">{i + 1}</span>
+            <strong>{c(x.ad, dil)}</strong>
+            <span class="tur-metin">{c(x.metin, dil)}</span>
+            <span class="tur-isaret js-only" aria-hidden="true">{y.secildi}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bolum kap" id={kimlik('paketler')}>
+    <h2 data-belir>{c(P.baslik, dil)}</h2>
+    <p class="bolum-giris" data-belir>{c(P.giris, dil)}</p>
+    <div class="paket-sar" data-belir tabindex="0" role="region" aria-label={c(P.baslik, dil)}>
+      <table class="paketler" data-paketler>
+        <thead>
+          <tr>
+            <th scope="col">{y.hak}</th>
+            {P.adlar.map((a, i) => <th scope="col" data-sutun={i} class:list={[{ ana: i === 0 }]}>{c(a, dil)}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {P.haklar.map((h) => (
+            <tr>
+              <th scope="row">{c(h.ad, dil)}</th>
+              {P.adlar.map((_, i) => {
+                const d = c(h.degerler[i], dil);
+                return <td data-sutun={i} class:list={[{ 'hak-yok': !d }]}>{d ? <><span class="tik" aria-hidden="true">✓</span>{d}</> : <><span aria-hidden="true">·</span><span class="gizli">{y.yok}</span></>}</td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+        <tfoot class="js-only">
+          <tr>
+            <td></td>
+            {P.adlar.map((a, i) => <td data-sutun={i}><button type="button" class="dugme kucuk" data-paket={c(a, dil)} data-sutun-no={i} aria-pressed="false">{y.sec}<span class="gizli">: {c(a, dil)}</span></button></td>)}
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section class="bolum kap" id={kimlik('logo')}>
+    <h2 data-belir>{c(S.logo.baslik, dil)}</h2>
+    <div class="logo-yer" data-logo data-belir>
+      <div class="logo-sec">
+        <div class="suzgec js-only" role="group" aria-label={y.yerler}>
+          {S.logo.yerler.map((x, i) => <button type="button" data-yer={x.anahtar} aria-pressed={i === 0 ? 'true' : 'false'}>{c(x.ad, dil)}</button>)}
+        </div>
+        {S.logo.yerler.map((x, i) => (
+          <div class="logo-anlatim" data-yer-panel={x.anahtar} data-secili={i === 0 ? '' : undefined}>
+            <h3>{c(x.ad, dil)}</h3>
+            <p>{c(x.metin, dil)}</p>
+          </div>
+        ))}
+      </div>
+      <div class="logo-cizim js-only" aria-hidden="true">
+        <svg viewBox="0 0 400 300" data-yer-cizim="iha" data-secili>
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M120 70 280 230M280 70 120 230" stroke-width="16" opacity="0.28"/>
+            {[[120, 70], [280, 70], [120, 230], [280, 230]].map(([x, yy]) => <><circle cx={x} cy={yy} r="46" opacity="0.35" stroke-dasharray="4 6"/><circle cx={x} cy={yy} r="11" fill="currentColor" stroke="none" opacity="0.5"/></>)}
+            <rect x="150" y="110" width="100" height="80" rx="10" fill="var(--yuzey2)"/>
+          </g>
+          <g class="logo-kutu"><rect x="160" y="130" width="80" height="40" rx="4"/><text x="200" y="155" text-anchor="middle">{y.logonuz}</text></g>
+          <g class="logo-kutu kucuk" transform="rotate(45 242 192)"><rect x="222" y="184" width="40" height="16" rx="3"/></g>
+          <g class="logo-kutu kucuk" transform="rotate(-45 158 192)"><rect x="138" y="184" width="40" height="16" rx="3"/></g>
+        </svg>
+        <svg viewBox="0 0 400 300" data-yer-cizim="tisort">
+          <path d="M140 40 100 55 50 100l35 40 25-18v140h180V122l25 18 35-40-50-45-40-15c-8 22-32 34-60 34s-52-12-60-34Z" fill="var(--yuzey2)" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity="0.9"/>
+          <g class="logo-kutu"><rect x="150" y="110" width="100" height="50" rx="4"/><text x="200" y="140" text-anchor="middle">{y.logonuz}</text></g>
+          <g class="logo-kutu kucuk" transform="rotate(42 318 92)"><rect x="300" y="82" width="36" height="18" rx="3"/></g>
+        </svg>
+        <svg viewBox="0 0 400 300" data-yer-cizim="site">
+          <rect x="30" y="30" width="340" height="240" rx="10" fill="var(--yuzey2)" stroke="currentColor" stroke-width="2" opacity="0.9"/>
+          <path d="M30 60h340" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+          <g fill="currentColor" opacity="0.45"><circle cx="50" cy="45" r="4"/><circle cx="64" cy="45" r="4"/><circle cx="78" cy="45" r="4"/><rect x="55" y="82" width="150" height="12" rx="3"/><rect x="55" y="104" width="230" height="7" rx="3"/><rect x="55" y="118" width="190" height="7" rx="3"/></g>
+          <g class="logo-kutu"><rect x="55" y="160" width="130" height="64" rx="4"/><text x="120" y="197" text-anchor="middle">{y.logonuz}</text></g>
+          <g fill="none" stroke="currentColor" stroke-dasharray="4 5" opacity="0.4"><rect x="197" y="160" width="68" height="64" rx="4"/><rect x="277" y="160" width="68" height="64" rx="4"/></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  {gruplar.length > 0 && (
+    <section class="bolum kap" id={kimlik('ihtiyac')}>
+      <h2 data-belir>{c(S.ihtiyac.baslik, dil)}</h2>
+      <p class="bolum-giris js-only" data-belir>{c(S.ihtiyac.giris, dil)}</p>
+      <div class="sahne-govde iha-ici js-only" data-ihtiyac data-gruplar={JSON.stringify(gruplar.map((g) => g.parcalar))} data-adlar={JSON.stringify(adlar)}>
+        <div class="sahne">
+          <canvas role="img" aria-label={mm('alan', dil)}></canvas>
+          <button type="button" class="sahne-gorunum dugme-ikon" data-gorunum aria-label={sm('gorunum', dil)} title={sm('gorunum', dil)}><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5Z"/><path d="M3 13l9 5 9-5"/></svg></button>
+          <span class="iha-etiket" data-etiket aria-hidden="true" hidden></span>
+          <span class="sahne-ipucu" aria-hidden="true">{sm('surukle', dil)}</span>
+        </div>
+        <div class="demo-kumanda">
+          <div class="demo-grup" role="group" aria-label={y.gruplar}>
+            <span class="demo-etiket">{y.gruplar}</span>
+            {gruplar.map((g, i) => <button type="button" class="dugme kucuk etiketli" data-grup={i} aria-pressed="false">{g.ad}</button>)}
+          </div>
+          {D.ihtiyaclar.map((g, i) => (
+            <div class="rol-panel" data-grup-panel={i} hidden>
+              <h3>{c(g.grup, dil)}</h3>
+              <ul class="etiketler">{g.ogeler.map((o) => <li class:list={[{ karsilandi: g.karsilanan.includes(o) }]}>{o}{g.karsilanan.includes(o) && <span class="gizli"> ({y.karsilandi})</span>}</li>)}</ul>
+            </div>
+          ))}
+          <p class="demo-durum kisa" role="status" data-ihtiyac-durum>{c(D.ihtiyac_yazisi, dil)}</p>
+        </div>
+      </div>
+      <dl class="js-yok parca-yazi">
+        {D.ihtiyaclar.map((g) => <div><dt>{c(g.grup, dil)}</dt><dd>{g.ogeler.join(', ')}</dd></div>)}
+      </dl>
+    </section>
+  )}
+
+  {D.sponsorlar.length + S.sponsorlar.sablon > 0 && (
+    <section class="bolum kap" id={kimlik('sponsorlar')}>
+      <h2 data-belir>{c(S.sponsorlar.baslik, dil)}</h2>
+      <ul class="sponsor-kutular">
+        {D.sponsorlar.map((s, i) => (
+          <li data-belir style={`--i:${i % 4}`}>
+            {s.baglanti ? <a href={s.baglanti} rel="noopener">{s.logo ? <Image src={sponsorGorseli(s.logo)} alt={s.ad} height={64} loading="lazy" /> : s.ad}</a> : s.logo ? <Image src={sponsorGorseli(s.logo)} alt={s.ad} height={64} loading="lazy" /> : <span>{s.ad}</span>}
+          </li>
+        ))}
+        {Array.from({ length: S.sponsorlar.sablon }).map((_, i) => <li class="sablon" data-sponsor-sablon data-belir style={`--i:${i % 4}`}><span>{c(S.sponsorlar.sablon_yazi, dil)}</span></li>)}
+      </ul>
+    </section>
+  )}
+
+  {S.sss.liste.length > 0 && (
+    <section class="bolum kap" id={kimlik('sss')}>
+      <h2 data-belir>{c(S.sss.baslik, dil)}</h2>
+      <div class="sss" data-belir>
+        {S.sss.liste.map((x) => <details><summary>{c(x.soru, dil)}</summary><p>{c(x.cevap, dil)}</p></details>)}
+      </div>
+    </section>
+  )}
+
+  {eposta && (
+    <section class="kap" id={kimlik('yaz')}>
+      <div class="insta-kutu" data-belir>
+        <div>
+          <h2>{c(S.iletisim.baslik, dil)}</h2>
+          <p class="soluk js-only">{c(S.iletisim.metin, dil)}</p>
+          <p class="destek-secim js-only" role="status" data-secim></p>
+        </div>
+        <a class="dugme birincil" data-destek-dugme href={posta}>{c(S.iletisim.dugme, dil)}<span aria-hidden="true"> →</span></a>
+      </div>
+    </section>
+  )}
+  </div>
+
+  <section class="kap sayfa-son">
+    <div class="dugmeler">
+      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
+      <a class="dugme birincil" href={altSayfa.galeri[dil]}>{t('galeri', dil)} →</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/destek-sayfa.ts';
+</script>

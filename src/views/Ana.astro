@@ -305,6 +305,7 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
       </div>
       {iletisim.eposta && <p class="soluk">{c(iletisim.eposta_etiket, dil)}: <a href={eposta}>{iletisim.eposta}</a></p>}
     </div>
+    <p class="ayrintili" data-belir><a class="dugme" href={altSayfa.destek[dil]}>{t('ayrintili', dil)}<span aria-hidden="true">→</span></a></p>
   </section>
 
   {var_.has('iletisim') && (

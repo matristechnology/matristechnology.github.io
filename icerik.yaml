@@ -986,3 +986,235 @@ galeri_sayfa:
     metin:
       tr: Atölyeden ve sahadan güncel kareleri Instagram hesabımızda paylaşıyoruz.
       en: We share recent photos from the workshop and the field on our Instagram account.
+
+# ─── Destek sayfası (/destek/, /en/support/) ──────────────────────────────────────────────────
+# İhtiyaç listesi ve sponsorlar yukarıdaki "destek" bölümünden gelir.
+# TASLAK: paketlerin adları ve hakları, destek türlerinin anlatımı, logo yerleri ve sık sorulanlar taslak.
+# Tutar bilerek yazılmadı. Takım düzeltecek (docs/EKSIKLER.md).
+destek_sayfa:
+  baslik:
+    tr: Destek
+    en: Support
+  ozet:
+    tr: Matris'e nasıl destek olabileceğinizi, karşılığında ne sunduğumuzu ve şu an neye ihtiyacımız olduğunu bu sayfada bulursunuz.
+    en: This page shows how you can support Matris, what we offer in return and what we need right now.
+  neden:
+    baslik:
+      tr: Neden Matris?
+      en: Why Matris?
+    paragraflar:
+      - tr: Matris, Bursa Teknik Üniversitesi öğrencilerinden oluşan 17 kişilik bir takım. TEKNOFEST Sürü İHA Yarışması'nda 2024'te ve 2026'da finalist olduk, 2026'da Ön Tasarım Raporumuz 93 puanla Türkiye ikincisi seçildi.
+        en: Matris is a team of 17 students from Bursa Technical University. We were finalists in the TEKNOFEST Swarm UAV Competition in 2024 and 2026, and in 2026 our Preliminary Design Report came second in Türkiye with 93 points.
+      - tr: Bir sürü kurmak tek bir İHA yapmaktan pahalı. Aynı parçayı her araç için ayrı ayrı almak gerekiyor ve sahada kırılan parça yenisiyle değişiyor. Desteğiniz doğrudan araçlara, üretime ve saha testlerine gidiyor.
+        en: Building a swarm costs more than building one UAV. The same part has to be bought for every vehicle, and a part that breaks in the field is replaced with a new one. Your support goes straight into the vehicles, the manufacturing and the field tests.
+  turler:
+    baslik:
+      tr: Nasıl destek olabilirsiniz?
+      en: How you can support us
+    giris:
+      tr: Üç yol var. Birini seçin, ne anlama geldiğini okuyun.
+      en: There are three ways. Pick one to read what it means.
+    liste:
+      - ad:
+          tr: Malzeme desteği
+          en: Material support
+        metin:
+          tr: İhtiyaç listemizdeki parçaları doğrudan gönderebilirsiniz. Motor, batarya, otopilot ya da görev bilgisayarı gibi kalemlerde tek bir parça bile bir aracın uçmasını sağlıyor.
+          en: You can send the parts on our needs list directly. For items such as a motor, a battery, an autopilot or a mission computer, even a single part gets a vehicle flying.
+      - ad:
+          tr: Üretim ve test desteği
+          en: Manufacturing and testing support
+        metin:
+          tr: 3B baskı, kesim ya da lehimleme gibi üretim imkânlarınızı bize açabilirsiniz. Uçuş denemesi yapabileceğimiz bir alan da bu desteğin içinde.
+          en: You can open your manufacturing facilities to us, such as 3D printing, cutting or soldering. A place where we can run flight trials also counts as this kind of support.
+      - ad:
+          tr: Finansal destek
+          en: Financial support
+        metin:
+          tr: Parça alımını ve yarışma dönemindeki yol ile konaklama giderlerini karşılamamıza yardım eder. Tutarı ve nereye harcanacağını birlikte belirleriz.
+          en: It helps us cover part purchases and the travel and accommodation costs of the competition period. We decide the amount and where it goes together.
+  paketler:
+    baslik:
+      tr: Sponsor paketleri
+      en: Sponsor packages
+    giris:
+      tr: Paketler desteğin büyüklüğüne göre belirleniyor. Aşağıdaki tablo her pakette ne sunduğumuzu gösteriyor, ayrıntıyı görüşerek netleştiriyoruz.
+      en: The package depends on the size of the support. The table below shows what we offer in each package, and we settle the details in conversation.
+    adlar:
+      - tr: Ana sponsor
+        en: Main sponsor
+      - tr: Altın
+        en: Gold
+      - tr: Gümüş
+        en: Silver
+      - tr: Destekçi
+        en: Supporter
+    # Her satırda paket başına bir değer (adlar ile aynı sırada). Boş değer "yok" demektir.
+    haklar:
+      - ad:
+          tr: İHA'ların üstünde logo
+          en: Logo on the UAVs
+        degerler:
+          - tr: Büyük boy
+            en: Large
+          - tr: Var
+            en: "Yes"
+          - tr: ""
+            en: ""
+          - tr: ""
+            en: ""
+      - ad:
+          tr: Takım tişörtünde logo
+          en: Logo on the team shirt
+        degerler:
+          - tr: Göğüste
+            en: On the chest
+          - tr: Kolda
+            en: On the sleeve
+          - tr: ""
+            en: ""
+          - tr: ""
+            en: ""
+      - ad:
+          tr: Bu sitede logo
+          en: Logo on this site
+        degerler:
+          - tr: En üstte
+            en: At the top
+          - tr: Var
+            en: "Yes"
+          - tr: Var
+            en: "Yes"
+          - tr: Adıyla
+            en: By name
+      - ad:
+          tr: Sosyal medya paylaşımı
+          en: Social media post
+        degerler:
+          - tr: Özel tanıtım
+            en: Dedicated feature
+          - tr: Teşekkür paylaşımı
+            en: Thank-you post
+          - tr: Teşekkür paylaşımı
+            en: Thank-you post
+          - tr: Toplu teşekkür
+            en: Group thank-you
+      - ad:
+          tr: Etkinlik ve yarışmada görünürlük
+          en: Visibility at events and the competition
+        degerler:
+          - tr: Var
+            en: "Yes"
+          - tr: Var
+            en: "Yes"
+          - tr: ""
+            en: ""
+          - tr: ""
+            en: ""
+      - ad:
+          tr: Sunum ve raporlarda anılma
+          en: Mention in presentations and reports
+        degerler:
+          - tr: Var
+            en: "Yes"
+          - tr: Var
+            en: "Yes"
+          - tr: Var
+            en: "Yes"
+          - tr: ""
+            en: ""
+  logo:
+    baslik:
+      tr: Logonuz nerede görünür?
+      en: Where does your logo appear?
+    yerler:
+      - anahtar: iha
+        ad:
+          tr: İHA'ların üstünde
+          en: On the UAVs
+        metin:
+          tr: Logonuz araçların üst plakasında ve kollarında durur. Araçlar yarışma alanında, test videolarında ve fotoğraflarda görünür.
+          en: Your logo sits on the top plate and the arms of the vehicles. The vehicles are seen at the competition field, in test videos and in photos.
+      - anahtar: tisort
+        ad:
+          tr: Takım tişörtünde
+          en: On the team shirt
+        metin:
+          tr: Logonuz takım tişörtünün göğsünde ya da kolunda yer alır. Tişörtler yarışma haftası boyunca ve etkinliklerde giyilir.
+          en: Your logo goes on the chest or the sleeve of the team shirt. The shirts are worn throughout competition week and at events.
+      - anahtar: site
+        ad:
+          tr: Sitede ve sosyal medyada
+          en: On the site and social media
+        metin:
+          tr: Logonuz bu sitenin sponsorlar bölümünde ve Instagram paylaşımlarımızda yer alır.
+          en: Your logo appears in the sponsors section of this site and in our Instagram posts.
+  ihtiyac:
+    baslik:
+      tr: Şu an neye ihtiyacımız var?
+      en: What do we need right now?
+    giris:
+      tr: Bir grup seçin, o parçaların araçta nerede durduğunu modelde görün.
+      en: Pick a group to see on the model where those parts sit on the vehicle.
+    # Her ihtiyaç grubunun modelde yanacak parçaları, destek.ihtiyaclar ile aynı sırada.
+    # Parça anahtarları: govde motor pervane esc batarya guc otopilot bilgisayar kamera gps uwb wifi alici
+    parcalar:
+      - [otopilot, bilgisayar, guc]
+      - [gps, uwb, alici, wifi]
+      - [motor, esc]
+      - [batarya, kamera]
+      - [govde, pervane]
+  sponsorlar:
+    baslik:
+      tr: Sponsorlarımız
+      en: Our sponsors
+    # Sponsor gelene kadar gösterilecek boş kutu sayısı. Sponsor ekledikçe azalt.
+    sablon: 4
+    sablon_yazi:
+      tr: Logonuz burada
+      en: Your logo here
+  sss:
+    baslik:
+      tr: Sık sorulanlar
+      en: Frequently asked
+    liste:
+      - soru:
+          tr: Nasıl destek olabilirim?
+          en: How can I support you?
+        cevap:
+          tr: Sayfanın sonundaki düğmeyle bize yazın. Hangi tür destekle ilgilendiğinizi öğrenince size dönüyor ve ayrıntıları birlikte konuşuyoruz.
+          en: Write to us with the button at the end of the page. Once we know which kind of support you are interested in we get back to you and talk through the details.
+      - soru:
+          tr: Para yerine parça gönderebilir miyim?
+          en: Can I send parts instead of money?
+        cevap:
+          tr: Evet. İhtiyaç listesindeki kalemlerden birini ya da birkaçını gönderebilirsiniz. Elinizdeki parçanın listedekiyle aynı model olması gerekmiyor, uygun olup olmadığını birlikte bakarız.
+          en: Yes. You can send one or several of the items on the needs list. The part you have does not need to be the same model as the one listed, and we check together whether it fits.
+      - soru:
+          tr: Desteğim nereye gidiyor?
+          en: Where does my support go?
+        cevap:
+          tr: Araçların parçalarına, parçaların üretimine ve saha testlerine gidiyor.
+          en: It goes into the parts of the vehicles, the making of those parts and the field tests.
+      - soru:
+          tr: Logom ne zaman ve nerede görünür?
+          en: When and where will my logo appear?
+        cevap:
+          tr: Nerede görüneceği pakete göre değişiyor, yukarıdaki tabloda yazıyor. Anlaştıktan sonra logonuzu siteye ekliyoruz.
+          en: Where it appears depends on the package and is listed in the table above. After we agree we add your logo to the site.
+  iletisim:
+    baslik:
+      tr: Bize yazın
+      en: Write to us
+    metin:
+      tr: Yukarıda bir destek türü ya da paket seçtiyseniz e-postaya kendiliğinden yazılır.
+      en: If you picked a support type or a package above, it is written into the email.
+    dugme:
+      tr: Sponsorluk e-postası yaz
+      en: Write a sponsorship email
+    konu:
+      tr: Matris'e destek olmak istiyoruz
+      en: We would like to support Matris
+    govde:
+      tr: "Merhaba,\n\nMatris'e destek olmak istiyoruz.\n\nKurum: \nİlgilenen kişi: \nDestek türü: {tur}\nPaket: {paket}\nNotlar: \n"
+      en: "Hello,\n\nWe would like to support Matris.\n\nOrganisation: \nContact person: \nKind of support: {tur}\nPackage: {paket}\nNotes: \n"

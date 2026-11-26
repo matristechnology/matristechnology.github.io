@@ -8,7 +8,8 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { HATLAR } from './iha-hatlar';
 
-export type Durum = { secili: string; ustunde: string; hat: string; acik: boolean };
+/** vurgu: birlikte yanacak parçalar (Destek sayfasındaki ihtiyaç grupları). Seçili parça yokken geçerlidir. */
+export type Durum = { secili: string; ustunde: string; hat: string; acik: boolean; vurgu?: string[] };
 export type Gorsel = { guncelle: () => void; gorunum: () => void };
 
 const KOSE = [[1, 1], [-1, 1], [-1, -1], [1, -1]] as const;
@@ -427,14 +428,19 @@ export function kur(kok: HTMLElement, durum: Durum, adlar: Record<string, string
       }
     }
   };
+  /** Parçanın olması gereken saydamlığı: bir parça ya da bir grup öne çıkmışken ötekiler solar, gövde iskelet olarak biraz daha görünür kalır. */
+  const hedefS = (ad: string) => {
+    const one = durum.secili ? ad === durum.secili : !durum.vurgu?.length || durum.vurgu.includes(ad);
+    return one ? 1 : ad === 'govde' ? 0.3 : 0.14;
+  };
   const ciz = (dt: number) => {
     const azalt = azaltSorgu.matches, k = azalt ? 1 : Math.min(1, dt * 6);
-    const hatta = new Set(durum.hat ? HATLAR[durum.hat].flat() : []);
+    const hatta = new Set(durum.hat ? HATLAR[durum.hat].flat() : !durum.secili ? (durum.vurgu ?? []) : []);
     for (const [ad, p] of Object.entries(P)) {
       p.g.position.copy(p.ac).multiplyScalar(kayma(ad));
       const sec_ = ad === durum.secili, ust = ad === durum.ustunde;
       // Bir parça seçiliyken ötekiler saydamlaşır. Gövde iskelet olarak biraz daha görünür kalır.
-      const hs = !durum.secili || sec_ ? 1 : ad === 'govde' ? 0.3 : 0.14;
+      const hs = hedefS(ad);
       saydamlik[ad] += (hs - saydamlik[ad]) * k;
       const o = saydamlik[ad], saydam = o < 0.98;
       for (const m of malzemeler[ad]) {
@@ -476,7 +482,7 @@ export function kur(kok: HTMLElement, durum: Durum, adlar: Record<string, string
       } else etiketYaz.hidden = true;
     }
     // Yumuşak geçişler bitene kadar çizmeye devam et.
-    return hedef.distanceTo(odak) > 0.02 || Math.abs(hu - uzak) > 0.05 || Object.entries(P).some(([ad]) => Math.abs(saydamlik[ad] - (!durum.secili || ad === durum.secili ? 1 : ad === 'govde' ? 0.3 : 0.14)) > 0.01);
+    return hedef.distanceTo(odak) > 0.02 || Math.abs(hu - uzak) > 0.05 || Object.entries(P).some(([ad]) => Math.abs(saydamlik[ad] - hedefS(ad)) > 0.01);
   };
   function kare(z: number, tek = false) {
     const dt = Math.min(0.05, (z - son) / 1000 || 0.016); son = z;
@@ -486,8 +492,8 @@ export function kur(kok: HTMLElement, durum: Durum, adlar: Record<string, string
       if (a !== h) { a += (h - a) * Math.min(1, dt * 5); if (Math.abs(h - a) < 0.002) a = h; kirli = true; }
       if (bekle > 0) bekle -= dt;
       if (!ustte && !basili && bekle <= 0) { aci += dt * 0.16; kirli = true; }
-      if (durum.hat || durum.secili) kirli = true;
-      if (durum.secili === 'motor' || durum.secili === 'pervane') pervaneler.forEach((p, i) => (p.rotation.z += dt * 22 * (i % 2 ? -1 : 1)));
+      if (durum.hat || durum.secili || durum.vurgu?.length) kirli = true;
+      if (durum.secili === 'motor' || durum.secili === 'pervane' || (!durum.secili && (durum.vurgu?.includes('motor') || durum.vurgu?.includes('pervane')))) pervaneler.forEach((p, i) => (p.rotation.z += dt * 22 * (i % 2 ? -1 : 1)));
     }
     if (kirli) { kirli = ciz(tek ? 1 : dt); }
     if (tek) return;

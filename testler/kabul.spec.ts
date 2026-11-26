@@ -365,7 +365,7 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
   test.setTimeout(120000); // on iki sayfa ve her birindeki bağlantılar: canlı adreste 30 saniyeyi aşabiliyor
-  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/', '/galeri/', '/en/gallery/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/', '/galeri/', '/en/gallery/', '/destek/', '/en/support/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
@@ -884,4 +884,79 @@ test('D19 üst menü: başlıklar ayrıntı sayfalarını açar, Ana Sayfa giri�
   await expect(page.locator('h1')).toBeVisible();
   await page.goto('/en/gallery/');
   await expect(page.locator('.menu a').first()).toHaveAttribute('href', '/en/');
+});
+
+test.describe('D20 Destek sayfası', () => {
+  test('sayfa iki dilde açılır, menüden ve ana sayfadan ulaşılır, 320 pikselde taşmaz', async ({ page }) => {
+    for (const yol of ['/destek/', '/en/support/']) {
+      await page.goto(yol);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('[data-tur]')).toHaveCount(3);
+    }
+    await page.goto('/');
+    await expect(page.locator('.ayrintili a[href="/destek/"]')).toBeVisible();
+    await expect(page.locator('.menu').getByRole('link', { name: 'Destek', exact: true })).toHaveAttribute('href', '/destek/');
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/destek/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('tür ve paket seçimi e-posta taslağına yazılır, sayfada tutar yok', async ({ page }) => {
+    await page.goto('/destek/');
+    const d = page.locator('[data-destek]'), bag = page.locator('[data-destek-dugme]');
+    await expect(bag).toHaveAttribute('href', /^mailto:[^?@]+@[^?]+\?subject=/);
+    await d.locator('[data-tur]').nth(0).click();
+    await expect(d).toHaveAttribute('data-secili-tur', 'Malzeme desteği');
+    await d.locator('[data-paket]').nth(1).click();
+    await expect(d).toHaveAttribute('data-secili-paket', 'Altın');
+    await expect(d.locator('thead th[data-sutun="1"]')).toHaveAttribute('data-secili', '');
+    const govde = decodeURIComponent((await bag.getAttribute('href')) ?? '');
+    expect(govde).toContain('Destek türü: Malzeme desteği');
+    expect(govde).toContain('Paket: Altın');
+    await expect(d.locator('[data-secim]')).toContainText('Altın');
+    expect(await page.locator('main').innerText()).not.toMatch(/₺|\bTL\b|IBAN/);
+  });
+
+  test('logonun yeri: seçilen yerin anlatımı ve çizimi görünür', async ({ page }) => {
+    await page.goto('/destek/');
+    const l = page.locator('[data-logo]');
+    await expect(l.locator('[data-yer-cizim]:visible')).toHaveCount(1);
+    await l.locator('[data-yer="tisort"]').click();
+    await expect(l).toHaveAttribute('data-yer', 'tisort');
+    await expect(l.locator('[data-yer-cizim="tisort"]')).toBeVisible();
+    await expect(l.locator('[data-yer-panel]:visible')).toContainText('tişört');
+  });
+
+  test('ihtiyaç grupları: grup seçilince kalemleri açılır, model yüklenir', async ({ page }) => {
+    await page.goto('/destek/');
+    const i = page.locator('[data-ihtiyac]');
+    await i.scrollIntoViewIfNeeded();
+    await expect(i).toHaveAttribute('data-hazir', '1', { timeout: 20000 });
+    await i.locator('[data-grup="2"]').click();
+    await expect(i).toHaveAttribute('data-grup', '2');
+    await expect(i.locator('[data-grup-panel]:visible')).toContainText('EMAX 820KV motor');
+    await i.locator('[data-grup="2"]').click();
+    await expect(i).toHaveAttribute('data-grup', '-1');
+  });
+
+  test('sponsor şablonları ve sık sorulanlar', async ({ page }) => {
+    await page.goto('/destek/');
+    await expect(page.locator('[data-sponsor-sablon]')).toHaveCount(4);
+    const s = page.locator('.sss details');
+    await expect(s).toHaveCount(4);
+    await s.first().locator('summary').click();
+    await expect(s.first().locator('p')).toBeVisible();
+  });
+
+  test('betik kapalıyken türler, paketler, ihtiyaç listesi ve düğme okunur', async ({ browser }) => {
+    const b = await browser.newContext({ javaScriptEnabled: false });
+    const page = await b.newPage();
+    await page.goto('/destek/');
+    await expect(page.locator('.tur-metin').first()).toBeVisible();
+    await expect(page.locator('.paketler tbody tr')).toHaveCount(6);
+    await expect(page.locator('#ihtiyac dl.js-yok')).toContainText('Raspberry Pi 5');
+    await expect(page.locator('[data-yer-panel]:visible')).toHaveCount(3);
+    await expect(page.locator('[data-destek-dugme]')).toHaveAttribute('href', /^mailto:/);
+    await b.close();
+  });
 });
