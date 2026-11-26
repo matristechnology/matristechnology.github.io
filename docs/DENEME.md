@@ -29,5 +29,6 @@ Toplam: 35 geçti, 4 atlandı, 0 düştü. Atlananlar: E3 üç tarayıcıda (ayr
 | D15 | Matris sayfası | Geçti | 26.11.2026, üç tarayıcı. İki dilde açılıyor, 320 pikselde taşma yok. İHA'nın içinde parça seçimi, parçalara ayırma, hatlar ve tuvale tıklama çalışıyor. Hikâye durakları fare ve ok tuşlarıyla geziliyor. Betik kapalıyken duraklar ve parça listesi yazıyla görünüyor. Mesh ağ denemesi D14'e eklendi (2 atlama, kopma, zincirde 4 atlama) |
 | D13c | Canlı adres, Matris sayfasıyla | Geçti (bir deneme ikinci turda) | 26.11.2026, canlıda üç tarayıcı: 97 geçti, 4 atlandı, 1 düştü. Düşen WebKit'teki tarama denemesiydi, 90 saniyelik sınırı aştı. Tek başına üç kez çalıştırıldı, üçü de geçti (38 sn). Yerel tam turda 98 geçti. Tarama gerçek zamanlı 34 sn sürdüğü için yan yana ağır bir denemeyle çakışınca yavaşlıyor |
 | D15b | İHA'nın içi, three.js modeliyle | Geçti | 26.11.2026, yerelde üç tarayıcıda tam tur: 98 geçti, 4 atlandı. Model Chromium, Firefox ve WebKit'te açılıyor (54 bin üçgen), tuvalin %16 kadarı boyalı, tuvale tıklayınca parça seçiliyor, hareketi azalt açıkken kendiliğinden dönmüyor |
+| D13d | Canlı adres, yeni İHA modeliyle | Geçti | 26.11.2026, https://matristechnology.github.io/ üzerinde üç tarayıcıda 98 geçti, 4 atlandı, düşen yok |
 
 Denemeleri yinelemek için: `npm run build && npm run preview`, sonra `npm test`.
