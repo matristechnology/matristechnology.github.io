@@ -1,0 +1,142 @@
+---
+// Galeri ayrıntı sayfası: konuya göre süzülen fotoğraflar, küçük resim şeritli büyük görüntüleyici,
+// fotoğrafı henüz gelmemiş yerler için boş şablon kareler, videolar ve Instagram'a yönlendirme.
+// Fotoğraflar icerik.yaml "galeri" listesinden, konular ve şablon sayıları "galeri_sayfa" bölümünden.
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { icerik, c, galeriGorseli, type Dil } from '../lib/icerik';
+import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const S = icerik.galeri_sayfa, konular = Object.entries(S.konular);
+const kimlik = (k: string) => (dil === 'tr' ? k : { fotograflar: 'photos', videolar: 'videos' }[k] ?? k);
+const y = {
+  tr: { suz: 'Konuya göre süz', hepsi: 'Hepsi', fotoYakinda: 'Fotoğraf yakında', videoYakinda: 'Video yakında', durum: '{n} fotoğraf gösteriliyor.', oynat: 'Videoyu oynat', kucukler: 'Fotoğraflar', fotograflar: 'Fotoğraflar', git: 'Instagram\'da aç' },
+  en: { suz: 'Filter by topic', hepsi: 'All', fotoYakinda: 'Photo coming soon', videoYakinda: 'Video coming soon', durum: 'Showing {n} photos.', oynat: 'Play video', kucukler: 'Photos', fotograflar: 'Photos', git: 'Open on Instagram' },
+}[dil];
+const fotolar = await Promise.all(icerik.galeri.map(async (g) => {
+  const kaynak = galeriGorseli(g.dosya);
+  const buyuk = await getImage({ src: kaynak, width: Math.min(1600, kaynak.width), format: 'webp' });
+  const kucuk = await getImage({ src: kaynak, width: 160, height: 120, fit: 'cover', format: 'webp' });
+  return { kaynak, buyuk: buyuk.src, kucuk: kucuk.src, alt: c(g.alt, dil), dik: kaynak.height > kaynak.width, konu: g.konu, konuAd: c(S.konular[g.konu]?.ad, dil) };
+}));
+const sablonlar = konular.flatMap(([k, v]) => Array.from({ length: v.sablon }, () => ({ konu: k, konuAd: c(v.ad, dil) })));
+const V = S.videolar, videoVar = V.liste.length + V.sablon > 0;
+const insta = icerik.iletisim.instagram;
+const icindekiler = [['fotograflar', y.fotograflar], ...(videoVar ? [['videolar', c(V.baslik, dil)]] : [])];
+---
+
+<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.galeri[digerDil(dil)]} sayfa="diger" bolum="galeri">
+  <section class="sayfa-bas kap">
+    <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
+      <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{c(S.baslik, dil)}</span>
+    </nav>
+    <h1 data-belir>{c(S.baslik, dil)}</h1>
+    <p class="tanitim" data-belir style="--i:1">{c(S.ozet, dil)}</p>
+    {icindekiler.length > 1 && (
+      <ol class="icindekiler" data-belir style="--i:2">
+        {icindekiler.map(([k, ad], i) => <li><a href={`#${kimlik(k)}`}><span>{String(i + 1).padStart(2, '0')}</span>{ad}</a></li>)}
+      </ol>
+    )}
+  </section>
+
+  <section class="bolum kap" id={kimlik('fotograflar')} data-gsayfa data-durum-kalip={y.durum}>
+    <h2 data-belir>{y.fotograflar}</h2>
+    <div class="suzgec js-only" data-gsuz role="group" aria-label={y.suz} data-belir>
+      <button type="button" data-konu="" aria-pressed="true">{y.hepsi}<span class="suzgec-sayi">{fotolar.length}</span></button>
+      {konular.map(([k, v]) => <button type="button" data-konu={k} aria-pressed="false">{c(v.ad, dil)}<span class="suzgec-sayi">{fotolar.filter((f) => f.konu === k).length}</span></button>)}
+    </div>
+    <p class="demo-durum kisa js-only" role="status" data-gdurum></p>
+    <ul class="galeri gsayfa" data-gliste>
+      {fotolar.map((g) => (
+        <li class:list={[{ dik: g.dik }]} data-konu={g.konu}>
+          <a href={g.buyuk} data-gfoto data-alt={g.alt} data-konu-ad={g.konuAd} data-kucuk={g.kucuk} aria-label={`${t('buyut', dil)}: ${g.alt}`}>
+            <Image src={g.kaynak} alt={g.alt} widths={[320, 480, 720]} sizes="(max-width: 600px) 50vw, (max-width: 1000px) 33vw, 290px" loading="lazy" />
+            {g.konuAd && <span class="g-etiket" aria-hidden="true">{g.konuAd}</span>}
+          </a>
+        </li>
+      ))}
+      {sablonlar.map((s) => (
+        <li class="g-sablon" data-konu={s.konu} data-sablon>
+          <div>
+            <svg viewBox="0 0 48 48" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 15l18 18M33 15 15 33"/><circle cx="11" cy="11" r="5.5"/><circle cx="37" cy="11" r="5.5"/><circle cx="11" cy="37" r="5.5"/><circle cx="37" cy="37" r="5.5"/><rect x="19" y="19" width="10" height="10" rx="2.5" fill="currentColor" stroke="none"/></svg>
+            <span>{y.fotoYakinda}</span>
+            <span class="g-etiket">{s.konuAd}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <dialog class="buyutec gb" data-gb aria-label={t('goruntuleyici', dil)}>
+      <div class="buyutec-ust">
+        <span class="buyutec-sayac"><span data-sayac></span><span class="gb-konu" data-gkonu></span></span>
+        <button type="button" class="dugme-ikon" data-kapat aria-label={t('kapat', dil)}>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="buyutec-govde" data-gkaydir>
+        <button type="button" class="dugme-ikon" data-onceki aria-label={t('onceki', dil)}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <img data-buyuk alt="" draggable="false" />
+        <button type="button" class="dugme-ikon" data-sonraki aria-label={t('sonraki', dil)}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="buyutec-alt" data-aciklama role="status"></p>
+      <div class="gb-serit" data-serit role="group" aria-label={y.kucukler}></div>
+    </dialog>
+  </section>
+
+  {videoVar && (
+    <section class="bolum kap" id={kimlik('videolar')}>
+      <h2 data-belir>{c(V.baslik, dil)}</h2>
+      {c(V.giris, dil) && <p class="bolum-giris" data-belir>{c(V.giris, dil)}</p>}
+      <ul class="videolar">
+        {V.liste.map((v, i) => (
+          <li data-belir style={`--i:${i % 3}`}>
+            <div class="video-kutu" data-video={v.youtube} data-baslik={c(v.baslik, dil)}>
+              <a class="video-ac" href={`https://www.youtube.com/watch?v=${v.youtube}`} rel="noopener" aria-label={`${y.oynat}: ${c(v.baslik, dil)}`}>
+                <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 15l14 9-14 9z" fill="currentColor"/></svg>
+              </a>
+            </div>
+            <p class="video-ad">{c(v.baslik, dil)}</p>
+          </li>
+        ))}
+        {Array.from({ length: V.sablon }).map((_, i) => (
+          <li class="video-sablon" data-video-sablon data-belir style={`--i:${i % 3}`}>
+            <div class="video-kutu">
+              <svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 5"/><path d="M20 15l14 9-14 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              <span>{y.videoYakinda}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {insta && (
+    <section class="kap">
+      <div class="insta-kutu" data-belir>
+        <div>
+          <h2>{c(S.instagram.baslik, dil)}</h2>
+          {c(S.instagram.metin, dil) && <p class="soluk">{c(S.instagram.metin, dil)}</p>}
+        </div>
+        <a class="dugme birincil" href={insta} rel="noopener" data-insta>{icerik.iletisim.instagram_ad || y.git}<span aria-hidden="true"> →</span></a>
+      </div>
+    </section>
+  )}
+
+  <section class="kap sayfa-son">
+    <div class="dugmeler">
+      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
+      <a class="dugme birincil" href={altSayfa.calismalar[dil]}>{t('calismalar', dil)} →</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/galeri-sayfa.ts';
+</script>

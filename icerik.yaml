@@ -178,26 +178,37 @@ surec:
     ayrinti: { tr: "Sürü davranışı, görev paylaşımı ve veri aktarımı testleri.", en: "Swarm behaviour, task sharing and data transfer tests." }
 
 # Fotoğraflar: src/assets/galeri/<dosya>. Her birine tek satır açıklama.
+# konu: galeri sayfasındaki süzgeç için (galeri_sayfa.konular içindeki anahtarlardan biri). Konuları ben yerleştirdim, takım düzeltecek.
 galeri:
   - dosya: sahne.jpg
+    konu: takim
     alt: { tr: "Takım, Sürü İHA Yarışması sahnesinin önünde.", en: The team in front of the Swarm UAV Competition stage. }
   - dosya: uc-arac.jpg
+    konu: takim
     alt: { tr: Yarışma alanında takım ve üç İHA., en: The team and three UAVs at the competition field. }
   - dosya: juri.jpg
+    konu: yarisma
     alt: { tr: Yarışma çadırında sistemin anlatımı., en: Explaining the system in the competition tent. }
   - dosya: arac-tezgah.jpg
+    konu: atolye
     alt: { tr: Atölyede bir İHA., en: A UAV in the workshop. }
   - dosya: ucus-oncesi.jpg
+    konu: saha
     alt: { tr: Uçuş öncesi kontrol., en: Pre-flight check. }
   - dosya: atolye.jpg
+    konu: atolye
     alt: { tr: Atölyede donanım çalışması., en: Hardware work in the workshop. }
   - dosya: gece-testi.jpg
+    konu: saha
     alt: { tr: Akşam saatlerinde uçuş denemesi hazırlığı., en: Preparing for an evening flight trial. }
   - dosya: saha.jpg
+    konu: saha
     alt: { tr: Sahada sıralanmış İHA'lar., en: UAVs lined up on the field. }
   - dosya: pist.jpg
+    konu: saha
     alt: { tr: Açık alanda uçuş denemesi., en: A flight trial in the open. }
   - dosya: hazirlik.jpg
+    konu: saha
     alt: { tr: Uçuş öncesi araçların hazırlanması., en: Preparing the vehicles before a flight. }
 
 destek:
@@ -924,3 +935,54 @@ calisma_sayfa:
         metin:
           tr: Rapora denediğimiz ve gördüğümüz şeyleri yazıyoruz.
           en: In the report we write what we tried and what we saw.
+
+# ─── Galeri sayfası (/galeri/, /en/gallery/) ──────────────────────────────────────────────────
+# Fotoğraflar yukarıdaki "galeri" listesinden gelir, her birinin "konu" alanı süzgeçte kullanılır.
+# sablon: o konuda fotoğraf gelene kadar gösterilecek boş kare sayısı. Fotoğraf ekledikçe sayıyı azalt.
+galeri_sayfa:
+  baslik:
+    tr: Galeri
+    en: Gallery
+  ozet:
+    tr: Atölyeden, sahadan ve yarışmadan kareler. Bir konu seç, fotoğrafa tıklayıp büyüt.
+    en: Photos from the workshop, the field and the competition. Pick a topic and click a photo to enlarge it.
+  konular:
+    atolye:
+      ad:
+        tr: Atölye
+        en: Workshop
+      sablon: 2
+    saha:
+      ad:
+        tr: Saha testleri
+        en: Field tests
+      sablon: 1
+    yarisma:
+      ad:
+        tr: Yarışma
+        en: Competition
+      sablon: 2
+    takim:
+      ad:
+        tr: Takım
+        en: Team
+      sablon: 2
+  videolar:
+    baslik:
+      tr: Videolar
+      en: Videos
+    giris:
+      tr: Uçuş ve simülasyon kayıtları buraya eklenecek.
+      en: Flight and simulation recordings will be added here.
+    # Video eklemek için: - baslik: { tr: "...", en: "..." }
+    #                       youtube: "VIDEO_KIMLIGI"   (youtube.com/watch?v= sonrasındaki kısım)
+    liste: []
+    # Video gelene kadar gösterilecek boş kutu sayısı. Video ekledikçe azalt.
+    sablon: 3
+  instagram:
+    baslik:
+      tr: Daha fazlası Instagram'da
+      en: More on Instagram
+    metin:
+      tr: Atölyeden ve sahadan güncel kareleri Instagram hesabımızda paylaşıyoruz.
+      en: We share recent photos from the workshop and the field on our Instagram account.

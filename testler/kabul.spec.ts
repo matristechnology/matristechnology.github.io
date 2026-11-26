@@ -364,7 +364,7 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 });
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
-  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/', '/galeri/', '/en/gallery/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
@@ -798,6 +798,71 @@ test.describe('D17 Çalışmalar sayfası', () => {
     const page = await b.newPage();
     await page.goto('/calismalar/');
     await expect(page.locator('[data-akis] .akis-kart:visible')).toHaveCount(4);
+    await b.close();
+  });
+});
+
+test.describe('D18 Galeri sayfası', () => {
+  test('sayfa iki dilde açılır, ana sayfadan bağlantı var, 320 pikselde taşmaz', async ({ page }) => {
+    for (const yol of ['/galeri/', '/en/gallery/']) {
+      await page.goto(yol);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('[data-gfoto]')).toHaveCount(10);
+    }
+    await page.goto('/');
+    await expect(page.locator('.ayrintili a[href="/galeri/"]')).toBeVisible();
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/galeri/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('konu süzgeci fotoğrafları ve boş şablon kareleri süzer', async ({ page }) => {
+    await page.goto('/galeri/');
+    const g = page.locator('[data-gsayfa]');
+    await expect(g).toHaveAttribute('data-gorunen', '10');
+    await expect(g).toHaveAttribute('data-sablon', '7');
+    await g.locator('[data-gsuz] [data-konu="saha"]').click();
+    await expect(g).toHaveAttribute('data-gorunen', '5');
+    await expect(g).toHaveAttribute('data-sablon', '1');
+    await expect(g.locator('[data-gfoto]:visible')).toHaveCount(5);
+    await expect(g.locator('[data-gdurum]')).toContainText('5');
+    await g.locator('[data-gsuz] [data-konu=""]').click();
+    await expect(g).toHaveAttribute('data-gorunen', '10');
+  });
+
+  test('görüntüleyici: yalnızca süzülen fotoğraflarda gezer, küçük resimle atlanır, Esc ile kapanır', async ({ page }) => {
+    await page.goto('/galeri/');
+    const g = page.locator('[data-gsayfa]'), gb = page.locator('[data-gb]');
+    await g.locator('[data-gsuz] [data-konu="atolye"]').click();
+    await expect(g).toHaveAttribute('data-gorunen', '2');
+    await g.locator('[data-gfoto]:visible').first().click();
+    await expect(gb).toBeVisible();
+    await expect(gb.locator('[data-sayac]')).toHaveText('1 / 2');
+    await expect(gb.locator('[data-serit] button')).toHaveCount(2);
+    await page.keyboard.press('ArrowRight');
+    await expect(gb).toHaveAttribute('data-sira', '2');
+    await page.keyboard.press('ArrowRight');
+    await expect(gb).toHaveAttribute('data-sira', '1');
+    await gb.locator('[data-serit] button').nth(1).click();
+    await expect(gb).toHaveAttribute('data-sira', '2');
+    await expect(gb.locator('[data-serit] button').nth(1)).toHaveAttribute('aria-current', 'true');
+    await expect(gb.locator('[data-aciklama]')).not.toBeEmpty();
+    await page.keyboard.press('Escape');
+    await expect(gb).toBeHidden();
+  });
+
+  test('video şablonları ve Instagram bağlantısı', async ({ page }) => {
+    await page.goto('/galeri/');
+    await expect(page.locator('[data-video-sablon]')).toHaveCount(3);
+    await expect(page.locator('[data-insta]')).toHaveAttribute('href', /^https:\/\/www\.instagram\.com\//);
+  });
+
+  test('betik kapalıyken bütün fotoğraflar görünür ve büyük haline bağlıdır', async ({ browser }) => {
+    const b = await browser.newContext({ javaScriptEnabled: false });
+    const page = await b.newPage();
+    await page.goto('/galeri/');
+    await expect(page.locator('[data-gfoto]:visible')).toHaveCount(10);
+    expect(await page.locator('[data-gfoto]').first().getAttribute('href')).toMatch(/\.webp$/);
     await b.close();
   });
 });

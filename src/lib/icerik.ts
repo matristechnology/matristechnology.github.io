@@ -49,7 +49,7 @@ const sema = z.object({
   ),
   danismanlar: liste(z.object({ ad: metin, unvan: ikiDil, izin: z.boolean().optional().default(false) })),
   surec: liste(z.object({ baslik: ikiDil, ayrinti: ikiDilBos })),
-  galeri: liste(z.object({ dosya: z.string(), alt: ikiDil })),
+  galeri: liste(z.object({ dosya: z.string(), alt: ikiDil, konu: z.string().optional().default('') })),
   destek: z.object({
     metin: ikiDilBos,
     alanlar: liste(ikiDil),
@@ -94,6 +94,13 @@ const sema = z.object({
     }),
     atolye: z.object({ goster: z.boolean().optional().default(true), baslik: ikiDil, paragraflar: liste(ikiDil), fotograflar: liste(z.string()) }),
     rapor: z.object({ baslik: ikiDil, paragraflar: liste(ikiDil), adimlar: liste(z.object({ ad: ikiDil, metin: ikiDil })) }),
+  }),
+  galeri_sayfa: z.object({
+    baslik: ikiDil,
+    ozet: ikiDilBos,
+    konular: z.record(z.string(), z.object({ ad: ikiDil, sablon: z.number().int().min(0).optional().default(0) })),
+    videolar: z.object({ baslik: ikiDil, giris: ikiDilBos, liste: liste(z.object({ baslik: ikiDil, youtube: z.string().regex(/^[\w-]{6,20}$/) })), sablon: z.number().int().min(0).optional().default(0) }),
+    instagram: z.object({ baslik: ikiDil, metin: ikiDilBos }),
   }),
   takim_sayfa: z.object({
     baslik: ikiDil,
