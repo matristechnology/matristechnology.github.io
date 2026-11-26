@@ -866,3 +866,21 @@ test.describe('D18 Galeri sayfası', () => {
     await b.close();
   });
 });
+
+test('D19 üst menü: başlıklar ayrıntı sayfalarını açar, Ana Sayfa girişe döner', async ({ page }) => {
+  await page.goto('/');
+  const menu = page.locator('.menu');
+  await expect(menu.locator('a').first()).toHaveText('Ana Sayfa');
+  await expect(menu.locator('a[aria-current="page"]')).toHaveText('Ana Sayfa');
+  for (const [ad, yol] of [['Sürü İHA', '/suru-iha/'], ['Matris', '/matris/'], ['Takım', '/takim/'], ['Çalışmalar', '/calismalar/'], ['Galeri', '/galeri/']]) {
+    await expect(menu.getByRole('link', { name: ad, exact: true })).toHaveAttribute('href', yol);
+  }
+  await menu.getByRole('link', { name: 'Takım', exact: true }).click();
+  await expect(page).toHaveURL(/\/takim\/$/);
+  await expect(page.locator('.menu a[aria-current="page"]')).toHaveText('Takım');
+  await page.locator('.menu').getByRole('link', { name: 'Ana Sayfa', exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator('h1')).toBeVisible();
+  await page.goto('/en/gallery/');
+  await expect(page.locator('.menu a').first()).toHaveAttribute('href', '/en/');
+});

@@ -24,7 +24,10 @@ const ogGorsel = new URL(`/og-${dil}.png`, site).href;
 const ana = anaYol(dil);
 const sira = gorunenBolumler();
 // Ana sayfada menü bölümlere kayar. Ayrıntı sayfalarında, sayfası olan bölüm o sayfaya, öteki bölümler ana sayfadaki yerine gider.
-const bag = (b: (typeof sira)[number]) => (sayfa !== 'ana' && altSayfa[b] ? altSayfa[b]![dil] : `${sayfa === 'ana' ? '' : ana}#${bolumler[b][dil]}`);
+// Ayrıntı sayfası olan başlık o sayfaya gider (Ali, 26.11.2026: "basılınca bu web siteleri açılsın").
+// Sayfası henüz olmayan başlık (destek, iletişim) ana sayfadaki bölümüne iner.
+const bag = (b: (typeof sira)[number]) => (altSayfa[b] ? altSayfa[b]![dil] : `${sayfa === 'ana' ? '' : ana}#${bolumler[b][dil]}`);
+const anaBag = sayfa === 'ana' ? '#ust' : ana;
 const ad = icerik.takim.ad;
 ---
 
@@ -86,8 +89,9 @@ const ad = icerik.takim.ad;
 
         <nav class="menu" aria-label={t('anaMenu', dil)}>
           <ul>
+            <li><a href={anaBag} data-ana aria-current={sayfa === 'ana' ? 'page' : undefined}>{t('anaSayfaKisa', dil)}</a></li>
             {sira.map((b) => (
-              <li><a href={bag(b)} data-bolum={bolumler[b][dil]} aria-current={bolum === b ? 'page' : undefined}>{t(b, dil)}</a></li>
+              <li><a href={bag(b)} data-bolum={altSayfa[b] ? undefined : bolumler[b][dil]} aria-current={bolum === b ? 'page' : undefined}>{t(b, dil)}</a></li>
             ))}
           </ul>
         </nav>
@@ -109,6 +113,7 @@ const ad = icerik.takim.ad;
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </summary>
             <ul>
+              <li><a href={anaBag} aria-current={sayfa === 'ana' ? 'page' : undefined}>{t('anaSayfaKisa', dil)}</a></li>
               {sira.map((b) => (
                 <li><a href={bag(b)} aria-current={bolum === b ? 'page' : undefined}>{t(b, dil)}</a></li>
               ))}

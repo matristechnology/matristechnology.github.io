@@ -29,6 +29,7 @@ const metin = {
   icerigeGec: { tr: 'İçeriğe geç', en: 'Skip to content' },
   menu: { tr: 'Menü', en: 'Menu' },
   anaMenu: { tr: 'Bölümler', en: 'Sections' },
+  anaSayfaKisa: { tr: 'Ana Sayfa', en: 'Home' },
   suru: { tr: 'Sürü İHA', en: 'Swarm UAV' },
   matris: { tr: 'Matris', en: 'Matris' },
   takim: { tr: 'Takım', en: 'Team' },

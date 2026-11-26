@@ -41,6 +41,10 @@ if (govde.dataset.sayfa === 'ana' && 'IntersectionObserver' in window) {
           if (b.dataset.bolum === suankiBolum.id) b.setAttribute('aria-current', 'true');
           else b.removeAttribute('aria-current');
         }
+        // Menüde kendi bölümü olmayan yerdeyken (giriş ve sayfası ayrı olan bölümler) "Ana Sayfa" yanar.
+        const anaBag = $('.menu a[data-ana]');
+        if (baglar.some((b) => b.hasAttribute('aria-current'))) anaBag?.removeAttribute('aria-current');
+        else anaBag?.setAttribute('aria-current', 'page');
       }
     },
     { rootMargin: '-40% 0px -55% 0px' },
