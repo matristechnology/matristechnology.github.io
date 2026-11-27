@@ -612,6 +612,7 @@ html[data-suru='kapali'] .suru { display: none; }
 .kuye.adsiz .kuye-ust { order: -2; }
 .kuye-yer { font-size: 0.8125rem; color: var(--vurgu); }
 .kuye-ayrinti { font-size: 0.875rem; line-height: 1.45; color: var(--soluk); }
+.kuye-bag { display: flex; flex-wrap: wrap; gap: 0 1rem; }
 .kuye a { display: inline-flex; align-items: center; min-height: 2.75rem; }
 
 .ortam { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 2rem; align-items: start; }

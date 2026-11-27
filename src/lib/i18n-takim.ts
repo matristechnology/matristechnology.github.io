@@ -18,7 +18,9 @@ const m = {
   bos: { tr: 'Bu süzgece uyan üye yok.', en: 'No member matches this filter.' },
   uye: { tr: 'Üye', en: 'Member' },
   isimYakinda: { tr: 'İsim yakında', en: 'Name coming soon' },
-  profil: { tr: 'Profil', en: 'Profile' },
+  profil: { tr: 'LinkedIn', en: 'LinkedIn' },
+  github: { tr: 'GitHub', en: 'GitHub' },
+  katilisYil: { tr: "{y} yılından beri takımda", en: 'On the team since {y}' },
   dallar: { tr: 'Dallar', en: 'Branches' },
 } as const;
 

@@ -146,13 +146,38 @@ ekip_yazisi:
 #   baglanti  üyenin kendi verdiği bağlantı (LinkedIn gibi)
 #   izin      üye adıyla görünmeye izin verdiyse true. Adı yazılı ama izni false olan üye adsız görünür
 uyeler:
-  - { ad: "", gorev: { tr: Takım kaptanı, en: Team captain }, ekip: "", dal: "", sorumlu: true, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Ali Yılmaz
+    gorev: { tr: Takım kaptanı, en: Team captain }
+    ayrinti:
+      tr: Takımın kaptanı. Görüntü işleme üzerine yoğunlaşıyor ve 2026 TEKNOFEST Sürü İHA finalinde takımla birlikte yer aldı.
+      en: Team captain. Focuses on computer vision and took part in the 2026 TEKNOFEST Swarm UAV final with the team.
+    ekip: ""
+    dal: ""
+    sorumlu: true
+    bolum: { tr: "Bilgisayar Mühendisliği, 4. sınıf", en: "Computer Engineering, 4th year" }
+    katilis: 2025
+    fotograf: ali-yilmaz.jpg
+    baglanti: https://www.linkedin.com/in/alii-yilmazz/
+    github: https://github.com/AliYilmaz16
+    izin: true
   - { ad: "", gorev: { tr: Sürü mimarisi, en: Swarm architecture }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Çarpışmadan kaçınma, en: Collision avoidance }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Simülasyon, en: Simulation }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Görüntü işleme yöntemleri, en: Computer vision methods }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: UWB entegrasyonu, en: UWB integration }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: UDP ile haberleşme, en: UDP communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Funda Çakan
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Yazılım ekibinde haberleşme dalında çalışıyor. Yazılım alanında hem kendini hem de takımı geliştirmeyi hedefliyor.
+      en: Works in the software team on communication. Aims to grow in software, both personally and together with the team.
+    ekip: yazilim
+    dal: haberlesme
+    sorumlu: false
+    bolum: { tr: "Bilgisayar Mühendisliği, 1. sınıf", en: "Computer Engineering, 1st year" }
+    katilis: 2026
+    fotograf: funda-cakan.jpg
+    baglanti: https://www.linkedin.com/in/funda-çakan-89a330437
+    izin: true
   - { ad: "", gorev: { tr: MAVLink haberleşmesi, en: MAVLink communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Mekanik ve elektronik tasarım, en: Mechanical and electronic design }, ekip: "elektronik", dal: "montaj", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "QR kodu ve iniş dairesi algılama", en: "QR code and landing circle detection" }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }

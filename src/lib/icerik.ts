@@ -44,6 +44,8 @@ const sema = z.object({
       bolum: ikiDilBos,
       fotograf: metin,
       baglanti: metin,
+      github: metin.optional().default(''),
+      katilis: z.union([z.string(), z.number()]).transform(String).optional().default(''),
       izin: z.boolean().optional().default(false),
     }),
   ),
@@ -193,7 +195,7 @@ export function gorunenUyeler(): Uye[] {
     const adsiz = !u.ad.trim() || !u.izin;
     const sablon = adsiz && !u.ekip && !u.dal && !u.gorev.tr.trim() && !u.gorev.en.trim();
     // Adı görünmeyen üyenin kişisel alanları sayfaya hiç girmez.
-    return adsiz ? { ...u, ad: '', fotograf: '', baglanti: '', bolum: { tr: '', en: '' }, sira: i + 1, adsiz, sablon } : { ...u, sira: i + 1, adsiz, sablon };
+    return adsiz ? { ...u, ad: '', fotograf: '', baglanti: '', github: '', katilis: '', ayrinti: { tr: '', en: '' }, bolum: { tr: '', en: '' }, sira: i + 1, adsiz, sablon } : { ...u, sira: i + 1, adsiz, sablon };
   });
   const agirlik = (u: Uye) => (u.sablon ? 2 : u.sorumlu ? 0 : 1);
   return hepsi.sort((a, b) => agirlik(a) - agirlik(b) || a.sira - b.sira);

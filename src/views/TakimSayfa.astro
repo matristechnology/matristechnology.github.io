@@ -145,7 +145,13 @@ const icindekiler = [
               {yer && <p class="kuye-yer">{yer}</p>}
               {ayrinti && <p class="kuye-ayrinti">{ayrinti}</p>}
               {bolum && <p class="kuye-ayrinti">{bolum}</p>}
-              {u.baglanti && <p><a href={u.baglanti} rel="noopener">{tm('profil', dil)}<span class="gizli">: {ad}</span></a></p>}
+              {u.katilis && <p class="kuye-ayrinti">{tm('katilisYil', dil).replace('{y}', u.katilis)}</p>}
+              {(u.baglanti || u.github) && (
+                <p class="kuye-bag">
+                  {u.baglanti && <a href={u.baglanti} rel="noopener">{tm('profil', dil)}<span class="gizli">: {ad}</span></a>}
+                  {u.github && <a href={u.github} rel="noopener">{tm('github', dil)}<span class="gizli">: {ad}</span></a>}
+                </p>
+              )}
             </li>
           );
         })}
