@@ -208,7 +208,20 @@ uyeler:
     izin: true
   - { ad: "", gorev: { tr: "QR kodu ve iniş dairesi algılama", en: "QR code and landing circle detection" }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Görev bilgisayarı yazılımı", en: "Mission computer software" }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "Otopilot ve sensör kurulumu", en: "Autopilot and sensor setup" }, ekip: "elektronik", dal: "aviyonik", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Efe Karabulut
+    gorev: { tr: Elektronik, en: Electronics }
+    ayrinti:
+      tr: Birinci sınıfı bölüm birincisi olarak tamamladı. Elektroniğe olan ilgisiyle Matris'te uygulama deneyimi kazanmak istiyor.
+      en: Finished the first year as the top student of the department. With an interest in electronics, wants to gain hands-on experience at Matris.
+    ekip: elektronik
+    dal: montaj
+    sorumlu: false
+    bolum: { tr: "Elektrik-Elektronik Mühendisliği, 2. sınıf", en: "Electrical and Electronics Engineering, 2nd year" }
+    katilis: 2026
+    fotograf: efe-karabulut.jpg
+    baglanti: https://www.linkedin.com/in/efe-karabulut-41313534b
+    github: https://github.com/karabulutefe58-cell
+    izin: true
   - { ad: "", gorev: { tr: "Güç dağıtımı ve batarya", en: "Power distribution and battery" }, ekip: "elektronik", dal: "guc", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - ad: Aysu Kutluay
     gorev: { tr: Mekanik, en: Mechanics }
