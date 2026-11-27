@@ -139,3 +139,9 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Yapısal veri, aranan cümleyle sayfa başlıkları, sık sorulanlar sayfası (`/sss/`, menüde yok, alt bilgiden ulaşılır), `llms.txt` eklendi.
 - "TÜBİTAK" kelimesi doğrulanmış bir bağ olmadan siteye yazılmadı.
 - Site dışındaki adımlar `docs/GORUNURLUK.md` içinde, Ali yapacak.
+
+## Sponsor paketleri ve 3B tişört (27.11.2026)
+
+- Ali'nin verdiği kural: tişörtte ana sponsor göğüste, altın kolda, gümüş sırtın üstünde (iki büyük panel), destekçi sırtın altında (dört panel). Destekçiye teşekkür mesajı var.
+- Etkinlik, yarışma, sunum ve raporlarda dört paket de anılıyor, ana sponsor ve altın "ön planda".
+- Destek sayfasında tişört three.js ile kodla kurulan 3B model. Paket seçilince o yüzünü çevirir, paket tablosundaki seçim de tişörte yansır.

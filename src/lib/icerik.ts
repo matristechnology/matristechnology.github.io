@@ -108,7 +108,7 @@ const sema = z.object({
     neden: z.object({ baslik: ikiDil, paragraflar: liste(ikiDil) }),
     turler: z.object({ baslik: ikiDil, giris: ikiDilBos, liste: liste(z.object({ ad: ikiDil, metin: ikiDil })) }),
     paketler: z.object({ baslik: ikiDil, giris: ikiDilBos, adlar: liste(ikiDil), haklar: liste(z.object({ ad: ikiDil, degerler: liste(ikiDilBos) })) }),
-    logo: z.object({ baslik: ikiDil, yerler: liste(z.object({ anahtar: z.enum(['iha', 'tisort', 'site']), ad: ikiDil, metin: ikiDil })) }),
+    logo: z.object({ baslik: ikiDil, tisort: liste(ikiDil), yerler: liste(z.object({ anahtar: z.enum(['iha', 'tisort', 'site']), ad: ikiDil, metin: ikiDil })) }),
     ihtiyac: z.object({ baslik: ikiDil, giris: ikiDilBos, parcalar: liste(z.array(z.string())) }),
     sponsorlar: z.object({ baslik: ikiDil, sablon: z.number().int().min(0).optional().default(0), sablon_yazi: ikiDil }),
     sss: z.object({ baslik: ikiDil, liste: liste(z.object({ soru: ikiDil, cevap: ikiDil })) }),

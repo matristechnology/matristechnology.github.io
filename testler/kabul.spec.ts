@@ -572,6 +572,7 @@ test.describe('D15 Matris sayfası', () => {
   });
 
   test('İHA’nın içi: parça seçiliyor, parçalara ayrılıyor, hatlar gösteriliyor, tuval boyanıyor', async ({ page }) => {
+    test.setTimeout(90000); // Chromium'da yazılımla çizilen 3B model makine yüklüyken yavaş açılıyor
     await page.goto('/matris/');
     const i = page.locator('[data-iha-ici]');
     await i.scrollIntoViewIfNeeded();
@@ -907,6 +908,44 @@ test.describe('D20 Destek sayfası', () => {
     expect(await page.locator('main').innerText()).not.toMatch(/₺|\bTL\b|IBAN/);
   });
 
+  test('3B tişört: paket seçilince tişört o yüzünü çevirir, tablo seçimi de tişörte yansır', async ({ page }) => {
+    test.setTimeout(90000); // Chromium'da yazılımla çizilen 3B model makine yüklüyken yavaş
+    await page.goto('/destek/');
+    const l = page.locator('[data-logo]'), t = l.locator('[data-tisort]');
+    await l.scrollIntoViewIfNeeded();
+    await l.locator('[data-yer="tisort"]').click();
+    await expect(l.locator('[data-tisort-paket]')).toHaveCount(4);
+    await expect(l.locator('[data-tisort-yer]').nth(2)).toContainText('Sırtın üst bölümünde');
+    const hazir = await t.evaluate((e) => new Promise<boolean>((r) => { const bak = (n: number) => (e.dataset.hazir || e.classList.contains('webgl-yok') ? r(!!e.dataset.hazir) : n > 80 ? r(false) : setTimeout(() => bak(n + 1), 150)); bak(0); }));
+    await l.locator('[data-tisort-paket="0"]').click();
+    await expect(l).toHaveAttribute('data-tisort-paket', '0');
+    await expect(l.locator('[data-tisort-paket="0"]')).toHaveAttribute('aria-pressed', 'true');
+    if (hazir) {
+      // Ana sponsor göğüste: tişört karşıdan (0 ya da 6,28). Gümüş sırtta: tişört arkasını döner (3,14).
+      await expect.poll(async () => Number(await t.getAttribute('data-aci')), { timeout: 8000 }).toBeLessThan(0.05);
+      await l.locator('[data-tisort-paket="2"]').click();
+      await expect.poll(async () => Number(await t.getAttribute('data-aci')), { timeout: 8000 }).toBeCloseTo(3.14, 1);
+      await expect(t).toHaveAttribute('data-paket-no', '2', { timeout: 15000 });
+      // Tuval boş değil: tişörtün kırmızısı çizilmiş
+      const kirmizi = await t.locator('canvas').evaluate((c: HTMLCanvasElement) => { const k = document.createElement('canvas'); k.width = 80; k.height = 60; const x = k.getContext('2d')!; x.drawImage(c, 0, 0, 80, 60); const d = x.getImageData(0, 0, 80, 60).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] > 90 && d[i] > d[i + 1] * 2 && d[i + 3] > 200) n++; return n; });
+      expect(kirmizi).toBeGreaterThan(300);
+    }
+    // Paket tablosunda Destekçi seçilince tişörtte de seçilir
+    await page.locator('[data-paket]').nth(3).click();
+    await expect(l).toHaveAttribute('data-tisort-paket', '3', { timeout: 15000 });
+    await page.setViewportSize({ width: 320, height: 700 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('paket tablosu: gümüş ve destekçi sırtta, etkinlik ve sunumda dört paket de var', async ({ page }) => {
+    await page.goto('/destek/');
+    const satir = (ad: string) => page.locator('.paketler tbody tr', { hasText: ad }).locator('td');
+    await expect(satir('Takım tişörtünde logo')).toHaveText([/Göğüste/, /Kolda/, /Sırtın üstünde/, /Sırtın altında/]);
+    await expect(satir('Etkinlik ve yarışmada görünürlük')).toHaveText([/Ön planda/, /Ön planda/, /Var/, /Var/]);
+    await expect(satir('Sunum ve raporlarda anılma')).toHaveText([/Ön planda/, /Ön planda/, /Var/, /Var/]);
+    await expect(satir('Sosyal medya paylaşımı').nth(3)).toHaveText(/Teşekkür mesajı/);
+  });
+
   test('logonun yeri: seçilen yerin anlatımı ve çizimi görünür', async ({ page }) => {
     await page.goto('/destek/');
     const l = page.locator('[data-logo]');
@@ -918,6 +957,7 @@ test.describe('D20 Destek sayfası', () => {
   });
 
   test('ihtiyaç grupları: grup seçilince kalemleri açılır, model yüklenir', async ({ page }) => {
+    test.setTimeout(90000); // Chromium'da yazılımla çizilen 3B model yavaş açılıyor
     await page.goto('/destek/');
     const i = page.locator('[data-ihtiyac]');
     await i.scrollIntoViewIfNeeded();

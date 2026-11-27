@@ -709,7 +709,7 @@ html:not(.js) .tur-kart { cursor: default; }
 .tur-isaret { position: absolute; top: 1rem; right: 1rem; font-family: var(--es); font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--vurgu); opacity: 0; transition: opacity 0.2s; }
 .tur-kart[aria-pressed='true'] { border-color: var(--vurgu); background: color-mix(in srgb, var(--vurgu) 10%, var(--yuzey)); }
 .tur-kart[aria-pressed='true'] .tur-isaret { opacity: 1; }
-.paket-sar { margin-top: 1.75rem; overflow-x: auto; border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); }
+.paket-sar { position: relative; margin-top: 1.75rem; overflow-x: auto; border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); }
 .paket-sar:focus-visible { outline: 2px solid var(--vurgu); outline-offset: 2px; }
 .paketler { width: 100%; min-width: 42rem; border-collapse: collapse; font-size: 0.9375rem; }
 .paketler th, .paketler td { padding: 0.8rem 0.9rem; text-align: left; border-bottom: 1px solid var(--cizgi); vertical-align: middle; transition: background 0.2s; }
@@ -728,8 +728,23 @@ html.js .logo-anlatim:not([data-secili]) { display: none; }
 .logo-anlatim h3 { font-size: 1.25rem; font-weight: 620; }
 .logo-anlatim p { color: var(--soluk); line-height: 1.55; max-width: 32em; }
 .logo-cizim { border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); color: var(--soluk); aspect-ratio: 4 / 3; }
-.logo-cizim svg { width: 100%; height: 100%; display: none; }
-.logo-cizim svg[data-secili] { display: block; }
+.logo-cizim > [data-yer-cizim] { width: 100%; height: 100%; display: none; }
+.logo-cizim > [data-yer-cizim][data-secili] { display: block; }
+.tisort-sahne { position: relative; }
+.tisort-sahne canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+.tisort-sahne canvas:active { cursor: grabbing; }
+.tisort-sahne .tisort-yedek { display: none; width: 100%; height: 100%; }
+.tisort-sahne.webgl-yok canvas, .tisort-sahne.webgl-yok .tisort-ipucu { display: none; }
+.tisort-sahne.webgl-yok .tisort-yedek { display: block; }
+.tisort-ipucu { position: absolute; left: 0.9rem; bottom: 0.7rem; font-family: var(--es); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); pointer-events: none; }
+.tisort-paketler { display: grid; gap: 0.4rem; margin-top: 0.75rem; max-width: 30rem; }
+.tisort-paketler li { display: grid; grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr); gap: 0.25rem 0.9rem; align-items: center; padding: 0.3rem 0.5rem 0.3rem 0.3rem; border: 1px solid var(--cizgi); border-radius: 8px; transition: border-color 0.2s, background 0.2s; }
+.tisort-paketler li[data-secili] { border-color: var(--vurgu); background: color-mix(in srgb, var(--vurgu) 10%, transparent); }
+.tisort-paketler button { min-height: 2.75rem; padding: 0 0.8rem; border: 1px solid var(--cizgi); border-radius: 6px; background: var(--yuzey); color: var(--metin); font: inherit; font-weight: 600; font-size: 0.9375rem; text-align: left; cursor: pointer; }
+.tisort-paketler button[aria-pressed='true'] { border-color: var(--vurgu); color: var(--vurgu); }
+.tisort-paketler strong { padding-left: 0.5rem; }
+.tisort-paketler span { font-size: 0.9375rem; color: var(--soluk); line-height: 1.4; }
+@media (max-width: 420px) { .tisort-paketler li { grid-template-columns: 1fr; } }
 .logo-kutu rect { fill: color-mix(in srgb, var(--vurgu) 22%, transparent); stroke: var(--vurgu); stroke-width: 2; stroke-dasharray: 6 4; animation: logo-nabiz 2.2s ease-in-out infinite; }
 .logo-kutu.kucuk rect { stroke-width: 1.5; }
 .logo-kutu text { fill: var(--vurgu); font-family: var(--es); font-size: 11px; letter-spacing: 0.08em; }

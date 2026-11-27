@@ -1,6 +1,10 @@
 // Destek sayfası: destek türü ve paket seçimi (e-posta taslağına yazılır), logonun yerini gösteren çizimler,
 // 3B model üzerinde ihtiyaç grupları. Betik kapalıyken bütün anlatım düz yazı olarak görünür, düğme boş taslak açar.
 import type { Durum, Gorsel } from './iha-uc';
+import type { Tisort } from './tisort-uc';
+
+// Paket tablosunda seçilen paket tişörtte de işaretlenir (logo bölümü kurulunca dolar).
+let tisortSec: (no: number) => void = () => {};
 
 const oku = <T,>(a: string | undefined, y: T): T => { try { return JSON.parse(a ?? '') as T; } catch { return y; } };
 const kok = document.querySelector<HTMLElement>('[data-destek]');
@@ -18,7 +22,7 @@ if (kok) {
     if (bag) bag.href = `mailto:${kok.dataset.eposta}?subject=${encodeURIComponent(kok.dataset.konu ?? '')}&body=${encodeURIComponent((kok.dataset.govde ?? '').replace('{tur}', tur).replace('{paket}', paket))}`;
   };
   turD.forEach((d) => d.addEventListener('click', () => { tur = tur === d.dataset.tur ? '' : (d.dataset.tur ?? ''); yaz(); }));
-  paketD.forEach((d) => d.addEventListener('click', () => { const ayni = paket === d.dataset.paket; paket = ayni ? '' : (d.dataset.paket ?? ''); sutun = ayni ? '' : (d.dataset.sutunNo ?? ''); yaz(); }));
+  paketD.forEach((d) => d.addEventListener('click', () => { const ayni = paket === d.dataset.paket; paket = ayni ? '' : (d.dataset.paket ?? ''); sutun = ayni ? '' : (d.dataset.sutunNo ?? ''); yaz(); tisortSec(ayni ? -1 : Number(sutun)); }));
   yaz();
 
   // ── Logonun yeri ──
@@ -31,7 +35,23 @@ if (kok) {
       logo.querySelectorAll<HTMLElement>('[data-yer-panel]').forEach((p) => p.toggleAttribute('data-secili', p.dataset.yerPanel === yer));
       logo.querySelectorAll<SVGElement>('[data-yer-cizim]').forEach((p) => p.toggleAttribute('data-secili', p.dataset.yerCizim === yer));
     };
-    yerD.forEach((d) => d.addEventListener('click', () => sec(d.dataset.yer ?? '')));
+    // Tişört: paket seçilince 3B tişört o yüzünü çevirir. Model ancak tişört sekmesi açılınca indirilir.
+    const sahne = logo.querySelector<HTMLElement>('[data-tisort]'), tD = [...logo.querySelectorAll<HTMLButtonElement>('[data-tisort-paket]')];
+    let tisort: Tisort | null = null, istendi = false, tNo = -1;
+    const tSec = (no: number) => {
+      tNo = no;
+      tD.forEach((d) => { const s = Number(d.dataset.tisortPaket) === no; d.setAttribute('aria-pressed', String(s)); d.closest('li')?.toggleAttribute('data-secili', s); });
+      logo.dataset.tisortPaket = String(no);
+      tisort?.sec(no);
+    };
+    tisortSec = (no) => { if (no !== tNo) tSec(no); };
+    tD.forEach((d) => d.addEventListener('click', () => { const no = Number(d.dataset.tisortPaket); tSec(no === tNo ? -1 : no); }));
+    const tYukle = async () => {
+      if (istendi || !sahne) return; istendi = true;
+      try { const { kur } = await import('./tisort-uc'); tisort = kur(sahne, oku<string[]>(sahne.dataset.adlar, []), (no) => tSec(no)); } catch (e) { console.error(e); tisort = null; }
+      if (!tisort) sahne.classList.add('webgl-yok'); else tisort.sec(tNo);
+    };
+    yerD.forEach((d) => d.addEventListener('click', () => { sec(d.dataset.yer ?? ''); if (d.dataset.yer === 'tisort') void tYukle(); }));
     sec(yerD[0]?.dataset.yer ?? '');
   }
 

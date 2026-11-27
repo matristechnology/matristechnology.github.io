@@ -1138,10 +1138,10 @@ destek_sayfa:
             en: On the chest
           - tr: Kolda
             en: On the sleeve
-          - tr: ""
-            en: ""
-          - tr: ""
-            en: ""
+          - tr: Sırtın üstünde
+            en: Upper back
+          - tr: Sırtın altında
+            en: Lower back
       - ad:
           tr: Bu sitede logo
           en: Logo on this site
@@ -1164,36 +1164,46 @@ destek_sayfa:
             en: Thank-you post
           - tr: Teşekkür paylaşımı
             en: Thank-you post
-          - tr: Toplu teşekkür
-            en: Group thank-you
+          - tr: Teşekkür mesajı
+            en: Thank-you message
       - ad:
           tr: Etkinlik ve yarışmada görünürlük
           en: Visibility at events and the competition
         degerler:
+          - tr: Ön planda
+            en: Front and centre
+          - tr: Ön planda
+            en: Front and centre
           - tr: Var
             en: "Yes"
           - tr: Var
             en: "Yes"
-          - tr: ""
-            en: ""
-          - tr: ""
-            en: ""
       - ad:
           tr: Sunum ve raporlarda anılma
           en: Mention in presentations and reports
         degerler:
+          - tr: Ön planda
+            en: Front and centre
+          - tr: Ön planda
+            en: Front and centre
           - tr: Var
             en: "Yes"
           - tr: Var
             en: "Yes"
-          - tr: Var
-            en: "Yes"
-          - tr: ""
-            en: ""
   logo:
     baslik:
       tr: Logonuz nerede görünür?
       en: Where does your logo appear?
+    # Tişörtte her paketin yeri (paketler.adlar ile aynı sırada). 3B tişörtte seçilince bu cümle okunur.
+    tisort:
+      - tr: Göğüste, tek başına ve en büyük boyda.
+        en: On the chest, on its own and at the largest size.
+      - tr: İki kolda.
+        en: On both sleeves.
+      - tr: Sırtın üst bölümünde, iki büyük panelden biri.
+        en: On the upper back, one of two large panels.
+      - tr: Sırtın alt bölümünde, dört panelden biri.
+        en: On the lower back, one of four panels.
     yerler:
       - anahtar: iha
         ad:
@@ -1207,8 +1217,8 @@ destek_sayfa:
           tr: Takım tişörtünde
           en: On the team shirt
         metin:
-          tr: Logonuz takım tişörtünün göğsünde ya da kolunda yer alır. Tişörtler yarışma haftası boyunca ve etkinliklerde giyilir.
-          en: Your logo goes on the chest or the sleeve of the team shirt. The shirts are worn throughout competition week and at events.
+          tr: Her paketin tişörtte kendi yeri var. Bir paket seçin, tişört o yüzünü size çevirsin. Tişörtler yarışma haftası boyunca ve etkinliklerde giyilir.
+          en: Each package has its own place on the shirt. Pick a package and the shirt turns that side towards you. The shirts are worn throughout competition week and at events.
       - anahtar: site
         ad:
           tr: Sitede ve sosyal medyada
