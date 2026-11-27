@@ -210,7 +210,19 @@ uyeler:
   - { ad: "", gorev: { tr: "Görev bilgisayarı yazılımı", en: "Mission computer software" }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Otopilot ve sensör kurulumu", en: "Autopilot and sensor setup" }, ekip: "elektronik", dal: "aviyonik", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Güç dağıtımı ve batarya", en: "Power distribution and battery" }, ekip: "elektronik", dal: "guc", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "Gövde ve taşıyıcı tasarımı", en: "Airframe and mount design" }, ekip: "mekanik", dal: "tasarim", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Aysu Kutluay
+    gorev: { tr: Mekanik, en: Mechanics }
+    ayrinti:
+      tr: Teknik çizim yazılımlarıyla ve elle konsept mekanik tasarımlar yapıyor. Havacılık teknolojilerine yoğunlaşıyor, mekatroniğin farklı disiplinlerini tasarımlarda bir araya getirmeye odaklanıyor.
+      en: Makes concept mechanical designs with technical drawing software and by hand. Concentrates on aviation technologies and focuses on bringing the different disciplines of mechatronics together in the designs.
+    ekip: mekanik
+    dal: tasarim
+    sorumlu: false
+    bolum: { tr: "Mekatronik Mühendisliği, 2. sınıf", en: "Mechatronics Engineering, 2nd year" }
+    katilis: 2026
+    fotograf: aysu-kutluay.jpg
+    baglanti: https://www.linkedin.com/in/aysukutluay
+    izin: true
   - { ad: "", gorev: { tr: "3B baskı ve üretim", en: "3D printing and manufacturing" }, ekip: "mekanik", dal: "uretim", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Uçuş testleri ve pilotluk", en: "Flight tests and piloting" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Test kayıtları ve saha güvenliği", en: "Test records and field safety" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
