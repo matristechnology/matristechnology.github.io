@@ -15,13 +15,16 @@ if (kadro) {
   const durum = kadro.querySelector<HTMLElement>('[data-kadro-durum]'), bos = kadro.querySelector<HTMLElement>('[data-kadro-bos]');
   const st = { ekip: '', dal: '', ara: '' };
   const dalEkip = (dal: string) => dalS?.querySelector<HTMLOptionElement>(`option[value="${dal}"]`)?.dataset.ekip ?? '';
-  const uygula = () => {
+  const uygula = (ilk = false) => { // ilk çağrıda kartlar belirmeye bırakılır, kaydırdıkça sırayla gelirler
     const q = st.ara.trim().toLocaleLowerCase(document.documentElement.lang || 'tr');
     let n = 0;
     for (const k of kartlar) {
       const g = (!st.ekip || k.dataset.ekip === st.ekip) && (!st.dal || k.dataset.dal === st.dal) && (!q || (k.dataset.ara ?? '').includes(q));
-      k.hidden = !g; if (g) { n++; k.classList.add('gorundu'); }
+      k.hidden = !g; if (g) { n++; if (!ilk) k.classList.add('gorundu'); }
     }
+    // Boşalan dal bloğu ve ekip paneli de gizlenir, kalanlar görünür kalır.
+    for (const d of kadro.querySelectorAll<HTMLElement>('.kadro-dal')) { const g = !!d.querySelector('[data-kart]:not([hidden])'); d.hidden = !g; if (g && !ilk) d.classList.add('gorundu'); }
+    for (const e of kadro.querySelectorAll<HTMLElement>('.kadro-ekip')) { const g = !!e.querySelector('.kadro-dal:not([hidden])'); e.hidden = !g; if (g && !ilk) e.classList.add('gorundu'); }
     ekipD.forEach((d) => d.setAttribute('aria-pressed', String((d.dataset.ekip ?? '') === st.ekip)));
     if (dalS) dalS.value = st.dal;
     if (durum) durum.textContent = (M.sonuc ?? '').replace('{n}', String(n)).replace('{t}', String(kartlar.length));
@@ -36,7 +39,7 @@ if (kadro) {
     uygula();
     kadro.closest('section')?.scrollIntoView({ behavior: azalt ? 'auto' : 'smooth', block: 'start' });
   };
-  uygula();
+  uygula(true);
 }
 
 // ── Organizasyon şeması ──

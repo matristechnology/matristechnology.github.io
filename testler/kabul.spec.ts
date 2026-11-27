@@ -827,6 +827,23 @@ test.describe('D16 Takım sayfası', () => {
     await expect(k.locator('[data-kadro-bos]')).toBeVisible();
   });
 
+  test('üyeler ekip panelleri ve dal blokları halinde alt alta, kaydırdıkça sırayla beliriyor, süzgeç boş grubu gizliyor', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/takim/');
+    await page.waitForLoadState('load');
+    const paneller = page.locator('.kadro-ekip:has(.kadro-ekip-bas)');
+    await expect(paneller.locator('h3')).toHaveText(['Yazılım', 'Elektronik', 'Mekanik']);
+    await expect(paneller.first().locator('.kadro-dal-ad')).toHaveText([/Sürü algoritmaları/, /Görüntü işleme/, /Gömülü sistemler/, /Haberleşme/]);
+    // Panel ekrana gelince beliriyor: başta görünmeyen ikinci panel kaydırınca .gorundu alıyor
+    await expect(paneller.nth(1)).not.toHaveClass(/gorundu/);
+    await paneller.nth(1).scrollIntoViewIfNeeded();
+    await expect(paneller.nth(1)).toHaveClass(/gorundu/);
+    const k = page.locator('[data-kadro]');
+    await k.locator('[data-kadro-ekip] [data-ekip="mekanik"]').click();
+    await expect(paneller.filter({ visible: true })).toHaveCount(1);
+    await expect(paneller.filter({ visible: true }).locator('h3')).toHaveText('Mekanik');
+  });
+
   test('adı ve izni olmayan üyenin kişisel bilgisi sayfada yok', async ({ page }) => {
     await page.goto('/takim/');
     // 15 üye adıyla görünüyor, 2 üyenin ismi yok. Adsız kartta fotoğraf, bölüm ve bağlantı çıkmaz.

@@ -595,6 +595,17 @@ html[data-suru='kapali'] .suru { display: none; }
 .kadro-alan select, .kadro-alan input { min-height: 2.75rem; width: 100%; padding: 0 0.8rem; border: 1px solid var(--cizgi); border-radius: 8px; background: var(--yuzey); color: var(--metin); font: inherit; font-family: inherit; font-size: 0.9375rem; text-transform: none; letter-spacing: 0; }
 .kadro-alan select:focus-visible, .kadro-alan input:focus-visible { outline: 2px solid var(--vurgu); outline-offset: 2px; }
 .kadro .demo-durum { margin-top: 1rem; }
+.kadro-gruplar { display: grid; gap: 1.5rem; margin-top: 1.25rem; }
+.kadro-ekip { display: grid; gap: 1.75rem; padding: 1.5rem 1.25rem 1.75rem; border: 1px solid var(--cizgi); border-radius: 14px; background: color-mix(in srgb, var(--yuzey) 55%, transparent); }
+.kadro-ekip.ustsuz { padding: 0; border: 0; background: none; }
+.kadro-ekip[hidden], .kadro-dal[hidden] { display: none; }
+.kadro-ekip-bas { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 0.25rem 1rem; padding-left: 0.9rem; border-left: 3px solid var(--vurgu); }
+.kadro-ekip-bas h3 { font-size: clamp(1.4rem, 3.4vw, 1.9rem); font-weight: 650; letter-spacing: -0.01em; }
+.kadro-ekip-bas p { grid-column: 1 / -1; color: var(--soluk); max-width: 46rem; }
+.kadro-dal-ad { display: flex; align-items: baseline; gap: 0.75rem; font-family: var(--es); font-size: 0.8125rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--vurgu); }
+.kadro-dal-ad::after { content: ''; flex: 1; height: 1px; background: var(--cizgi); order: 1; }
+.kadro-dal-ad span { order: 2; color: var(--soluk); font-size: 0.6875rem; }
+@media (max-width: 40rem) { .kadro-ekip { padding: 1.1rem 0.8rem 1.3rem; } }
 .kadro-kartlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14.5rem), 1fr)); gap: 0.75rem; margin-top: 1rem; }
 .kuye { display: grid; align-content: start; gap: 0.3rem; padding: 1.1rem 1rem 1.15rem; border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); transition: border-color 0.2s; }
 .kuye[hidden] { display: none; }
@@ -605,8 +616,8 @@ html[data-suru='kapali'] .suru { display: none; }
 .kuye.adsiz .kuye-foto { color: var(--soluk); border-style: dashed; }
 .kuye-foto img { width: 100%; height: 100%; object-fit: cover; }
 .kuye-no { font-family: var(--es); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); }
-.kuye h3 { font-size: 1.0625rem; font-weight: 620; line-height: 1.25; overflow-wrap: anywhere; }
-.kuye h3.yakinda { font-family: var(--es); font-size: 0.75rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.06em; color: var(--soluk); }
+.kuye h5 { margin: 0; font-size: 1.0625rem; font-weight: 620; line-height: 1.25; overflow-wrap: anywhere; }
+.kuye h5.yakinda { font-family: var(--es); font-size: 0.75rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.06em; color: var(--soluk); }
 .kuye-gorev { font-size: 0.9375rem; line-height: 1.35; }
 .kuye.adsiz .kuye-gorev { font-size: 1.0625rem; font-weight: 620; line-height: 1.25; order: -1; }
 .kuye.adsiz .kuye-ust { order: -2; }

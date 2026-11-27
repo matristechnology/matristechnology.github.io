@@ -1,0 +1,36 @@
+---
+// Takım sayfasındaki üye kartı. Adı görünmeyen üyede ad, fotoğraf, bölüm ve bağlantı hiç gelmez (gorunenUyeler ayıklar).
+import { Image } from 'astro:assets';
+import { icerik, c, uyeGorseli, type Dil, type Uye } from '../lib/icerik';
+import { tm } from '../lib/i18n-takim';
+
+interface Props { u: Uye; i: number; dil: Dil }
+const { u, i, dil } = Astro.props;
+const no = String(u.sira).padStart(2, '0'), ad = u.adsiz ? '' : u.ad, gorev = c(u.gorev, dil);
+const e = icerik.ekipler[u.ekip], yer = e ? [c(e.ad, dil), c(e.dallar[u.dal], dil)].filter(Boolean).join(' · ') : '';
+const bolum = c(u.bolum, dil), ayrinti = c(u.ayrinti, dil);
+const basHarf = ad.split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
+---
+
+<li class:list={['kuye', { adsiz: u.adsiz, sorumlu: u.sorumlu }]} data-kart data-ekip={u.ekip} data-dal={u.dal} data-ara={[ad, gorev, yer, bolum].join(' ').toLocaleLowerCase(dil)} data-belir style={`--i:${i % 4}`}>
+  <div class="kuye-ust">
+    <div class="kuye-foto" aria-hidden={ad && u.fotograf ? undefined : 'true'}>
+      {ad && u.fotograf ? <Image src={uyeGorseli(u.fotograf)} alt={ad} width={192} height={192} fit="cover" loading="lazy" /> : ad ? <span class="bas-harf">{basHarf}</span> : (
+        <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 15l18 18M33 15 15 33"/><circle cx="11" cy="11" r="5.5"/><circle cx="37" cy="11" r="5.5"/><circle cx="11" cy="37" r="5.5"/><circle cx="37" cy="37" r="5.5"/><rect x="19" y="19" width="10" height="10" rx="2.5" fill="currentColor" stroke="none"/></svg>
+      )}
+    </div>
+    <span class="kuye-no">{tm('uye', dil)} {no}</span>
+  </div>
+  <h5 class:list={[{ yakinda: !ad }]}>{ad || tm('isimYakinda', dil)}</h5>
+  {gorev && <p class="kuye-gorev">{gorev}</p>}
+  {yer && <p class="kuye-yer">{yer}</p>}
+  {ayrinti && <p class="kuye-ayrinti">{ayrinti}</p>}
+  {bolum && <p class="kuye-ayrinti">{bolum}</p>}
+  {u.katilis && <p class="kuye-ayrinti">{tm('katilisYil', dil).replace('{y}', u.katilis)}</p>}
+  {(u.baglanti || u.github) && (
+    <p class="kuye-bag">
+      {u.baglanti && <a href={u.baglanti} rel="noopener">{tm('profil', dil)}<span class="gizli">: {ad}</span></a>}
+      {u.github && <a href={u.github} rel="noopener">{tm('github', dil)}<span class="gizli">: {ad}</span></a>}
+    </p>
+  )}
+</li>

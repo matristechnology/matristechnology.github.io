@@ -4,6 +4,7 @@
 // Üyenin adı, fotoğrafı, bölümü ve bağlantısı yalnızca izin: true ise sayfaya girer (gorunenUyeler bunu ayıklar).
 import { Image } from 'astro:assets';
 import SayfaGecis from '../components/SayfaGecis.astro';
+import KadroKarti from '../components/KadroKarti.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, gorunenUyeler, gorunenDanismanlar, galeriGorseli, uyeGorseli, type Dil } from '../lib/icerik';
 import { t, anaYol, altSayfa, digerDil , sayfaBasligi } from '../lib/i18n';
@@ -18,6 +19,18 @@ const kimlik = (k: string) => (dil === 'tr' ? k : { sema: 'who', uyeler: 'member
 const kisi = (n: number) => `${n} ${tm(n === 1 ? 'kisiTek' : 'kisi', dil)}`;
 const gorevleri = (l: typeof uyeler) => [...new Set(l.map((u) => c(u.gorev, dil)).filter(Boolean))];
 const kaptanlar = uyeler.filter((u) => !u.ekip);
+// Üye kartları ekip paneli, onun içinde dal bloğu olarak gruplanır. Ekibi olmayanlar (kaptan) başta, yerleşmemiş şablon kartlar sonda başlıksız durur.
+type Grup = { ekip: string; ad: string; ozet: string; say: number; dallar: { dal: string; ad: string; uyeler: typeof uyeler }[] };
+const gruplar: Grup[] = [];
+const basta = uyeler.filter((u) => !u.ekip && !u.sablon), sonda = uyeler.filter((u) => u.sablon);
+if (basta.length) gruplar.push({ ekip: '', ad: '', ozet: '', say: basta.length, dallar: [{ dal: '', ad: '', uyeler: basta }] });
+for (const [k, e] of ekipler) {
+  const ekipte = uyeler.filter((u) => u.ekip === k);
+  if (!ekipte.length) continue;
+  const dallar = [...Object.entries(e.dallar).map(([dk, d]) => ({ dal: dk, ad: c(d, dil), uyeler: ekipte.filter((u) => u.dal === dk) })), { dal: '', ad: '', uyeler: ekipte.filter((u) => !u.dal) }].filter((d) => d.uyeler.length);
+  gruplar.push({ ekip: k, ad: c(e.ad, dil), ozet: c(e.ozet, dil), say: ekipte.length, dallar });
+}
+if (sonda.length) gruplar.push({ ekip: '', ad: '', ozet: '', say: sonda.length, dallar: [{ dal: '', ad: '', uyeler: sonda }] });
 
 // Şemadaki her kutunun panelde gösterilecek bilgisi.
 const dugumler: Record<string, { tur: string; ad: string; metin: string; sayi: string; gorevler: string[]; ekip: string; dal: string }> = {
@@ -124,38 +137,27 @@ const icindekiler = [
         </label>
       </div>
       <p class="demo-durum kisa js-only" role="status" data-kadro-durum></p>
-      <ul class="kadro-kartlar">
-        {uyeler.map((u, i) => {
-          const no = String(u.sira).padStart(2, '0'), ad = u.adsiz ? '' : u.ad, gorev = c(u.gorev, dil);
-          const e = icerik.ekipler[u.ekip], yer = e ? [c(e.ad, dil), c(e.dallar[u.dal], dil)].filter(Boolean).join(' · ') : '';
-          const bolum = c(u.bolum, dil), ayrinti = c(u.ayrinti, dil);
-          const basHarf = ad.split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toLocaleUpperCase('tr');
-          return (
-            <li class:list={['kuye', { adsiz: u.adsiz, sorumlu: u.sorumlu }]} data-kart data-ekip={u.ekip} data-dal={u.dal} data-ara={kucuk([ad, gorev, yer, bolum].join(' '))} data-belir style={`--i:${i % 4}`}>
-              <div class="kuye-ust">
-                <div class="kuye-foto" aria-hidden={ad && u.fotograf ? undefined : 'true'}>
-                  {ad && u.fotograf ? <Image src={uyeGorseli(u.fotograf)} alt={ad} width={192} height={192} fit="cover" loading="lazy" /> : ad ? <span class="bas-harf">{basHarf}</span> : (
-                    <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 15l18 18M33 15 15 33"/><circle cx="11" cy="11" r="5.5"/><circle cx="37" cy="11" r="5.5"/><circle cx="11" cy="37" r="5.5"/><circle cx="37" cy="37" r="5.5"/><rect x="19" y="19" width="10" height="10" rx="2.5" fill="currentColor" stroke="none"/></svg>
-                  )}
-                </div>
-                <span class="kuye-no">{tm('uye', dil)} {no}</span>
+      <div class="kadro-gruplar">
+        {gruplar.map((g) => (
+          <section class:list={['kadro-ekip', { ustsuz: !g.ad }]} data-grup-ekip={g.ekip} data-belir>
+            {g.ad && (
+              <header class="kadro-ekip-bas">
+                <h3>{g.ad}</h3>
+                <span class="ekip-sayi">{kisi(g.say)}</span>
+                {g.ozet && <p>{g.ozet}</p>}
+              </header>
+            )}
+            {g.dallar.map((d, di) => (
+              <div class="kadro-dal" data-grup-dal={d.dal} data-belir style={`--i:${Math.min(di, 3)}`}>
+                {d.ad && <h4 class="kadro-dal-ad">{d.ad}<span>{kisi(d.uyeler.length)}</span></h4>}
+                <ul class="kadro-kartlar">
+                  {d.uyeler.map((u, i) => <KadroKarti u={u} i={i} dil={dil} />)}
+                </ul>
               </div>
-              <h3 class:list={[{ yakinda: !ad }]}>{ad || tm('isimYakinda', dil)}</h3>
-              {gorev && <p class="kuye-gorev">{gorev}</p>}
-              {yer && <p class="kuye-yer">{yer}</p>}
-              {ayrinti && <p class="kuye-ayrinti">{ayrinti}</p>}
-              {bolum && <p class="kuye-ayrinti">{bolum}</p>}
-              {u.katilis && <p class="kuye-ayrinti">{tm('katilisYil', dil).replace('{y}', u.katilis)}</p>}
-              {(u.baglanti || u.github) && (
-                <p class="kuye-bag">
-                  {u.baglanti && <a href={u.baglanti} rel="noopener">{tm('profil', dil)}<span class="gizli">: {ad}</span></a>}
-                  {u.github && <a href={u.github} rel="noopener">{tm('github', dil)}<span class="gizli">: {ad}</span></a>}
-                </p>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+            ))}
+          </section>
+        ))}
+      </div>
       <p class="suzgec-bos" data-kadro-bos hidden>{tm('bos', dil)}</p>
     </div>
   </section>
