@@ -206,7 +206,20 @@ uyeler:
     baglanti: https://www.linkedin.com/in/ömer-faruk-ferik-11082330a
     github: https://github.com/OmerFarukFERIK
     izin: true
-  - { ad: "", gorev: { tr: "QR kodu ve iniş dairesi algılama", en: "QR code and landing circle detection" }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Ceren Tunca
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Yazılım geliştirme, arayüz tasarımı ve görüntü işleme üzerine çalışıyor. Önceki yarışma ve proje deneyimleriyle takıma destek oluyor.
+      en: Works on software development, interface design and image processing. Supports the team with experience from earlier competitions and projects.
+    ekip: yazilim
+    dal: goruntu
+    sorumlu: false
+    bolum: { tr: "Bilgisayar Mühendisliği, 2. sınıf", en: "Computer Engineering, 2nd year" }
+    katilis: 2026
+    fotograf: ""
+    baglanti: https://www.linkedin.com/in/ceren-tunca-8b5288337/
+    github: https://github.com/cerenntnc2801-dot
+    izin: true
   - { ad: "", gorev: { tr: "Görev bilgisayarı yazılımı", en: "Mission computer software" }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - ad: Efe Karabulut
     gorev: { tr: Elektronik, en: Electronics }
