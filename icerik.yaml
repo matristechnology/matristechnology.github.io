@@ -350,7 +350,19 @@ uyeler:
     baglanti: https://www.linkedin.com/in/aysel-sena-abali-53b126313
     izin: true
   - { ad: "", gorev: { tr: "Uçuş testleri ve pilotluk", en: "Flight tests and piloting" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: "Test kayıtları ve saha güvenliği", en: "Test records and field safety" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Yunus Ayaz
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Takımın geçen yılki kaptanı. Sistem mimarisini baştan aşağıya tek başına kurabilecek bilgiye sahip, takımın görev insanı.
+      en: Last year's team captain. Has the knowledge to build the whole system architecture from start to finish alone, and is the team's go-to person for any task.
+    ekip: yazilim
+    dal: algoritma
+    sorumlu: false
+    bolum: { tr: "Bilgisayar Mühendisliği, 4. sınıf", en: "Computer Engineering, 4th year" }
+    fotograf: ""
+    baglanti: https://www.linkedin.com/in/yunus-ayaz-6989a129a/
+    github: https://github.com/MrDolphin-gud
+    izin: true
 
 # Danışmanlar: ad ve izin gelince görünür. İkisi de boşken bu satır sitede çıkmaz.
 danismanlar:

@@ -20,10 +20,10 @@ const kisi = (n: number) => `${n} ${tm(n === 1 ? 'kisiTek' : 'kisi', dil)}`;
 const gorevleri = (l: typeof uyeler) => [...new Set(l.map((u) => c(u.gorev, dil)).filter(Boolean))];
 const kaptanlar = uyeler.filter((u) => !u.ekip);
 // Üye kartları ekip paneli, onun içinde dal bloğu olarak gruplanır. Ekibi olmayanlar (kaptan) başta, yerleşmemiş şablon kartlar sonda başlıksız durur.
-type Grup = { ekip: string; ad: string; ozet: string; say: number; dallar: { dal: string; ad: string; uyeler: typeof uyeler }[] };
+type Grup = { ekip: string; ad: string; ozet: string; say: number; kaptan?: boolean; dallar: { dal: string; ad: string; uyeler: typeof uyeler }[] };
 const gruplar: Grup[] = [];
 const basta = uyeler.filter((u) => !u.ekip && !u.sablon), sonda = uyeler.filter((u) => u.sablon);
-if (basta.length) gruplar.push({ ekip: '', ad: '', ozet: '', say: basta.length, dallar: [{ dal: '', ad: '', uyeler: basta }] });
+if (basta.length) gruplar.push({ ekip: '', ad: c(S.sema.kaptan.ad, dil), ozet: '', say: basta.length, kaptan: true, dallar: [{ dal: '', ad: '', uyeler: basta }] });
 for (const [k, e] of ekipler) {
   const ekipte = uyeler.filter((u) => u.ekip === k);
   if (!ekipte.length) continue;
@@ -139,11 +139,11 @@ const icindekiler = [
       <p class="demo-durum kisa js-only" role="status" data-kadro-durum></p>
       <div class="kadro-gruplar">
         {gruplar.map((g) => (
-          <section class:list={['kadro-ekip', { ustsuz: !g.ad }]} data-grup-ekip={g.ekip} data-belir>
+          <section class:list={['kadro-ekip', { ustsuz: !g.ad, kaptan: g.kaptan }]} data-grup-ekip={g.ekip} data-belir>
             {g.ad && (
               <header class="kadro-ekip-bas">
                 <h3>{g.ad}</h3>
-                <span class="ekip-sayi">{kisi(g.say)}</span>
+                {!g.kaptan && <span class="ekip-sayi">{kisi(g.say)}</span>}
                 {g.ozet && <p>{g.ozet}</p>}
               </header>
             )}

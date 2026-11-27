@@ -598,6 +598,15 @@ html[data-suru='kapali'] .suru { display: none; }
 .kadro-gruplar { display: grid; gap: 1.5rem; margin-top: 1.25rem; }
 .kadro-ekip { display: grid; gap: 1.75rem; padding: 1.5rem 1.25rem 1.75rem; border: 1px solid var(--cizgi); border-radius: 14px; background: color-mix(in srgb, var(--yuzey) 55%, transparent); }
 .kadro-ekip.ustsuz { padding: 0; border: 0; background: none; }
+.kadro-ekip.kaptan { justify-items: center; text-align: center; gap: 1.1rem; }
+.kadro-ekip.kaptan .kadro-ekip-bas { display: block; padding-left: 0; border-left: 0; border-bottom: 3px solid var(--vurgu); padding-bottom: 0.35rem; }
+.kadro-ekip.kaptan .kadro-ekip-bas h3 { font-size: clamp(1.15rem, 3vw, 1.5rem); }
+.kadro-ekip.kaptan .kadro-dal, .kadro-ekip.kaptan .kadro-kartlar { width: min(100%, 20rem); margin-inline: auto; }
+.kadro-ekip.kaptan .kadro-kartlar { grid-template-columns: 1fr; margin-top: 0; }
+.kadro-ekip.kaptan .kuye { justify-items: center; }
+.kadro-ekip.kaptan .kuye-ust { position: relative; justify-content: center; width: 100%; }
+.kadro-ekip.kaptan .kuye-no { position: absolute; right: 0; top: 0; }
+.kadro-ekip.kaptan .kuye-bag { justify-content: center; }
 .kadro-ekip[hidden], .kadro-dal[hidden] { display: none; }
 .kadro-ekip-bas { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 0.25rem 1rem; padding-left: 0.9rem; border-left: 3px solid var(--vurgu); }
 .kadro-ekip-bas h3 { font-size: clamp(1.4rem, 3.4vw, 1.9rem); font-weight: 650; letter-spacing: -0.01em; }
