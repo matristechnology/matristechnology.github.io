@@ -233,7 +233,19 @@ uyeler:
     baglanti: https://www.linkedin.com/in/ceren-tunca-8b5288337/
     github: https://github.com/cerenntnc2801-dot
     izin: true
-  - { ad: "", gorev: { tr: "Görev bilgisayarı yazılımı", en: "Mission computer software" }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Mehmet Selim Ergün
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Drone'lara ve havacılığa ilgi duyuyor. Takımdaki görevi PID gibi kontrol algoritmaları geliştirmek.
+      en: Interested in drones and aviation. Their role in the team is developing control algorithms such as PID.
+    ekip: yazilim
+    dal: gomulu
+    sorumlu: false
+    bolum: { tr: "Mekatronik Mühendisliği, 2. sınıf", en: "Mechatronics Engineering, 2nd year" }
+    katilis: 2026
+    fotograf: mehmet-selim-ergun.jpg
+    baglanti: https://www.linkedin.com/in/selim-ergün-1a40a0378
+    izin: true
   - ad: Efe Karabulut
     gorev: { tr: Elektronik, en: Electronics }
     ayrinti:
