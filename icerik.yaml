@@ -163,13 +163,26 @@ uyeler:
   - { ad: "", gorev: { tr: Sürü mimarisi, en: Swarm architecture }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Çarpışmadan kaçınma, en: Collision avoidance }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Simülasyon, en: Simulation }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: Görüntü işleme yöntemleri, en: Computer vision methods }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Aslıhan Okumuş
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Lisansını tamamlayıp Bursa Teknik Üniversitesi'nde yüksek lisansa devam ediyor. Görüntü işleme ve derin öğrenme üzerine çalışıyor, uzun vadede yapay zekâ ve görüntü işlemede uzmanlaşmayı hedefliyor.
+      en: Finished the undergraduate degree and continues with a master's at Bursa Technical University. Works on image processing and deep learning, and aims to specialise in artificial intelligence and image processing in the long run.
+    ekip: yazilim
+    dal: goruntu
+    sorumlu: false
+    bolum: { tr: "Bilgisayar Mühendisliği, yüksek lisans", en: "Computer Engineering, master's" }
+    katilis: 2026
+    fotograf: aslihan-okumus.jpg
+    baglanti: https://www.linkedin.com/in/asl%C4%B1han-okumu%C5%9F-2a54b725b
+    github: https://github.com/AslihanOkumus
+    izin: true
   - { ad: "", gorev: { tr: UWB entegrasyonu, en: UWB integration }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - ad: Funda Çakan
     gorev: { tr: Yazılım, en: Software }
     ayrinti:
-      tr: Yazılım ekibinde haberleşme dalında çalışıyor. Yazılım alanında hem kendini hem de takımı geliştirmeyi hedefliyor.
-      en: Works in the software team on communication. Aims to grow in software, both personally and together with the team.
+      tr: Yazılım ekibinde haberleşme dalında çalışıyor. Hem kendini geliştirmek hem de takıma katkı sunmak istiyor.
+      en: Works in the software team on communication. Wants to develop personally and to contribute to the team.
     ekip: yazilim
     dal: haberlesme
     sorumlu: false
