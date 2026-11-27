@@ -162,7 +162,20 @@ uyeler:
     izin: true
   - { ad: "", gorev: { tr: Sürü mimarisi, en: Swarm architecture }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: Çarpışmadan kaçınma, en: Collision avoidance }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: Simülasyon, en: Simulation }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Alperen Aydın
+    gorev: { tr: "Yazılım, simülasyon", en: "Software, simulation" }
+    ayrinti:
+      tr: Yazılım ekibinde simülasyon üzerine çalışıyor ve kendini bu alanda geliştiriyor. Algoritmalar kurup simülasyonda test etmeyi hedefliyor.
+      en: Works on simulation in the software team and develops in this area. Aims to build algorithms and test them in the simulation.
+    ekip: yazilim
+    dal: algoritma
+    sorumlu: false
+    bolum: { tr: "Mekatronik Mühendisliği, 1. sınıf", en: "Mechatronics Engineering, 1st year" }
+    katilis: 2025
+    fotograf: alperen-aydin.jpg
+    baglanti: https://www.linkedin.com/in/alperen-ayd%C4%B1n-286419452/
+    github: https://github.com/Glackx
+    izin: true
   - ad: Aslıhan Okumuş
     gorev: { tr: Yazılım, en: Software }
     ayrinti:
