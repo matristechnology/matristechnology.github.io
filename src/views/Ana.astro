@@ -2,9 +2,8 @@
 import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import SuruDemo from '../components/SuruDemo.astro';
-import UyeKarti from '../components/UyeKarti.astro';
 import IhaIci from '../components/IhaIci.astro';
-import { icerik, c, gorunenUyeler, gorunenDanismanlar, gorunenBolumler, galeriGorseli, sponsorGorseli, type Dil } from '../lib/icerik';
+import { icerik, c, gorunenBolumler, galeriGorseli, sponsorGorseli, type Dil } from '../lib/icerik';
 import { t, bolumler, digerDil, anaYol, altSayfa, type Bolum } from '../lib/i18n';
 
 interface Props { dil: Dil }
@@ -15,14 +14,7 @@ const var_ = new Set<string>(gorunenBolumler());
 const kimlik = (b: Bolum) => ({ id: bolumler[b][dil], 'data-karsi': bolumler[b][diger] });
 const bag = (b: Bolum) => `#${bolumler[b][dil]}`;
 
-const uyeler = gorunenUyeler();
-const danismanlar = gorunenDanismanlar();
 const ekipListesi = Object.entries(icerik.ekipler);
-// Kaptan gibi ekibe bağlı olmayan üyeler kutuların üstünde, ekibi olanlar kendi kutusunda dal altında,
-// hiçbir bilgisi olmayan kayıtlar "yerleşecek üyeler" sırasında durur.
-const bas = uyeler.filter((u) => !u.sablon && !u.ekip);
-const yerlesen = uyeler.filter((u) => !u.sablon && u.ekip);
-const bekleyen = uyeler.filter((u) => u.sablon);
 const finalist = basarilar.filter((b) => b.tur === 'finalist').length;
 const serit = [
   { sayi: icerik.uyeler.length, ad: t('uye', dil) },
@@ -102,22 +94,6 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
         </div>
       )}
     </div>
-    {basarilar.length > 0 && (
-      <>
-        <h3 class="ara-baslik" data-belir>{t('basarilar', dil)}</h3>
-        <ol class="cizgi" data-cizgi>
-          {basarilar.map((b, i) => (
-            <li class="durak" data-belir style={`--i:${i}`}>
-              <span class="durak-yil">{b.yil}</span>
-              <div>
-                <p class="durak-baslik">{c(b.baslik, dil)}</p>
-                {c(b.ayrinti, dil) && <p class="soluk">{c(b.ayrinti, dil)}</p>}
-              </div>
-            </li>
-          ))}
-        </ol>
-      </>
-    )}
     <div class="ana-iha">
       <h3 class="ara-baslik" data-belir>{c(icerik.iha.baslik, dil)}</h3>
       <p class="bolum-giris" data-belir>{c(icerik.iha.giris, dil)}</p>
@@ -130,74 +106,21 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
     <section class="bolum kap" {...kimlik('takim')}>
       <h2 data-belir>{t('takimBaslik', dil)}</h2>
       {c(icerik.ekip_yazisi, dil) && <p class="bolum-giris" data-belir>{c(icerik.ekip_yazisi, dil)}</p>}
-      {bas.length > 0 && (
-        <ul class="kadro-bas">
-          {bas.map((u, i) => <UyeKarti uye={u} dil={dil} gecikme={i} />)}
-        </ul>
-      )}
-      <div class="suzgec js-only" data-suzgec role="group" aria-label={t('suz', dil)}>
-        <button type="button" data-ekip="" aria-pressed="true">{t('hepsi', dil)}</button>
-        {ekipListesi.map(([k, e]) => <button type="button" data-ekip={k} aria-pressed="false">{c(e.ad, dil)}</button>)}
-      </div>
-      <ul class="ekipler" data-ekipler>
+      <ul class="ekipler ozet" data-ekipler>
         {ekipListesi.map(([k, e], i) => {
-          const ekipte = yerlesen.filter((u) => u.ekip === k);
-          const genel = ekipte.filter((u) => !u.dal || !(u.dal in e.dallar));
+          const sayi = icerik.uyeler.filter((u) => u.ekip === k).length;
           return (
             <li data-ekip={k} data-belir style={`--i:${i}`}>
               <div class="ekip-bas">
                 <h3>{c(e.ad, dil)}</h3>
-                <span class="ekip-sayi">{ekipte.length} {t(ekipte.length === 1 ? 'kisiTek' : 'kisi', dil)}</span>
+                {sayi > 0 && <span class="ekip-sayi">{sayi} {t(sayi === 1 ? 'kisiTek' : 'kisi', dil)}</span>}
               </div>
               {c(e.ozet, dil) && <p class="soluk">{c(e.ozet, dil)}</p>}
-              {genel.length > 0 && (
-                <ul class="dal-uyeler genel">{genel.map((u, j) => <UyeKarti uye={u} dil={dil} gecikme={j} />)}</ul>
-              )}
-              <ul class="dallar">
-                {Object.entries(e.dallar).map(([dk, d]) => {
-                  const dalda = ekipte.filter((u) => u.dal === dk);
-                  return dalda.length ? (
-                    <li class="dal">
-                      <details open>
-                        <summary>
-                          <span class="dal-ad">{c(d, dil)}</span>
-                          <span class="dal-iha" aria-hidden="true">{dalda.map(() => <i />)}</span>
-                          <span class="gizli">, {dalda.length} {t(dalda.length === 1 ? 'kisiTek' : 'kisi', dil)}</span>
-                        </summary>
-                        <ul class="dal-uyeler">{dalda.map((u, j) => <UyeKarti uye={u} dil={dil} gecikme={j} />)}</ul>
-                      </details>
-                    </li>
-                  ) : (
-                    <li class="dal bos"><span class="dal-ad">{c(d, dil)}</span><span class="yakinda">{t('yakinda', dil)}</span></li>
-                  );
-                })}
-              </ul>
+              <ul class="etiketler">{Object.values(e.dallar).map((d) => <li>{c(d, dil)}</li>)}</ul>
             </li>
           );
         })}
       </ul>
-      {bekleyen.length > 0 && (
-        <div class="bekleyenler" data-belir>
-          <h3 class="ara-baslik">{t('bekleyenler', dil)}</h3>
-          <p class="soluk">{t('bekleyenAciklama', dil)}</p>
-          <ul>
-            {bekleyen.map((u) => (
-              <li>
-                <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 15l18 18M33 15 15 33"/><circle cx="11" cy="11" r="5.5"/><circle cx="37" cy="11" r="5.5"/><circle cx="11" cy="37" r="5.5"/><circle cx="37" cy="37" r="5.5"/></svg>
-                {t('uyeSablon', dil)} {String(u.sira).padStart(2, '0')}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {danismanlar.length > 0 && (
-        <div class="danismanlar" data-belir>
-          <h3 class="ara-baslik">{t('danismanlar', dil)}</h3>
-          <ul>
-            {danismanlar.map((d) => <li><strong>{d.ad}</strong><span class="soluk">{c(d.unvan, dil)}</span></li>)}
-          </ul>
-        </div>
-      )}
       <p class="ayrintili" data-belir><a class="dugme" href={altSayfa.takim[dil]}>{t('ayrintili', dil)}<span aria-hidden="true">→</span></a></p>
     </section>
   )}
@@ -284,20 +207,6 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
         )}
       </div>
     )}
-    {destek.ihtiyaclar.length > 0 && (
-      <div class="ihtiyac" data-belir>
-        <h3 class="ara-baslik">{t('ihtiyaclar', dil)}</h3>
-        {c(destek.ihtiyac_yazisi, dil) && <p class="soluk">{c(destek.ihtiyac_yazisi, dil)}</p>}
-        <dl>
-          {destek.ihtiyaclar.map((g) => (
-            <div>
-              <dt>{c(g.grup, dil)}</dt>
-              <dd><ul class="etiketler">{g.ogeler.map((o) => <li>{o}</li>)}</ul></dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    )}
     <div class="cagri" data-belir>
       <div class="dugmeler">
         {eposta ? <a class="dugme birincil" href={eposta}>{t('bizeYaz', dil)}</a> : var_.has('iletisim') && <a class="dugme birincil" href={bag('iletisim')}>{t('bizeYaz', dil)}</a>}
@@ -315,6 +224,7 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
       <ul class="baglantilar" data-belir>
         {iletisim.basvuru && <li><span class="soluk">{t('basvur', dil)}</span><a href={iletisim.basvuru} rel="noopener">{t('basvur', dil)}</a></li>}
         {iletisim.eposta && <li><span class="soluk">{c(iletisim.eposta_etiket, dil) || 'E-posta'}</span><a href={eposta}>{iletisim.eposta}</a></li>}
+        {iletisim.takim_eposta && <li><span class="soluk">{c(icerik.iletisim_sayfa.kartlar.takim.ad, dil)}</span><a href={`mailto:${iletisim.takim_eposta}`}>{iletisim.takim_eposta}</a></li>}
         {iletisim.instagram && <li><span class="soluk">Instagram</span><a href={iletisim.instagram} rel="noopener">{iletisim.instagram_ad || 'Instagram'}</a></li>}
         {iletisim.linkedin && <li><span class="soluk">LinkedIn</span><a href={iletisim.linkedin} rel="noopener">LinkedIn</a></li>}
       </ul>

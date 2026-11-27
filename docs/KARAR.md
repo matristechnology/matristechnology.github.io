@@ -127,3 +127,9 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Sponsorluk konuları sponsorluk sorumlusuna, genel sorular ve basın takım adresine gider. Ali takım kaptanı olarak kendi adresinin de yayımlanmasını istedi, kartta ad yazmıyor.
 - Harita OpenStreetMap gömmesi. Sayfanın açılışını bekletmesin diye bölüm ekrana yaklaşınca yüklenir, betik kapalıyken yerine bağlantılar durur.
 - Üst menüde İletişim artık bu sayfayı açıyor. Yedi başlığın hepsinin ayrıntı sayfası var.
+
+## Ana sayfa sadeleştirme (27.11.2026)
+
+- Ali'nin onayıyla ana sayfa özet haline getirildi: takım bölümünde 17 üye kartı yerine üç ekip kartı, ihtiyaç listesi ve başarı çizgisi kaldırıldı (ikisi de ayrıntı sayfalarında duruyor).
+- Sayfa altlarına önceki, ana sayfa, sonraki geçişi eklendi. Site ikonu logodaki M harfi, alt yazı "Matris Technology".
+- sitemap.xml eklendi, robots.txt onu gösteriyor.

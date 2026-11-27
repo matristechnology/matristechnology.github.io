@@ -80,7 +80,7 @@ test.describe('D4 betikler kapalı', () => {
     await expect(page.locator('[data-suru-demo]')).toBeHidden();
     await expect(page.locator('.demo-fikirler li')).toHaveCount(5);
     await expect(page.locator('.demo-fikirler li').first()).toBeVisible();
-    await expect(page.locator('.uye').first()).toBeVisible();
+    await expect(page.locator('[data-ekipler] > li').first()).toBeVisible();
     await expect(page.locator('.galeri img').first()).toBeVisible();
     await expect(page.locator('.cagri .dugme.birincil')).toBeVisible();
   });
@@ -326,28 +326,18 @@ test('D9f arka plan sürüsü: dizilim sürerken yenileri boş yuvaya katılıyo
   expect(ayrilan).toBe(Math.max(0, katilan - (uye - Number(await tuval.getAttribute('data-ilk')))));
 });
 
-test('D9d takım: üyeler dallarında, adı izinsiz görünmüyor, süzgeç öteki ekipleri söndürüyor', async ({ page }) => {
+test('D9d takım özeti: ana sayfada üç ekip kartı, üye adı ve kartı yok, ayrıntı Takım sayfasında', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
   const ekipler = page.locator('[data-ekipler] > li');
   await expect(ekipler).toHaveCount(3);
-  // Her üye kartı bir dalın içinde ya da ekip kutularının üstünde. Yerleşmemiş kayıtlar ayrı sırada.
-  const uyeler = await page.locator('.uye').count(), bekleyen = await page.locator('.bekleyenler li').count();
-  expect(uyeler + bekleyen).toBe(17);
-  // İzni olmayan üyenin adı yok: kartta "İsim yakında" yazıyor
-  const adsiz = page.locator('.uye.adsiz');
-  expect(await adsiz.count()).toBeGreaterThan(0);
-  await expect(adsiz.first()).toContainText(/İsim yakında/);
-  await page.locator('[data-suzgec] button[data-ekip="yazilim"]').click();
-  await expect(page.locator('[data-ekipler] > li[data-ekip="yazilim"]')).not.toHaveAttribute('data-sonuk', '');
-  await expect(page.locator('[data-ekipler] > li[data-ekip="mekanik"]')).toHaveAttribute('data-sonuk', '');
-  await expect.poll(() => page.locator('[data-ekipler] > li[data-ekip="mekanik"]').evaluate((e) => +getComputedStyle(e).opacity)).toBeLessThan(0.5);
-  // Dal katlanıp açılıyor
-  const dal = page.locator('.dal details').first();
-  await dal.locator('summary').click();
-  await expect(dal).not.toHaveAttribute('open', '');
-  await dal.locator('summary').click();
-  await expect(dal).toHaveAttribute('open', '');
+  await expect(ekipler.locator('.ekip-sayi')).toHaveText(['9 kişi', '3 kişi', '4 kişi']);
+  expect(await ekipler.locator('.etiketler li').count()).toBe(10);
+  await expect(page.locator('#takim .uye, #takim [data-suzgec]')).toHaveCount(0);
+  await expect(page.locator('#takim .ayrintili a')).toHaveAttribute('href', '/takim/');
+  // Ana sayfa kısa tutuluyor: ihtiyaç listesi ve başarı çizgisi ayrıntı sayfalarında
+  await expect(page.locator('main .ihtiyac, main [data-cizgi]')).toHaveCount(0);
+  await expect(page.locator('#iletisim a[href="mailto:matristechnology@gmail.com"]')).toBeVisible();
 });
 
 test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
@@ -1044,4 +1034,13 @@ test('D22 sayfa altı geçişi: önceki, ana sayfa ve sonraki düğmeleri menü 
   await page.setViewportSize({ width: 320, height: 700 });
   await page.goto('/calismalar/');
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+});
+
+test('D23 site haritası: on altı sayfanın hepsi var ve açılıyor', async ({ request }) => {
+  const y = await request.get('/sitemap.xml');
+  expect(y.status()).toBe(200);
+  const adresler = [...(await y.text()).matchAll(/<loc>https:\/\/matristechnology\.github\.io([^<]+)<\/loc>/g)].map((m) => m[1]);
+  expect(adresler).toHaveLength(16);
+  for (const a of adresler) expect((await request.get(a)).status(), a).toBe(200);
+  expect(await (await request.get('/robots.txt')).text()).toContain('sitemap.xml');
 });
