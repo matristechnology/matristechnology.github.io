@@ -161,7 +161,19 @@ uyeler:
     github: https://github.com/AliYilmaz16
     izin: true
   - { ad: "", gorev: { tr: Sürü mimarisi, en: Swarm architecture }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: Çarpışmadan kaçınma, en: Collision avoidance }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Şifa Su Kıncıoğlu
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Yazılım ekibinde ikinci yılını sürdürüyor. Teknolojiye ilgi duyuyor, öğrenmeye ve yeni deneyimler kazanmaya açık.
+      en: Is in the second year in the software team. Interested in technology and open to learning and gaining new experience.
+    ekip: yazilim
+    dal: goruntu
+    sorumlu: false
+    bolum: { tr: "Endüstri Mühendisliği, 2. sınıf", en: "Industrial Engineering, 2nd year" }
+    katilis: 2025
+    fotograf: sifa-su-kincioglu.jpg
+    baglanti: https://www.linkedin.com/in/şifa-su-kincioğlu-ab9996281
+    izin: true
   - ad: Alperen Aydın
     gorev: { tr: "Yazılım, simülasyon", en: "Software, simulation" }
     ayrinti:
