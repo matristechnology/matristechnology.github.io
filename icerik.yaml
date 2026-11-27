@@ -313,8 +313,8 @@ uyeler:
   - ad: Kazım Yorgun
     gorev: { tr: Elektronik, en: Electronics }
     ayrinti:
-      tr: Drone'u baştan sona toplayan, elektronik ekibinin güvenilir ismi.
-      en: Assembles the drone from start to finish and is the electronics team's trusted name.
+      tr: Drone'a fısıldayan, onu baştan sona toplayan elektronik ekibinin güvenilir ismi.
+      en: The drone whisperer who assembles it from start to finish, and the electronics team's trusted name.
     ekip: elektronik
     dal: aviyonik
     sorumlu: false
@@ -336,7 +336,19 @@ uyeler:
     fotograf: aysu-kutluay.jpg
     baglanti: https://www.linkedin.com/in/aysukutluay
     izin: true
-  - { ad: "", gorev: { tr: "3B baskı ve üretim", en: "3D printing and manufacturing" }, ekip: "mekanik", dal: "uretim", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Aysel Sena Abalı
+    gorev: { tr: Elektronik, en: Electronics }
+    ayrinti:
+      tr: Elektronik ekibinde devre yapıları ve donanım bileşenlerinin çalışma prensipleri üzerine çalışıyor. Sistemlerin uyumlu çalışmasını ve teorik bilgiyi uygulamaya dökmeyi hedefliyor.
+      en: Works in the electronics team on circuit structures and the operating principles of hardware components. Aims for systems that work together and to put theory into practice.
+    ekip: elektronik
+    dal: guc
+    sorumlu: false
+    bolum: { tr: "Elektrik-Elektronik Mühendisliği, 2. sınıf", en: "Electrical and Electronics Engineering, 2nd year" }
+    katilis: 2025
+    fotograf: ""
+    baglanti: https://www.linkedin.com/in/aysel-sena-abali-53b126313
+    izin: true
   - { ad: "", gorev: { tr: "Uçuş testleri ve pilotluk", en: "Flight tests and piloting" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Test kayıtları ve saha güvenliği", en: "Test records and field safety" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
 
