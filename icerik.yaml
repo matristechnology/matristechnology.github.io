@@ -204,7 +204,19 @@ uyeler:
     fotograf: funda-cakan.jpg
     baglanti: https://www.linkedin.com/in/funda-çakan-89a330437
     izin: true
-  - { ad: "", gorev: { tr: MAVLink haberleşmesi, en: MAVLink communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Kübra Demirci
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Görüntü işlemeyle ilgileniyor. İki yıldır takımda yazılımcı olarak çalışıyor ve 2026 TEKNOFEST finalinde takımla birlikte yer aldı.
+      en: Interested in image processing. Has worked as a software developer in the team for two years and took part in the 2026 TEKNOFEST final with the team.
+    ekip: yazilim
+    dal: goruntu
+    sorumlu: false
+    bolum: { tr: "Bilgisayar Mühendisliği, 2. sınıf", en: "Computer Engineering, 2nd year" }
+    katilis: 2024
+    fotograf: kubra-demirci.jpg
+    baglanti: ""
+    izin: true
   - ad: Ömer Faruk Ferik
     gorev: { tr: Elektronik, en: Electronics }
     ayrinti:
