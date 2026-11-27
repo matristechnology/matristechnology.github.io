@@ -6,7 +6,7 @@ import { Image } from 'astro:assets';
 import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, gorunenUyeler, gorunenDanismanlar, galeriGorseli, uyeGorseli, type Dil } from '../lib/icerik';
-import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+import { t, anaYol, altSayfa, digerDil , sayfaBasligi } from '../lib/i18n';
 import { tm, tPaket } from '../lib/i18n-takim';
 
 interface Props { dil: Dil }
@@ -44,7 +44,7 @@ const icindekiler = [
 ];
 ---
 
-<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.takim[digerDil(dil)]} sayfa="diger" bolum="takim">
+<Base dil={dil} baslik={sayfaBasligi.takim[dil]} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.takim[digerDil(dil)]} sayfa="diger" bolum="takim">
   <section class="sayfa-bas kap">
     <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
       <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>

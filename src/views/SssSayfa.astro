@@ -1,0 +1,46 @@
+---
+// Sık sorulanlar: arama motorlarının ve yapay zekâ aramalarının doğrudan alıntılayabileceği kısa cevaplar.
+// Cevaplar açık durur (katlanmaz), her birinin altında ilgili ayrıntı sayfasına bağlantı var. Aynı liste yapısal veri olarak da verilir.
+import Base from '../layouts/Base.astro';
+import { icerik, c, type Dil } from '../lib/icerik';
+import { t, anaYol, altSayfa, sssYol, digerDil } from '../lib/i18n';
+
+interface Props { dil: Dil }
+const { dil } = Astro.props;
+const S = icerik.sss_sayfa;
+const veri = [{ '@type': 'FAQPage', mainEntity: S.liste.map((x) => ({ '@type': 'Question', name: c(x.soru, dil), acceptedAnswer: { '@type': 'Answer', text: c(x.cevap, dil) } })) }];
+---
+
+<Base dil={dil} baslik={`${c(S.baslik, dil)} | Matris ${dil === 'tr' ? 'TEKNOFEST Sürü İHA Takımı' : 'TEKNOFEST Swarm UAV Team'}`} aciklama={c(S.ozet, dil)} karsiYol={sssYol[digerDil(dil)]} sayfa="diger" ekVeri={veri} kirinti={c(S.baslik, dil)}>
+  <section class="sayfa-bas kap">
+    <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
+      <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{c(S.baslik, dil)}</span>
+    </nav>
+    <h1 data-belir>{c(S.baslik, dil)}</h1>
+    <p class="tanitim" data-belir style="--i:1">{c(S.ozet, dil)}</p>
+  </section>
+
+  <section class="bolum kap">
+    <div class="sorular" data-sorular>
+      {S.liste.map((x, i) => (
+        <article class="soru" data-belir data-soru>
+          <span class="soru-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <div>
+            <h2>{c(x.soru, dil)}</h2>
+            <p>{c(x.cevap, dil)}</p>
+            {x.sayfa && <a class="soru-bag" href={altSayfa[x.sayfa][dil]}>{t(x.sayfa, dil)}<span aria-hidden="true"> →</span></a>}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="kap sayfa-son">
+    <div class="dugmeler">
+      <a class="dugme" href={anaYol(dil)}>{t('anaSayfa', dil)}</a>
+      <a class="dugme birincil" href={altSayfa.iletisim[dil]}>{t('iletisim', dil)} →</a>
+    </div>
+  </section>
+</Base>

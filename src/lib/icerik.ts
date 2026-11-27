@@ -16,7 +16,7 @@ const bolum = z.object({ baslik: ikiDil, giris: ikiDilBos, teknik: liste(ikiDil)
 const rol = z.object({ ad: ikiDil, metin: ikiDil, isler: liste(ikiDil) });
 
 const sema = z.object({
-  site: z.object({ adres: z.string(), baslik: ikiDil, aciklama: ikiDil }),
+  site: z.object({ adres: z.string(), google_dogrulama: metin, baslik: ikiDil, aciklama: ikiDil }),
   takim: z.object({
     ad: z.string(),
     ustluk: ikiDil,
@@ -141,6 +141,7 @@ const sema = z.object({
     takim_eposta: metin,
     kaptan_eposta: metin,
   }),
+  sss_sayfa: z.object({ baslik: ikiDil, ozet: ikiDil, liste: liste(z.object({ soru: ikiDil, cevap: ikiDil, sayfa: z.enum(['suru', 'matris', 'takim', 'calismalar', 'galeri', 'destek', 'iletisim']).optional() })) }),
   iletisim_sayfa: z.object({
     baslik: ikiDil,
     ozet: ikiDilBos,

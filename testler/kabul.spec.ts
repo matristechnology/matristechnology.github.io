@@ -355,7 +355,7 @@ test('D9b görünmeyen benzetim çalışmıyor', async ({ page }) => {
 
 test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adreste, kırık dosya yok', async ({ page, request }) => {
   test.setTimeout(120000); // on iki sayfa ve her birindeki bağlantılar: canlı adreste 30 saniyeyi aşabiliyor
-  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/', '/galeri/', '/en/gallery/', '/destek/', '/en/support/', '/iletisim/', '/en/contact/']) {
+  for (const yol of ['/', '/en/', '/suru-iha/', '/en/swarm/', '/matris/', '/en/matris/', '/takim/', '/en/team/', '/calismalar/', '/en/work/', '/galeri/', '/en/gallery/', '/destek/', '/en/support/', '/iletisim/', '/en/contact/', '/sss/', '/en/faq/']) {
     await page.goto(yol);
     const baglar = await page.locator('a[href]').evaluateAll((l) => l.map((a) => a.getAttribute('href')!));
     for (const h of new Set(baglar)) {
@@ -1036,11 +1036,72 @@ test('D22 sayfa altı geçişi: önceki, ana sayfa ve sonraki düğmeleri menü 
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
 });
 
-test('D23 site haritası: on altı sayfanın hepsi var ve açılıyor', async ({ request }) => {
+test('D23 site haritası: on sekiz sayfanın hepsi var ve açılıyor', async ({ request }) => {
   const y = await request.get('/sitemap.xml');
   expect(y.status()).toBe(200);
   const adresler = [...(await y.text()).matchAll(/<loc>https:\/\/matristechnology\.github\.io([^<]+)<\/loc>/g)].map((m) => m[1]);
-  expect(adresler).toHaveLength(16);
+  expect(adresler).toHaveLength(18);
   for (const a of adresler) expect((await request.get(a)).status(), a).toBe(200);
   expect(await (await request.get('/robots.txt')).text()).toContain('sitemap.xml');
+});
+
+test.describe('D24 arama görünürlüğü', () => {
+  test('her sayfada yapısal veri var: takım, dereceler, sosyal hesaplar, kırıntı', async ({ page }) => {
+    for (const yol of ['/', '/suru-iha/', '/en/support/', '/sss/']) {
+      await page.goto(yol);
+      const veri = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}');
+      const g = veri['@graph'] as Record<string, any>[];
+      const takim = g.find((x) => x['@type'] === 'Organization')!;
+      expect(takim.name).toBe('Matris');
+      expect(takim.alternateName).toContain('Matris Technology');
+      expect(takim.sameAs.join(' ')).toMatch(/instagram\.com.*linkedin\.com/);
+      expect(takim.award).toHaveLength(3);
+      expect(takim.parentOrganization.name).toMatch(/Bursa/);
+      expect(!!g.find((x) => x['@type'] === 'BreadcrumbList')).toBe(yol !== '/');
+    }
+  });
+
+  test('sayfa başlıkları ayrı ve takım adını taşıyor, tek h1 var', async ({ page }) => {
+    const basliklar = new Set<string>();
+    for (const yol of ['/', '/suru-iha/', '/matris/', '/takim/', '/calismalar/', '/galeri/', '/destek/', '/iletisim/', '/sss/']) {
+      await page.goto(yol);
+      const b = await page.title();
+      expect(b, yol).toMatch(/Matris/);
+      expect(b.length, yol).toBeLessThanOrEqual(65);
+      basliklar.add(b);
+      await expect(page.locator('h1')).toHaveCount(1);
+      expect(((await page.locator('meta[name="description"]').getAttribute('content')) ?? '').length, yol).toBeGreaterThan(50);
+    }
+    expect(basliklar.size).toBe(9);
+    await page.goto('/suru-iha/');
+    await expect(page).toHaveTitle(/Sürü İHA nedir/);
+  });
+
+  test('sık sorulanlar: dokuz soru açık duruyor, yapısal veriyle aynı, alt bilgiden ulaşılıyor', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('[data-sss-bag]').click();
+    await expect(page).toHaveURL(/\/sss\/$/);
+    const sorular = page.locator('[data-soru]');
+    await expect(sorular).toHaveCount(9);
+    await expect(sorular.first().locator('p')).toBeVisible();
+    const veri = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}');
+    const sss = (veri['@graph'] as Record<string, any>[]).find((x) => x['@type'] === 'FAQPage')!;
+    expect(sss.mainEntity).toHaveLength(9);
+    expect(sss.mainEntity[1].name).toBe(await sorular.nth(1).locator('h2').innerText());
+    await page.goto('/en/faq/');
+    await expect(page.locator('[data-soru]')).toHaveCount(9);
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/sss/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('llms.txt takımı, dereceleri ve soruları düz yazıyla veriyor', async ({ request }) => {
+    const y = await request.get('/llms.txt');
+    expect(y.status()).toBe(200);
+    const m = await y.text();
+    expect(m).toContain('# Matris');
+    expect(m).toContain('Sürü İHA nedir?');
+    expect(m).toMatch(/2026: .*Türkiye 2\.si/);
+    expect(m).not.toMatch(/undefined|\[object/);
+  });
 });

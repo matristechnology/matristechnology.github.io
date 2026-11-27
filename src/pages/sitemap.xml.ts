@@ -1,10 +1,10 @@
-// Arama motorları için site haritası: ana sayfa ve yedi ayrıntı sayfası, iki dilde, birbirinin karşılığıyla.
+// Arama motorları için site haritası: ana sayfa, yedi ayrıntı sayfası ve sık sorulanlar, iki dilde, birbirinin karşılığıyla.
 import type { APIRoute } from 'astro';
-import { altSayfa, anaYol } from '../lib/i18n';
+import { altSayfa, anaYol, sssYol } from '../lib/i18n';
 
 export const GET: APIRoute = ({ site }) => {
   const kok = (site?.href ?? 'https://matristechnology.github.io/').replace(/\/$/, '');
-  const ciftler = [{ tr: anaYol('tr'), en: anaYol('en') }, ...Object.values(altSayfa)];
+  const ciftler = [{ tr: anaYol('tr'), en: anaYol('en') }, ...Object.values(altSayfa), sssYol];
   const satir = (yol: string, c: { tr: string; en: string }) =>
     `  <url><loc>${kok}${yol}</loc><xhtml:link rel="alternate" hreflang="tr" href="${kok}${c.tr}"/><xhtml:link rel="alternate" hreflang="en" href="${kok}${c.en}"/></url>`;
   const govde = ciftler.flatMap((c) => [satir(c.tr, c), satir(c.en, c)]).join('\n');

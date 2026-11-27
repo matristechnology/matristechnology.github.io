@@ -5,7 +5,7 @@ import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import IhaIci from '../components/IhaIci.astro';
 import { icerik, c, type Dil } from '../lib/icerik';
-import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+import { t, anaYol, altSayfa, digerDil , sayfaBasligi } from '../lib/i18n';
 import { sm } from '../lib/i18n-suru';
 import { mm } from '../lib/i18n-matris';
 
@@ -30,7 +30,7 @@ const sayilar = [
 const D = S.hikaye.duraklar;
 ---
 
-<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.matris[digerDil(dil)]} sayfa="diger" bolum="matris">
+<Base dil={dil} baslik={sayfaBasligi.matris[dil]} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.matris[digerDil(dil)]} sayfa="diger" bolum="matris">
   <section class="sayfa-bas kap">
     <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
       <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>

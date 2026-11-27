@@ -133,3 +133,9 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Ali'nin onayıyla ana sayfa özet haline getirildi: takım bölümünde 17 üye kartı yerine üç ekip kartı, ihtiyaç listesi ve başarı çizgisi kaldırıldı (ikisi de ayrıntı sayfalarında duruyor).
 - Sayfa altlarına önceki, ana sayfa, sonraki geçişi eklendi. Site ikonu logodaki M harfi, alt yazı "Matris Technology".
 - sitemap.xml eklendi, robots.txt onu gösteriyor.
+
+## Görünürlük (27.11.2026)
+
+- Yapısal veri, aranan cümleyle sayfa başlıkları, sık sorulanlar sayfası (`/sss/`, menüde yok, alt bilgiden ulaşılır), `llms.txt` eklendi.
+- "TÜBİTAK" kelimesi doğrulanmış bir bağ olmadan siteye yazılmadı.
+- Site dışındaki adımlar `docs/GORUNURLUK.md` içinde, Ali yapacak.

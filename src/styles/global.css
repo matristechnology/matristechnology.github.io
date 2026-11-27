@@ -421,7 +421,7 @@ pre[data-qr-json], .paket { margin: 0; padding: 0.7rem 0.8rem; min-height: 2.8em
 .dugme.kod { font-family: var(--es); font-size: 0.75rem; letter-spacing: 0.02em; padding: 0 0.7rem; }
 .rol-panel { padding: 1rem 1.1rem; border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); display: grid; gap: 0.5rem; }
 .rol-panel:empty { display: none; }
-.rol-panel h4 { font-size: 1.0625rem; font-weight: 620; }
+.rol-panel h3 { font-size: 1.0625rem; font-weight: 620; }
 .rol-panel p, .rol-panel li { font-size: 0.9375rem; line-height: 1.5; }
 .rol-panel p { color: var(--soluk); }
 .lejant { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; font-family: var(--es); font-size: 0.75rem; color: var(--soluk); }
@@ -478,6 +478,16 @@ pre[data-qr-json], .paket { margin: 0; padding: 0.7rem 0.8rem; min-height: 2.8em
   .gecis-once, .gecis-sonra { justify-self: stretch; justify-content: space-between; }
   .gecis-bos { display: block; }
 }
+
+/* Sık sorulanlar sayfası */
+.sorular { display: grid; max-width: 52rem; }
+.soru { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.5rem 1rem; padding-block: 1.75rem; border-top: 1px solid var(--cizgi); }
+.soru:last-child { border-bottom: 1px solid var(--cizgi); }
+.soru-no { font-family: var(--es); font-size: 0.8125rem; color: var(--vurgu); padding-top: 0.4rem; }
+.soru h2 { font-size: clamp(1.2rem, 2.4vw, 1.5rem); letter-spacing: -0.015em; line-height: 1.25; }
+.soru p { margin-top: 0.6rem; color: var(--soluk); max-width: 44em; }
+.soru-bag { display: inline-flex; align-items: center; min-height: 2.75rem; margin-top: 0.25rem; font-weight: 550; color: var(--vurgu); }
+@media (max-width: 560px) { .soru { grid-template-columns: 1fr; } .soru-no { padding-top: 0; } }
 
 /* İletişim sayfası */
 .ulas-kartlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: 0.75rem; margin-top: 1.75rem; }

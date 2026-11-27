@@ -4,6 +4,8 @@
 
 site:
   adres: https://matristechnology.github.io
+  # Google Search Console'un verdiği doğrulama kodu (yalnızca content değeri). Boşken etiket çıkmaz.
+  google_dogrulama: ""
   baslik:
     tr: Matris | TEKNOFEST Sürü İHA Takımı
     en: Matris | TEKNOFEST Swarm UAV Team
@@ -1283,3 +1285,78 @@ destek_sayfa:
     govde:
       tr: "Merhaba,\n\nMatris'e destek olmak istiyoruz.\n\nKurum: \nİlgilenen kişi: \nDestek türü: {tur}\nPaket: {paket}\nNotlar: \n"
       en: "Hello,\n\nWe would like to support Matris.\n\nOrganisation: \nContact person: \nKind of support: {tur}\nPackage: {paket}\nNotes: \n"
+
+# ─── Sık sorulanlar sayfası (/sss/, /en/faq/) ────────────────────────────────────────────────
+# Arama motorları ve yapay zekâ aramaları için kısa, kendi başına anlaşılır cevaplar. Cevaplar sitedeki bilgiden yazıldı,
+# sayı ya da derece değişirse burası da güncellenir. "sayfa" cevabın altındaki bağlantının gideceği ayrıntı sayfası.
+sss_sayfa:
+  baslik:
+    tr: Sık sorulanlar
+    en: Frequently asked questions
+  ozet:
+    tr: Matris takımı, sürü İHA ve TEKNOFEST Sürü İHA Yarışması hakkında en çok sorulan sorular ve kısa cevapları.
+    en: The most common questions about team Matris, swarm UAVs and the TEKNOFEST Swarm UAV Competition, with short answers.
+  liste:
+    - soru:
+        tr: Matris nedir?
+        en: What is Matris?
+      cevap:
+        tr: Matris (Matris Technology), Bursa Teknik Üniversitesi'nde MATRO Topluluğu çatısı altında çalışan bir öğrenci mühendislik takımıdır. TEKNOFEST Sürü İHA Yarışması'na katılır ve otonom uçuş, görev koordinasyonu ve sürü haberleşmesi üzerine çalışır.
+        en: Matris (Matris Technology) is a student engineering team at Bursa Technical University, working under the MATRO student society. It competes in the TEKNOFEST Swarm UAV Competition and works on autonomous flight, mission coordination and swarm communication.
+      sayfa: matris
+    - soru:
+        tr: Sürü İHA nedir?
+        en: What is a swarm UAV?
+      cevap:
+        tr: Sürü İHA, birlikte uçan ve aynı görevi paylaşan insansız hava araçlarıdır. Her araç kendi konumunu bilir, ötekilerle haberleşir ve hareketini sürünün geri kalanına göre ayarlar. Sürüye tek bir komut verilir, araçlar işi kendi aralarında paylaşır. Bir araç devre dışı kalsa bile kalanlar görevi sürdürür.
+        en: A swarm UAV system is a group of unmanned aerial vehicles that fly together and share one mission. Each vehicle knows its own position, talks to the others and adjusts its motion to the rest of the swarm. The swarm gets a single command and the vehicles split the work among themselves. If one vehicle drops out, the rest carry on.
+      sayfa: suru
+    - soru:
+        tr: TEKNOFEST Sürü İHA Yarışması'nda hangi görevler var?
+        en: What are the missions in the TEKNOFEST Swarm UAV Competition?
+      cevap:
+        tr: Yarışmada en az üç İHA'dan oluşan bir sürü iki görev uçar. İlk görevde sürü kalkıştan inişe kadar kendi başına uçar, yerdeki QR kodlarını okur ve kodun söylediğini yapar. Dizilim değiştirir, yükselir ya da alçalır, bir üyesini ayırıp geri alır. İkinci görevde bütün sürü tek bir kumandayla, tek bir İHA gibi yönetilir.
+        en: A swarm of at least three UAVs flies two missions. In the first, the swarm flies on its own from take-off to landing, reads QR codes on the ground and does what each code says. It changes formation, climbs or descends, and detaches one member and takes it back. In the second, the whole swarm is steered with a single controller as if it were one UAV.
+      sayfa: suru
+    - soru:
+        tr: Matris'in TEKNOFEST'teki dereceleri neler?
+        en: What has Matris achieved at TEKNOFEST?
+      cevap:
+        tr: Matris 2024'te TEKNOFEST Sürü İHA Yarışması'nda finalist oldu. 2026'da Ön Tasarım Raporu 100 üzerinden 93 puan alarak Türkiye ikincisi oldu ve takım yeniden finale kaldı.
+        en: Matris was a finalist in the TEKNOFEST Swarm UAV Competition in 2024. In 2026 its Preliminary Design Report scored 93 out of 100 and ranked second in Türkiye, and the team reached the finals again.
+      sayfa: matris
+    - soru:
+        tr: Takımda kaç kişi var ve hangi ekipler çalışıyor?
+        en: How many people are on the team and how is it organised?
+      cevap:
+        tr: Takımda 17 üye var. Takım kaptanının yanında üç ekip çalışır. Yazılım ekibi 9, elektronik ekibi 3, mekanik ekibi 4 kişidir. Ekipler sürü algoritmaları, görüntü işleme, gömülü sistemler, haberleşme, aviyonik, güç sistemi, gövde tasarımı ve uçuş testleri gibi on dala ayrılır.
+        en: The team has 17 members. Alongside the team captain there are three groups. Software has 9 people, electronics 3 and mechanics 4. The groups split into ten branches such as swarm algorithms, image processing, embedded systems, communication, avionics, power, airframe design and flight testing.
+      sayfa: takim
+    - soru:
+        tr: Matris bir fikri sahaya nasıl çıkarıyor?
+        en: How does Matris take an idea to the field?
+      cevap:
+        tr: Her fikir dört aşamadan geçer. Önce Gazebo ve SITL ortamında simülasyonda denenir. Sonra Pixhawk otopilot ve Raspberry Pi görev bilgisayarıyla donanıma kurulur. Ardından tek İHA ile uçuş kararlılığı ve bağlantı davranışı ölçülür. En son birden çok İHA ile sürü denemeleri yapılır.
+        en: Every idea goes through four stages. It is first tried in simulation in Gazebo and SITL. It is then set up on hardware with a Pixhawk autopilot and a Raspberry Pi mission computer. Next, flight stability and link behaviour are measured with a single UAV. Finally the swarm is tested with several UAVs.
+      sayfa: calismalar
+    - soru:
+        tr: Matris takımına nasıl katılabilirim?
+        en: How can I join team Matris?
+      cevap:
+        tr: Takım sayfasındaki "Takıma katıl" bölümünden ilgini çeken dalı seçip başvuru e-postası yazabilirsin. Her şeyi bilmen gerekmiyor, öğrenmeye istekli olman yeterli.
+        en: Pick the branch that interests you in the "Join the team" section of the Team page and write an application email. You do not need to know everything, being keen to learn is enough.
+      sayfa: takim
+    - soru:
+        tr: Matris'e nasıl sponsor olabilirim?
+        en: How can I sponsor Matris?
+      cevap:
+        tr: Malzeme desteği, üretim ve test desteği ya da finansal destek verebilirsiniz. Karşılığında logonuz İHA'larda, takım tişörtünde, sitede ve sosyal medya paylaşımlarında yer alır. Destek sayfasından destek türünü seçip sponsorluk sorumlumuza yazabilirsiniz.
+        en: You can support the team with equipment, with manufacturing and testing, or financially. In return your logo appears on the UAVs, on the team shirt, on the website and in social media posts. Choose the kind of support on the Support page and write to our sponsorship lead.
+      sayfa: destek
+    - soru:
+        tr: Matris'e nasıl ulaşabilirim?
+        en: How can I contact Matris?
+      cevap:
+        tr: Genel sorular ve basın için matristechnology@gmail.com adresine yazabilirsiniz. Sponsorluk için ayrı bir adres var, İletişim sayfasında bulunur. Takımın Instagram hesabı btu_matris, LinkedIn sayfası Matris Technology adıyla açıktır.
+        en: For general questions and press, write to matristechnology@gmail.com. There is a separate address for sponsorship on the Contact page. The team is on Instagram as btu_matris and on LinkedIn as Matris Technology.
+      sayfa: iletisim

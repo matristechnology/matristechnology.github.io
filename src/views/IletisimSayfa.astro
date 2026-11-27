@@ -5,7 +5,7 @@
 import SayfaGecis from '../components/SayfaGecis.astro';
 import Base from '../layouts/Base.astro';
 import { icerik, c, type Dil } from '../lib/icerik';
-import { t, anaYol, altSayfa, digerDil } from '../lib/i18n';
+import { t, anaYol, altSayfa, digerDil , sayfaBasligi } from '../lib/i18n';
 
 interface Props { dil: Dil }
 const { dil } = Astro.props;
@@ -27,7 +27,7 @@ const buyuk = `https://www.openstreetmap.org/?mlat=${e}&mlon=${b}#map=16/${e}/${
 const tarif = `https://www.google.com/maps/dir/?api=1&destination=${e}%2C${b}`;
 ---
 
-<Base dil={dil} baslik={`${c(S.baslik, dil)} | ${icerik.takim.ustluk[dil]}`} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.iletisim[digerDil(dil)]} sayfa="diger" bolum="iletisim">
+<Base dil={dil} baslik={sayfaBasligi.iletisim[dil]} aciklama={c(S.ozet, dil)} karsiYol={altSayfa.iletisim[digerDil(dil)]} sayfa="diger" bolum="iletisim">
   <section class="sayfa-bas kap">
     <nav class="kirinti" aria-label={dil === 'tr' ? 'Konum' : 'Breadcrumb'}>
       <a href={anaYol(dil)}>{dil === 'tr' ? 'Ana sayfa' : 'Home'}</a>

@@ -27,6 +27,19 @@ export const altSayfa: Partial<Record<Bolum, Record<Dil, string>>> & { suru: Rec
   iletisim: { tr: '/iletisim/', en: '/en/contact/' },
 };
 
+export const sssYol: Record<Dil, string> = { tr: '/sss/', en: '/en/faq/' };
+
+// Ayrıntı sayfalarının tarayıcı ve arama sonucu başlıkları: insanların aradığı cümleyle yazılır.
+export const sayfaBasligi: Record<keyof typeof altSayfa, Record<Dil, string>> = {
+  suru: { tr: "Sürü İHA nedir, TEKNOFEST'te nasıl uçar? | Matris", en: 'What is a swarm UAV and how does it fly at TEKNOFEST? | Matris' },
+  matris: { tr: 'Matris kimdir? BTÜ TEKNOFEST Sürü İHA takımının hikâyesi', en: "Who is Matris? The story of BTU's TEKNOFEST Swarm UAV team" },
+  takim: { tr: 'Takım ve ekipler | Matris TEKNOFEST Sürü İHA Takımı', en: 'Team and groups | Matris TEKNOFEST Swarm UAV Team' },
+  calismalar: { tr: 'Çalışmalar: simülasyondan çoklu İHA uçuşuna | Matris', en: 'Our work: from simulation to multi-UAV flight | Matris' },
+  galeri: { tr: 'Galeri: atölye, saha ve yarışma fotoğrafları | Matris', en: 'Gallery: workshop, field and competition photos | Matris' },
+  destek: { tr: 'Sponsorluk ve destek | Matris TEKNOFEST Sürü İHA Takımı', en: 'Sponsorship and support | Matris TEKNOFEST Swarm UAV Team' },
+  iletisim: { tr: 'İletişim | Matris TEKNOFEST Sürü İHA Takımı', en: 'Contact | Matris TEKNOFEST Swarm UAV Team' },
+};
+
 const metin = {
   icerigeGec: { tr: 'İçeriğe geç', en: 'Skip to content' },
   menu: { tr: 'Menü', en: 'Menu' },
@@ -124,6 +137,7 @@ const metin = {
   iletisimBaslik: { tr: 'İletişim', en: 'Contact' },
   iletisimGiris: { tr: 'Destek, iş birliği ya da takıma katılmak için bize ulaşın.', en: 'Reach us about support, partnerships or joining the team.' },
   basvur: { tr: 'Başvur', en: 'Apply' },
+  sss: { tr: 'Sık sorulanlar', en: 'FAQ' },
   altBilgi: { tr: 'Matris Technology', en: 'Matris Technology' },
   yukari: { tr: 'Başa dön', en: 'Back to top' },
   ayrintili: { tr: 'Ayrıntılı incele', en: 'Explore in depth' },

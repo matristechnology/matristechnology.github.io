@@ -3,7 +3,7 @@ import '../styles/global.css';
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 import { icerik, c, gorunenBolumler, type Dil } from '../lib/icerik';
-import { t, anaYol, digerDil, bolumler, altSayfa, type Bolum } from '../lib/i18n';
+import { t, anaYol, digerDil, bolumler, altSayfa, sssYol, type Bolum } from '../lib/i18n';
 
 interface Props {
   dil: Dil;
@@ -14,8 +14,12 @@ interface Props {
   sayfa: 'ana' | 'diger';
   /** Ayrıntı sayfasında bulunulan bölüm: menüde işaretlenir. */
   bolum?: Bolum;
+  /** Sayfaya özel yapısal veri (schema.org), örneğin soru cevap listesi. */
+  ekVeri?: Record<string, unknown>[];
+  /** Menüde yeri olmayan sayfanın kırıntıdaki adı. */
+  kirinti?: string;
 }
-const { dil, baslik, aciklama, karsiYol, sayfa, bolum } = Astro.props;
+const { dil, baslik, aciklama, karsiYol, sayfa, bolum, ekVeri = [], kirinti } = Astro.props;
 const diger = digerDil(dil);
 const site = icerik.site.adres;
 const buAdres = new URL(Astro.url.pathname, site).href;
@@ -29,6 +33,36 @@ const sira = gorunenBolumler();
 const bag = (b: (typeof sira)[number]) => (altSayfa[b] ? altSayfa[b]![dil] : `${sayfa === 'ana' ? '' : ana}#${bolumler[b][dil]}`);
 const anaBag = sayfa === 'ana' ? '#ust' : ana;
 const ad = icerik.takim.ad;
+
+// Yapısal veri: arama motorlarına ve yapay zekâ aramalarına takımın kim olduğunu düz veriyle söyler.
+const kokAdres = new URL('/', site).href;
+const universite = { '@type': 'CollegeOrUniversity', name: dil === 'tr' ? 'Bursa Teknik Üniversitesi' : 'Bursa Technical University', url: 'https://www.btu.edu.tr/' };
+const yarisma = dil === 'tr' ? 'TEKNOFEST Sürü İHA Yarışması' : 'TEKNOFEST Swarm UAV Competition';
+const kurum = {
+  '@type': 'Organization',
+  '@id': `${kokAdres}#takim`,
+  name: ad,
+  alternateName: ['Matris Technology', dil === 'tr' ? 'Matris Sürü İHA Takımı' : 'Matris Swarm UAV Team', 'BTÜ Matris'],
+  url: kokAdres,
+  logo: new URL('/favicon-192.png', site).href,
+  image: ogGorsel,
+  description: c(icerik.site.aciklama, dil),
+  parentOrganization: universite,
+  address: { '@type': 'PostalAddress', addressLocality: 'Bursa', addressCountry: 'TR' },
+  email: icerik.iletisim.takim_eposta || undefined,
+  sameAs: [icerik.iletisim.instagram, icerik.iletisim.linkedin].filter(Boolean),
+  knowsAbout: dil === 'tr' ? ['Sürü İHA', 'İnsansız hava aracı', 'Otonom uçuş', 'Sürü haberleşmesi', 'TEKNOFEST'] : ['Swarm UAV', 'Unmanned aerial vehicle', 'Autonomous flight', 'Swarm communication', 'TEKNOFEST'],
+  award: icerik.basarilar.map((b) => `${b.yil} ${yarisma}: ${c(b.baslik, dil)}`),
+};
+const kirintiAd = bolum ? t(bolum, dil) : kirinti;
+const yapisal = [
+  kurum,
+  { '@type': 'WebSite', '@id': `${kokAdres}#site`, url: kokAdres, name: c(icerik.site.baslik, dil), inLanguage: ['tr', 'en'], publisher: { '@id': `${kokAdres}#takim` } },
+  { '@type': 'WebPage', '@id': buAdres, url: buAdres, name: baslik, description: aciklama, inLanguage: dil, isPartOf: { '@id': `${kokAdres}#site` }, about: { '@id': `${kokAdres}#takim` } },
+  ...(sayfa === 'diger' && kirintiAd ? [{ '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: t('anaSayfaKisa', dil), item: new URL(ana, site).href }, { '@type': 'ListItem', position: 2, name: kirintiAd, item: buAdres }] }] : []),
+  ...ekVeri,
+];
+const yapisalMetin = JSON.stringify({ '@context': 'https://schema.org', '@graph': yapisal }).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -38,6 +72,8 @@ const ad = icerik.takim.ad;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{baslik}</title>
     <meta name="description" content={aciklama} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    {icerik.site.google_dogrulama && <meta name="google-site-verification" content={icerik.site.google_dogrulama} />}
     <link rel="canonical" href={buAdres} />
     <link rel="alternate" hreflang={dil} href={buAdres} />
     <link rel="alternate" hreflang={diger} href={karsiAdres} />
@@ -53,6 +89,7 @@ const ad = icerik.takim.ad;
     <meta property="og:locale" content={dil === 'tr' ? 'tr_TR' : 'en_GB'} />
     <meta property="og:locale:alternate" content={dil === 'tr' ? 'en_GB' : 'tr_TR'} />
     <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={yapisalMetin} />
     <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#0a0a0b" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
@@ -132,6 +169,7 @@ const ad = icerik.takim.ad;
     <footer class="alt">
       <div class="kap alt-ic">
         <p>© {new Date().getFullYear()} {t('altBilgi', dil)}</p>
+        <p><a href={sssYol[dil]} data-sss-bag>{t('sss', dil)}</a></p>
         <p><a href={sayfa === 'ana' ? '#ust' : ana}>{t('yukari', dil)}</a></p>
       </div>
     </footer>

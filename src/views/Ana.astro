@@ -53,7 +53,7 @@ const eposta = iletisim.eposta ? `mailto:${iletisim.eposta}` : '';
       </div>
     </div>
     {girisFoto && (
-      <figure class="giris-foto" data-belir style="--i:2">
+      <figure class="giris-foto">
         <Image src={girisFoto} alt={c(takim.fotograf_alt, dil)} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 100vw, 50vw" loading="eager" fetchpriority="high" />
       </figure>
     )}

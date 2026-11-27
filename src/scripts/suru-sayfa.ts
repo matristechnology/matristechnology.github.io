@@ -214,7 +214,7 @@ function ayrilmaIlerle(y: Ayrilma, s: Suru, dt: number): AyrilmaAsama | null {
       secimler.forEach((d) => d.setAttribute('aria-pressed', String(Number(d.dataset.sec) === id)));
       panel.replaceChildren();
       if (rol) {
-        const h = document.createElement('h4'); h.textContent = `${rol.ad} · ${a.id}`;
+        const h = document.createElement('h3'); h.textContent = `${rol.ad} · ${a.id}`;
         const p = document.createElement('p'); p.textContent = rol.metin;
         const ul = document.createElement('ul'); ul.className = 'madde';
         for (const is of rol.isler) { const li = document.createElement('li'); li.textContent = is; ul.append(li); }
