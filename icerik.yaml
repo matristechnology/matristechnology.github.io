@@ -190,7 +190,20 @@ uyeler:
     baglanti: https://www.linkedin.com/in/asl%C4%B1han-okumu%C5%9F-2a54b725b
     github: https://github.com/AslihanOkumus
     izin: true
-  - { ad: "", gorev: { tr: UWB entegrasyonu, en: UWB integration }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Raul Namazzada
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Gömülü yazılım üzerine çalışıyor, C, C++ ve Python bilgisi var. Ekip çalışmasına uyumlu ve verilen görevleri zamanında tamamlıyor.
+      en: Works on embedded software and knows C, C++ and Python. Fits well into teamwork and completes assigned tasks on time.
+    ekip: yazilim
+    dal: gomulu
+    sorumlu: false
+    bolum: { tr: "Bilgisayar Mühendisliği, 4. sınıf", en: "Computer Engineering, 4th year" }
+    katilis: 2025
+    fotograf: raul-namazzada.jpg
+    baglanti: https://www.linkedin.com/in/raul-namazzade/
+    github: https://github.com/Raul-dev00
+    izin: true
   - ad: Funda Çakan
     gorev: { tr: Yazılım, en: Software }
     ayrinti:
