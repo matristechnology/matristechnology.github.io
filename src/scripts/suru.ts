@@ -263,10 +263,9 @@ if (tuval) {
   }
   function girisBaslat(t: number) {
     giris.aktif = true; giris.bas = t; giris.hazir = false;
-    // İHA'lar ekranın dışındaki bir halkadan girer: yazı onlara doğru uçarak oluşur.
-    const yari = Math.hypot(en, boy) / 2 + 60;
-    for (const u of ihalar) { const a = Math.random() * Math.PI * 2, r = yari + rastgele(0, 140); u.x = en / 2 + Math.cos(a) * r; u.y = boy / 2 + Math.sin(a) * r + scrollY; u.vx = u.vy = 0; u.gi = -1; }
-    if (girisNoktalari(veri.giris ?? '')) girisHedefle(); else girisBitir(performance.now());
+    // Sayfa açılır açılmaz İHA'lar yazının içinde hazırdır, sonradan uçarak gelmezler.
+    for (const u of ihalar) { u.vx = u.vy = 0; u.gi = -1; }
+    if (girisNoktalari(veri.giris ?? '')) { girisHedefle(); for (const u of ihalar) if (u.gi >= 0) { u.x = u.gx; u.y = u.gy; u.aci = -Math.PI / 2; } } else girisBitir(performance.now());
     iz();
   }
   // Kullanıcı hareket etti (ya da süre doldu): yazı bozulur, her İHA kendi bölgesine uçar.
@@ -502,20 +501,11 @@ if (tuval) {
         ctx.moveTo(u.x, u.y - sy); ctx.lineTo(o.x, o.y - sy);
       }
       ctx.stroke();
-      // boş yuva: gelecek İHA için silik, kesikli halka
-      if (!onleme && s.uyeler.length < s.kap) {
-        ctx.strokeStyle = vurgu; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
-        for (let k = s.uyeler.length; k < s.kap; k++) {
-          const [a, b] = yuva(s.bicim, k, s.kap, simdi), [x, y] = yerde(s, a, b);
-          ctx.globalAlpha = (0.28 + 0.12 * Math.sin(simdi / 500 + k)) * kis; ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.stroke();
-        }
-        ctx.setLineDash([]);
-      }
     }
     for (const u of ihalar) {
       if (!ekranda(u, 30)) continue;
       const uye = !!u.sr || (giris.aktif && u.gi >= 0), salin = uye ? 0 : Math.sin(simdi / 420 + u.i * 1.7) * 1.4; // boştayken hafifçe salınır
-      const lid = !!u.sr && u.s === 0 && !onleme;
+      const lid = !!u.sr && u.s === 0;
       if (lid) { // lider: metin renginde, çevresinde ince bir halka
         ctx.globalAlpha = 0.5 * kis; ctx.strokeStyle = vurgu; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(u.x, u.y - sy, 12, 0, Math.PI * 2); ctx.stroke();
       }
