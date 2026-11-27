@@ -170,7 +170,7 @@ uyeler:
     sorumlu: false
     bolum: { tr: "Gıda Mühendisliği, hazırlık", en: "Food Engineering, preparatory year" }
     katilis: 2026
-    fotograf: ""
+    fotograf: deniz-ince.jpg
     baglanti: https://www.linkedin.com/in/deniz-ince-aa8353452/
     github: https://github.com/denizince080222
     izin: true
@@ -279,7 +279,7 @@ uyeler:
     sorumlu: false
     bolum: { tr: "Bilgisayar Mühendisliği, 2. sınıf", en: "Computer Engineering, 2nd year" }
     katilis: 2026
-    fotograf: ""
+    fotograf: ceren-tunca.jpg
     baglanti: https://www.linkedin.com/in/ceren-tunca-8b5288337/
     github: https://github.com/cerenntnc2801-dot
     izin: true
@@ -346,10 +346,9 @@ uyeler:
     sorumlu: false
     bolum: { tr: "Elektrik-Elektronik Mühendisliği, 2. sınıf", en: "Electrical and Electronics Engineering, 2nd year" }
     katilis: 2025
-    fotograf: ""
+    fotograf: aysel-sena-abali.jpg
     baglanti: https://www.linkedin.com/in/aysel-sena-abali-53b126313
     izin: true
-  - { ad: "", gorev: { tr: "Uçuş testleri ve pilotluk", en: "Flight tests and piloting" }, ekip: "mekanik", dal: "test", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - ad: Yunus Ayaz
     gorev: { tr: Yazılım, en: Software }
     ayrinti:

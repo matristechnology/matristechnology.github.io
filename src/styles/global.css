@@ -605,7 +605,6 @@ html[data-suru='kapali'] .suru { display: none; }
 .kadro-ekip.kaptan .kadro-kartlar { grid-template-columns: 1fr; margin-top: 0; }
 .kadro-ekip.kaptan .kuye { justify-items: center; }
 .kadro-ekip.kaptan .kuye-ust { position: relative; justify-content: center; width: 100%; }
-.kadro-ekip.kaptan .kuye-no { position: absolute; right: 0; top: 0; }
 .kadro-ekip.kaptan .kuye-bag { justify-content: center; }
 .kadro-ekip[hidden], .kadro-dal[hidden] { display: none; }
 .kadro-ekip-bas { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 0.25rem 1rem; padding-left: 0.9rem; border-left: 3px solid var(--vurgu); }
@@ -624,7 +623,6 @@ html[data-suru='kapali'] .suru { display: none; }
 .kuye-foto { width: 4.5rem; height: 4.5rem; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: var(--zemin); color: var(--vurgu); border: 1px solid var(--cizgi); font-weight: 620; font-size: 1.25rem; }
 .kuye.adsiz .kuye-foto { color: var(--soluk); border-style: dashed; }
 .kuye-foto img { width: 100%; height: 100%; object-fit: cover; }
-.kuye-no { font-family: var(--es); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soluk); }
 .kuye h5 { margin: 0; font-size: 1.0625rem; font-weight: 620; line-height: 1.25; overflow-wrap: anywhere; }
 .kuye h5.yakinda { font-family: var(--es); font-size: 0.75rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.06em; color: var(--soluk); }
 .kuye-gorev { font-size: 0.9375rem; line-height: 1.35; }

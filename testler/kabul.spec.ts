@@ -438,7 +438,7 @@ test('D9d takım özeti: ana sayfada üç ekip kartı, üye adı ve kartı yok, 
   await page.goto('/');
   const ekipler = page.locator('[data-ekipler] > li');
   await expect(ekipler).toHaveCount(3);
-  await expect(ekipler.locator('.ekip-sayi')).toHaveText(['10 kişi', '4 kişi', '2 kişi']);
+  await expect(ekipler.locator('.ekip-sayi')).toHaveText(['10 kişi', '4 kişi', '1 kişi']);
   expect(await ekipler.locator('.etiketler li').count()).toBe(10);
   await expect(page.locator('#takim .uye, #takim [data-suzgec]')).toHaveCount(0);
   await expect(page.locator('#takim .ayrintili a')).toHaveAttribute('href', '/takim/');
@@ -786,7 +786,7 @@ test.describe('D16 Takım sayfası', () => {
     for (const yol of ['/takim/', '/en/team/']) {
       await page.goto(yol);
       await expect(page.locator('h1')).toBeVisible();
-      await expect(page.locator('[data-kart]')).toHaveCount(17);
+      await expect(page.locator('[data-kart]')).toHaveCount(16);
     }
     await page.goto('/');
     await expect(page.locator('.ayrintili a[href="/takim/"]')).toBeVisible();
@@ -813,16 +813,16 @@ test.describe('D16 Takım sayfası', () => {
   test('üyeler: ekip, dal ve arama süzgeci', async ({ page }) => {
     await page.goto('/takim/');
     const k = page.locator('[data-kadro]');
-    await expect(k).toHaveAttribute('data-gorunen', '17');
+    await expect(k).toHaveAttribute('data-gorunen', '16');
     await k.locator('[data-kadro-ekip] [data-ekip="mekanik"]').click();
-    await expect(k).toHaveAttribute('data-gorunen', '2');
+    await expect(k).toHaveAttribute('data-gorunen', '1');
     await k.locator('[data-kadro-dal]').selectOption('haberlesme');
     await expect(k).toHaveAttribute('data-ekip', 'yazilim');
     await expect(k).toHaveAttribute('data-gorunen', '1');
     await k.locator('[data-kadro-ekip] [data-ekip=""]').click();
     await k.locator('[data-kadro-ara]').fill('karabulut');
     await expect(k).toHaveAttribute('data-gorunen', '1');
-    await expect(k.locator('[data-kadro-durum]')).toContainText('17');
+    await expect(k.locator('[data-kadro-durum]')).toContainText('16');
     await k.locator('[data-kadro-ara]').fill('zzzz');
     await expect(k.locator('[data-kadro-bos]')).toBeVisible();
   });
@@ -847,11 +847,11 @@ test.describe('D16 Takım sayfası', () => {
 
   test('adı ve izni olmayan üyenin kişisel bilgisi sayfada yok', async ({ page }) => {
     await page.goto('/takim/');
-    // 16 üye adıyla görünüyor, 1 üyenin ismi yok. Adsız kartta fotoğraf, bölüm ve bağlantı çıkmaz.
-    await expect(page.locator('[data-kart].adsiz')).toHaveCount(1);
+    // 16 üyenin hepsi adıyla görünüyor. Adsız kart olursa fotoğraf, bölüm ve bağlantı çıkmaz.
+    await expect(page.locator('[data-kart].adsiz')).toHaveCount(0);
     await expect(page.locator('[data-kart].adsiz img, [data-kart].adsiz a')).toHaveCount(0);
     await expect(page.locator('[data-kart]:not(.adsiz)')).toHaveCount(16);
-    await expect(page.locator('[data-kart] img')).toHaveCount(11);
+    await expect(page.locator('[data-kart] img')).toHaveCount(14);
   });
 
   test('takıma katıl: dal seçilince e-posta taslağına yazılır', async ({ page }) => {
