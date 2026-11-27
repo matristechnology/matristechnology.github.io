@@ -145,3 +145,9 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Ali'nin verdiği kural: tişörtte ana sponsor göğüste, altın kolda, gümüş sırtın üstünde (iki büyük panel), destekçi sırtın altında (dört panel). Destekçiye teşekkür mesajı var.
 - Etkinlik, yarışma, sunum ve raporlarda dört paket de anılıyor, ana sponsor ve altın "ön planda".
 - Destek sayfasında tişört three.js ile kodla kurulan 3B model. Paket seçilince o yüzünü çevirir, paket tablosundaki seçim de tişörte yansır.
+
+## Tişört modeli yenilendi (27.11.2026)
+
+- Ali'nin geri bildirimi: ilk model kare duruyor, ön arka belli değil, forma siyah ve üstünde Matris logosu olmalı. Yeni model siyah polo yaka: düğmeli pat, yaka, kol bantları, kolda bayrak arması, sol göğüste Matris logosu (`public/tisort-logo.png`, saydam zeminli).
+- Sırtta üstte okul adı (yazı olarak, BTÜ amblemi konmadı), altında gümüş (2 büyük panel), onun altında destekçi (4 panel). Ana sponsor sağ göğüste, altın kollarda.
+- Ön ve arka: ekranda "Ön / Arka / Yan" etiketi ve Ön, Arka düğmeleri var.

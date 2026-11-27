@@ -730,7 +730,13 @@ html.js .logo-anlatim:not([data-secili]) { display: none; }
 .logo-cizim { border: 1px solid var(--cizgi); border-radius: 10px; background: var(--yuzey); color: var(--soluk); aspect-ratio: 4 / 3; }
 .logo-cizim > [data-yer-cizim] { width: 100%; height: 100%; display: none; }
 .logo-cizim > [data-yer-cizim][data-secili] { display: block; }
-.tisort-sahne { position: relative; }
+.tisort-sahne { position: relative; background: radial-gradient(ellipse 70% 60% at 50% 38%, color-mix(in srgb, var(--metin) 20%, var(--yuzey)) 0%, var(--yuzey) 78%); border-radius: inherit; }
+.tisort-yuz-kutu { position: absolute; right: 0.7rem; bottom: 0.6rem; display: none; align-items: center; gap: 0.35rem; }
+.tisort-sahne[data-hazir] .tisort-yuz-kutu { display: flex; }
+.tisort-sahne.webgl-yok .tisort-yuz-kutu { display: none; }
+.tisort-yuz { min-width: 3.4rem; text-align: center; font-family: var(--es); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--vurgu); }
+.tisort-yuz-kutu button { min-height: 2.75rem; min-width: 2.75rem; padding: 0 0.8rem; border: 1px solid var(--cizgi); border-radius: 6px; background: color-mix(in srgb, var(--yuzey) 85%, transparent); color: var(--metin); font: inherit; font-size: 0.875rem; cursor: pointer; }
+.tisort-yuz-kutu button:hover { border-color: var(--soluk); }
 .tisort-sahne canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
 .tisort-sahne canvas:active { cursor: grabbing; }
 .tisort-sahne .tisort-yedek { display: none; width: 100%; height: 100%; }

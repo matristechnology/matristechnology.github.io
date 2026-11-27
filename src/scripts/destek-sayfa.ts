@@ -50,6 +50,7 @@ if (kok) {
       if (istendi || !sahne) return; istendi = true;
       try { const { kur } = await import('./tisort-uc'); tisort = kur(sahne, oku<string[]>(sahne.dataset.adlar, []), (no) => tSec(no)); } catch (e) { console.error(e); tisort = null; }
       if (!tisort) sahne.classList.add('webgl-yok'); else tisort.sec(tNo);
+      sahne.querySelectorAll<HTMLButtonElement>('[data-tisort-don]').forEach((d) => d.addEventListener('click', () => tisort?.don(Number(d.dataset.tisortDon))));
     };
     yerD.forEach((d) => d.addEventListener('click', () => { sec(d.dataset.yer ?? ''); if (d.dataset.yer === 'tisort') void tYukle(); }));
     sec(yerD[0]?.dataset.yer ?? '');

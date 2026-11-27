@@ -926,9 +926,17 @@ test.describe('D20 Destek sayfası', () => {
       await l.locator('[data-tisort-paket="2"]').click();
       await expect.poll(async () => Number(await t.getAttribute('data-aci')), { timeout: 8000 }).toBeCloseTo(3.14, 1);
       await expect(t).toHaveAttribute('data-paket-no', '2', { timeout: 15000 });
-      // Tuval boş değil: tişörtün kırmızısı çizilmiş
-      const kirmizi = await t.locator('canvas').evaluate((c: HTMLCanvasElement) => { const k = document.createElement('canvas'); k.width = 80; k.height = 60; const x = k.getContext('2d')!; x.drawImage(c, 0, 0, 80, 60); const d = x.getImageData(0, 0, 80, 60).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] > 90 && d[i] > d[i + 1] * 2 && d[i + 3] > 200) n++; return n; });
-      expect(kirmizi).toBeGreaterThan(300);
+      // Tuval boş değil: siyah tişört çizilmiş (kare başına dolu piksel)
+      const dolu = await t.locator('canvas').evaluate((c: HTMLCanvasElement) => { const k = document.createElement('canvas'); k.width = 80; k.height = 60; const x = k.getContext('2d')!; x.drawImage(c, 0, 0, 80, 60); const d = x.getImageData(0, 0, 80, 60).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 200) n++; return n; });
+      expect(dolu).toBeGreaterThan(800);
+      // Ön ve arka belli: etiket yüzü söylüyor, düğmeler tişörtü çeviriyor
+      await expect(t).toHaveAttribute('data-yuz', 'arka');
+      await expect(t.locator('[data-tisort-yuz]')).toHaveText('Arka');
+      await t.locator('[data-tisort-don="0"]').click();
+      await expect(t).toHaveAttribute('data-yuz', 'on', { timeout: 15000 });
+      await expect(t.locator('[data-tisort-yuz]')).toHaveText('Ön');
+      await t.locator('[data-tisort-don="3.14159"]').click();
+      await expect(t).toHaveAttribute('data-yuz', 'arka', { timeout: 15000 });
     }
     // Paket tablosunda Destekçi seçilince tişörtte de seçilir
     await page.locator('[data-paket]').nth(3).click();

@@ -15,8 +15,8 @@ const { dil } = Astro.props;
 const S = icerik.destek_sayfa, D = icerik.destek, P = S.paketler;
 const kimlik = (k: string) => (dil === 'tr' ? k : { neden: 'why', turler: 'ways', paketler: 'packages', logo: 'logo', ihtiyac: 'needs', sponsorlar: 'sponsors', sss: 'faq', yaz: 'write' }[k] ?? k);
 const y = {
-  tr: { hak: 'Sunduğumuz', yok: 'Yok', sec: 'Bu paketi seç', secildi: 'Seçildi', logonuz: 'LOGONUZ', karsilandi: 'karşılandı', gruplar: 'İhtiyaç grupları', paketSec: 'Paket seç', yerler: 'Logonun yeri', turSec: 'Destek türü', tisortAlan: 'Takım tişörtünün üç boyutlu modeli, sponsor logolarının yerleri işaretli', tisortIpucu: 'Sürükleyerek çevirebilirsin' },
-  en: { hak: 'What we offer', yok: 'No', sec: 'Pick this package', secildi: 'Picked', logonuz: 'YOUR LOGO', karsilandi: 'covered', gruplar: 'Need groups', paketSec: 'Pick a package', yerler: 'Logo placement', turSec: 'Kind of support', tisortAlan: 'A 3D model of the team shirt with the sponsor logo placements marked', tisortIpucu: 'Drag to turn it' },
+  tr: { hak: 'Sunduğumuz', yok: 'Yok', sec: 'Bu paketi seç', secildi: 'Seçildi', logonuz: 'LOGONUZ', karsilandi: 'karşılandı', gruplar: 'İhtiyaç grupları', paketSec: 'Paket seç', yerler: 'Logonun yeri', turSec: 'Destek türü', tisortAlan: 'Takım tişörtünün üç boyutlu modeli, sponsor logolarının yerleri işaretli', tisortIpucu: 'Sürükleyerek çevirebilirsin', on: 'Ön', arka: 'Arka', yan: 'Yan' },
+  en: { hak: 'What we offer', yok: 'No', sec: 'Pick this package', secildi: 'Picked', logonuz: 'YOUR LOGO', karsilandi: 'covered', gruplar: 'Need groups', paketSec: 'Pick a package', yerler: 'Logo placement', turSec: 'Kind of support', tisortAlan: 'A 3D model of the team shirt with the sponsor logo placements marked', tisortIpucu: 'Drag to turn it', on: 'Front', arka: 'Back', yan: 'Side' },
 }[dil];
 const eposta = icerik.iletisim.eposta;
 const posta = `mailto:${eposta}?subject=${encodeURIComponent(c(S.iletisim.konu, dil))}&body=${encodeURIComponent(c(S.iletisim.govde, dil).replace('{tur}', '').replace('{paket}', ''))}`;
@@ -149,8 +149,13 @@ const icindekiler = [
           <g class="logo-kutu kucuk" transform="rotate(45 242 192)"><rect x="222" y="184" width="40" height="16" rx="3"/></g>
           <g class="logo-kutu kucuk" transform="rotate(-45 158 192)"><rect x="138" y="184" width="40" height="16" rx="3"/></g>
         </svg>
-        <div class="tisort-sahne" data-yer-cizim="tisort" data-tisort data-adlar={JSON.stringify(P.adlar.map((a) => c(a, dil).toLocaleUpperCase(dil)))}>
+        <div class="tisort-sahne" data-yer-cizim="tisort" data-tisort data-adlar={JSON.stringify(P.adlar.map((a) => c(a, dil).toLocaleUpperCase(dil)))} data-etiketler={JSON.stringify([y.on, y.arka, y.yan])} data-baski={dil === 'tr' ? 'BURSA TEKNİK ÜNİVERSİTESİ' : 'BURSA TECHNICAL UNIVERSITY'}>
           <canvas role="img" aria-label={y.tisortAlan}></canvas>
+          <div class="tisort-yuz-kutu">
+            <span class="tisort-yuz" data-tisort-yuz role="status"></span>
+            <button type="button" data-tisort-don="0">{y.on}</button>
+            <button type="button" data-tisort-don="3.14159">{y.arka}</button>
+          </div>
           <p class="tisort-ipucu">{y.tisortIpucu}</p>
           <svg viewBox="0 0 400 300" class="tisort-yedek">
             <path d="M140 40 100 55 50 100l35 40 25-18v140h180V122l25 18 35-40-50-45-40-15c-8 22-32 34-60 34s-52-12-60-34Z" fill="var(--yuzey2)" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity="0.9"/>
