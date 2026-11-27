@@ -310,7 +310,19 @@ uyeler:
     baglanti: https://www.linkedin.com/in/efe-karabulut-41313534b
     github: https://github.com/karabulutefe58-cell
     izin: true
-  - { ad: "", gorev: { tr: "Güç dağıtımı ve batarya", en: "Power distribution and battery" }, ekip: "elektronik", dal: "guc", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Kazım Yorgun
+    gorev: { tr: Elektronik, en: Electronics }
+    ayrinti:
+      tr: Drone'u baştan sona toplayan, elektronik ekibinin güvenilir ismi.
+      en: Assembles the drone from start to finish and is the electronics team's trusted name.
+    ekip: elektronik
+    dal: aviyonik
+    sorumlu: false
+    bolum: { tr: "Elektrik-Elektronik Mühendisliği, 3. sınıf", en: "Electrical and Electronics Engineering, 3rd year" }
+    katilis: 2025
+    fotograf: ""
+    baglanti: https://www.linkedin.com/in/kazım-yorgun-934414226
+    izin: true
   - ad: Aysu Kutluay
     gorev: { tr: Mekanik, en: Mechanics }
     ayrinti:
