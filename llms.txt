@@ -1,0 +1,55 @@
+# Matris (Matris Technology)
+
+> Bursa Teknik Üniversitesi'nin TEKNOFEST Sürü İHA takımı Matris. Otonom uçuş, görev koordinasyonu ve sürü haberleşmesi.
+
+Matris, Bursa Teknik Üniversitesi öğrencilerinden oluşan TEKNOFEST Sürü İHA yarışma takımıdır. Site Türkçe ve İngilizce yayımlanır, İngilizce sayfalar /en/ altındadır.
+
+## Dereceler
+- 2024: Finalist (TEKNOFEST Sürü İHA Yarışması)
+- 2026: Ön Tasarım Raporu Türkiye 2.si (Ön Tasarım Raporu · 93/100 puan)
+- 2026: Finalist (TEKNOFEST Sürü İHA Yarışması)
+
+## Sayfalar
+- [Ana sayfa](https://matristechnology.github.io/)
+- [Sürü İHA nedir, TEKNOFEST'te nasıl uçar? | Matris](https://matristechnology.github.io/suru-iha/)
+- [Matris kimdir? BTÜ TEKNOFEST Sürü İHA takımının hikâyesi](https://matristechnology.github.io/matris/)
+- [Takım ve ekipler | Matris TEKNOFEST Sürü İHA Takımı](https://matristechnology.github.io/takim/)
+- [Çalışmalar: simülasyondan çoklu İHA uçuşuna | Matris](https://matristechnology.github.io/calismalar/)
+- [Galeri: atölye, saha ve yarışma fotoğrafları | Matris](https://matristechnology.github.io/galeri/)
+- [Sponsorluk ve destek | Matris TEKNOFEST Sürü İHA Takımı](https://matristechnology.github.io/destek/)
+- [İletişim | Matris TEKNOFEST Sürü İHA Takımı](https://matristechnology.github.io/iletisim/)
+- [Sık sorulanlar](https://matristechnology.github.io/sss/)
+
+## Sık sorulanlar
+
+### Matris nedir?
+Matris (Matris Technology), Bursa Teknik Üniversitesi'nde MATRO Topluluğu çatısı altında çalışan bir öğrenci mühendislik takımıdır. TEKNOFEST Sürü İHA Yarışması'na katılır ve otonom uçuş, görev koordinasyonu ve sürü haberleşmesi üzerine çalışır.
+
+### Sürü İHA nedir?
+Sürü İHA, birlikte uçan ve aynı görevi paylaşan insansız hava araçlarıdır. Her araç kendi konumunu bilir, ötekilerle haberleşir ve hareketini sürünün geri kalanına göre ayarlar. Sürüye tek bir komut verilir, araçlar işi kendi aralarında paylaşır. Bir araç devre dışı kalsa bile kalanlar görevi sürdürür.
+
+### TEKNOFEST Sürü İHA Yarışması'nda hangi görevler var?
+Yarışmada en az üç İHA'dan oluşan bir sürü iki görev uçar. İlk görevde sürü kalkıştan inişe kadar kendi başına uçar, yerdeki QR kodlarını okur ve kodun söylediğini yapar. Dizilim değiştirir, yükselir ya da alçalır, bir üyesini ayırıp geri alır. İkinci görevde bütün sürü tek bir kumandayla, tek bir İHA gibi yönetilir.
+
+### Matris'in TEKNOFEST'teki dereceleri neler?
+Matris 2024'te TEKNOFEST Sürü İHA Yarışması'nda finalist oldu. 2026'da Ön Tasarım Raporu 100 üzerinden 93 puan alarak Türkiye ikincisi oldu ve takım yeniden finale kaldı.
+
+### Takımda kaç kişi var ve hangi ekipler çalışıyor?
+Takımda 17 üye var. Takım kaptanının yanında üç ekip çalışır. Yazılım ekibi 9, elektronik ekibi 3, mekanik ekibi 4 kişidir. Ekipler sürü algoritmaları, görüntü işleme, gömülü sistemler, haberleşme, aviyonik, güç sistemi, gövde tasarımı ve uçuş testleri gibi on dala ayrılır.
+
+### Matris bir fikri sahaya nasıl çıkarıyor?
+Her fikir dört aşamadan geçer. Önce Gazebo ve SITL ortamında simülasyonda denenir. Sonra Pixhawk otopilot ve Raspberry Pi görev bilgisayarıyla donanıma kurulur. Ardından tek İHA ile uçuş kararlılığı ve bağlantı davranışı ölçülür. En son birden çok İHA ile sürü denemeleri yapılır.
+
+### Matris takımına nasıl katılabilirim?
+Takım sayfasındaki "Takıma katıl" bölümünden ilgini çeken dalı seçip başvuru e-postası yazabilirsin. Her şeyi bilmen gerekmiyor, öğrenmeye istekli olman yeterli.
+
+### Matris'e nasıl sponsor olabilirim?
+Malzeme desteği, üretim ve test desteği ya da finansal destek verebilirsiniz. Karşılığında logonuz İHA'larda, takım tişörtünde, sitede ve sosyal medya paylaşımlarında yer alır. Destek sayfasından destek türünü seçip sponsorluk sorumlumuza yazabilirsiniz.
+
+### Matris'e nasıl ulaşabilirim?
+Genel sorular ve basın için matristechnology@gmail.com adresine yazabilirsiniz. Sponsorluk için ayrı bir adres var, İletişim sayfasında bulunur. Takımın Instagram hesabı btu_matris, LinkedIn sayfası Matris Technology adıyla açıktır.
+
+## İletişim
+- E-posta: matristechnology@gmail.com
+- Instagram: https://www.instagram.com/btu_matris/
+- LinkedIn: https://www.linkedin.com/company/matris-technology/

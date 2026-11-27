@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Yapay zekâ aramaları için düz yazı özet: /llms.txt
+Sitemap: https://matristechnology.github.io/sitemap.xml
