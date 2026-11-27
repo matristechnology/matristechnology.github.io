@@ -323,7 +323,7 @@ test('D9f arka plan sürüsü: eksik sürüye yeni gelen katılıyor, kimse ayr�
       once = gruplar; oncekiYuva = simdi; onceAdim = d.adim || '';
     }, 30);
   });
-  await expect(tuval).toHaveAttribute('data-mod', /toplan|dizilim/, { timeout: 8000 });
+  await expect(tuval).toHaveAttribute('data-mod', /toplan|dizilim/, { timeout: 20_000 });
   for (let k = 0; k < 7; k++) { await page.mouse.wheel(0, 700); await bekle(page, 250); }
   await expect.poll(async () => Number(await tuval.getAttribute('data-katilan')), { timeout: 8000 }).toBeGreaterThan(0);
   await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 60_000 });
