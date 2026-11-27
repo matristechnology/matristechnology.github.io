@@ -160,7 +160,20 @@ uyeler:
     baglanti: https://www.linkedin.com/in/alii-yilmazz/
     github: https://github.com/AliYilmaz16
     izin: true
-  - { ad: "", gorev: { tr: Sürü mimarisi, en: Swarm architecture }, ekip: "yazilim", dal: "algoritma", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Deniz İnce
+    gorev: { tr: Yazılım, en: Software }
+    ayrinti:
+      tr: Lisede robotik kodlama turnuvalarına katıldı, WRO'da Türkiye birinciliği kazandı ve Singapur'da Türkiye'yi temsil etti. Takımda sürü algoritmaları dalında yer alıyor.
+      en: Took part in robotics coding tournaments in high school, won first place in Turkey at WRO and represented Turkey in Singapore. Is part of the swarm algorithms branch in the team.
+    ekip: yazilim
+    dal: algoritma
+    sorumlu: false
+    bolum: { tr: "Gıda Mühendisliği, hazırlık", en: "Food Engineering, preparatory year" }
+    katilis: 2026
+    fotograf: ""
+    baglanti: https://www.linkedin.com/in/deniz-ince-aa8353452/
+    github: https://github.com/denizince080222
+    izin: true
   - ad: Şifa Su Kıncıoğlu
     gorev: { tr: Yazılım, en: Software }
     ayrinti:
