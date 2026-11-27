@@ -54,6 +54,11 @@ if (kok) {
     };
     yerD.forEach((d) => d.addEventListener('click', () => { sec(d.dataset.yer ?? ''); if (d.dataset.yer === 'tisort') void tYukle(); }));
     sec(yerD[0]?.dataset.yer ?? '');
+    // Tişört ilk gösterilen yer: bölüm ekrana yaklaşınca model indirilir.
+    if (sahne && yerD[0]?.dataset.yer === 'tisort') {
+      if ('IntersectionObserver' in window) { const g = new IntersectionObserver((k) => { if (k.some((x) => x.isIntersecting)) { g.disconnect(); void tYukle(); } }, { rootMargin: '700px 0px' }); g.observe(logo); }
+      else void tYukle();
+    }
   }
 
   // ── İhtiyaç grupları, 3B model üzerinde ──

@@ -275,7 +275,7 @@ test('D9c arka plan sürüsü: yabancı sürü geliyor, önleniyor, sürü yenid
   expect(await kirmizi()).toBe(0);
 });
 
-test('D9e arka plan sürüsü: serbest dolaşan araçlar ekranda toplanıyor, dizilim kuruyor, sonra dağılıyor', async ({ page }) => {
+test('D9e arka plan sürüsü: görünen araçlar üçerli sürülere ayrılıyor, planlarını izliyor, sonra herkes dağılıyor', async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/?dizilim'); // ilk dizilimi 1,2 sn sonra çağırır
@@ -283,47 +283,61 @@ test('D9e arka plan sürüsü: serbest dolaşan araçlar ekranda toplanıyor, di
   const tuval = page.locator('canvas[data-suru]');
   await expect(tuval).toHaveAttribute('data-mod', 'toplan', { timeout: 6000 });
   const gorunen = Number(await tuval.getAttribute('data-gorunen')), uye = Number(await tuval.getAttribute('data-uye'));
-  console.log('görünen', gorunen, 'katılan', uye);
-  expect(uye).toBeGreaterThanOrEqual(Math.max(5, Math.min(12, gorunen)));
+  const gruplar = ((await tuval.getAttribute('data-suruler')) ?? '').split(';').map((g) => g.split(':')[1].split('.').length);
+  console.log('görünen', gorunen, 'katılan', uye, 'sürüler', JSON.stringify(gruplar));
+  expect(uye).toBeGreaterThanOrEqual(Math.max(3, Math.min(12, gorunen) - 1));
   expect(uye).toBeLessThanOrEqual(12);
+  expect(gruplar.length).toBeLessThanOrEqual(4);
+  for (const g of gruplar) expect(g).toBeLessThanOrEqual(3);
+  // Tam sürülerin hepsi üçlü: yalnızca sonuncusu eksik kalabilir
+  expect(gruplar.filter((g) => g < 3).length).toBeLessThanOrEqual(1);
   await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 9000 });
-  await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 40_000 });
+  await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 45_000 });
   await expect(tuval).toHaveAttribute('data-uye', '0');
 });
 
-test('D9f arka plan sürüsü: dizilim sürerken yenileri boş yuvaya katılıyor, sürüdekiler yerinden kıpırdamıyor, dolunca en eski ayrılıyor', async ({ page }) => {
-  test.setTimeout(60_000);
+test('D9f arka plan sürüsü: eksik sürüye yeni gelen katılıyor, kimse ayrılmıyor, sürüdekiler kıpırdamıyor, dağılınca herkes bölgesine dönüyor', async ({ page }) => {
+  test.setTimeout(120_000);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto('/?dizilim');
-  await page.evaluate(() => scrollTo(0, 1200));
+  await page.goto('/?dizilim=5'); // beş araç: üçlü bir sürü ve boş yuvası olan ikili bir sürü
   const tuval = page.locator('canvas[data-suru]');
-  await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 12000 });
-  const lider = await tuval.getAttribute('data-lider');
-  // Sayfada izle: sürüde kalan bir İHA'nın yuvası, dizilim değişimi dışında hiç değişmemeli. Lider hep aynı.
+  // Sürü kurulmadan önce izleyici kurulur: sürülerin üyeleri, boyutları ve yuvaları 30 ms'de bir okunur.
   await page.evaluate(() => {
+    scrollTo(0, 1200);
     const c = document.querySelector<HTMLCanvasElement>('canvas[data-suru]')!, w = window as any;
-    w.__ihlal = 0; w.__lider = new Set();
-    let once = new Map<string, string>(), onceAdim = '';
+    w.__ihlal = 0; w.__azalan = 0; w.__buyuk = 0; w.__tamam = 0; w.__ikili = 0; w.__liderler = new Set();
+    let once = new Map<string, string[]>(), oncekiYuva = new Map<string, string>(), onceAdim = '';
     w.__izci = setInterval(() => {
-      const d = c.dataset, simdi = new Map((d.yuvalar || '').split(',').filter(Boolean).map((p) => p.split(':') as [string, string]));
-      if (d.mod === 'dizilim') w.__lider.add(d.lider);
-      if (d.adim !== 'degis' && onceAdim !== 'degis') for (const [i, s] of simdi) if (once.has(i) && once.get(i) !== s) w.__ihlal++;
-      once = simdi; onceAdim = d.adim || '';
+      const d = c.dataset;
+      const gruplar = new Map((d.suruler || '').split(';').filter(Boolean).map((g) => { const [id, l] = g.split(':'); return [id, (l || '').split('.').filter(Boolean)] as [string, string[]]; }));
+      for (const [id, uy] of gruplar) {
+        if (uy.length > 3) w.__buyuk++;
+        if (uy.length === 2) w.__ikili++;
+        const eski = once.get(id);
+        if (eski) { if (!eski.every((i) => uy.includes(i))) w.__azalan++; if (eski.length < 3 && uy.length === 3) w.__tamam++; }
+      }
+      (d.lider || '').split(',').filter(Boolean).forEach((l) => w.__liderler.add(l));
+      const simdi = new Map((d.yuvalar || '').split(',').filter(Boolean).map((p) => p.split(':') as [string, string]));
+      const degisim = (d.adim || '').includes('degis') || onceAdim.includes('degis');
+      if (!degisim) for (const [i, s] of simdi) if (oncekiYuva.has(i) && oncekiYuva.get(i) !== s) w.__ihlal++;
+      once = gruplar; oncekiYuva = simdi; onceAdim = d.adim || '';
     }, 30);
   });
-  for (let k = 0; k < 6; k++) { await page.mouse.wheel(0, 700); await bekle(page, 250); }
-  await expect.poll(async () => Number(await tuval.getAttribute('data-katilan')), { timeout: 5000 }).toBeGreaterThan(0);
-  await expect(tuval).toHaveAttribute('data-disarida', '0', { timeout: 5000 });
-  const sonuc = await page.evaluate(() => { const w = window as any; clearInterval(w.__izci); return { ihlal: w.__ihlal, liderler: [...w.__lider] }; });
-  const uye = Number(await tuval.getAttribute('data-uye'));
-  console.log('kaydırma sonrası', JSON.stringify({ uye, lider, ...sonuc, katilan: await tuval.getAttribute('data-katilan'), ayrilan: await tuval.getAttribute('data-ayrilan') }));
-  expect(sonuc.ihlal).toBe(0);
-  expect(sonuc.liderler).toEqual([lider]);
-  expect(uye).toBeGreaterThanOrEqual(5);
-  expect(uye).toBeLessThanOrEqual(12);
-  // Sürü 12'yi aşınca en eski ayrılıyor: katılan sayısı ile sürü büyüklüğü tutarlı
-  const katilan = Number(await tuval.getAttribute('data-katilan')), ayrilan = Number(await tuval.getAttribute('data-ayrilan'));
-  expect(ayrilan).toBe(Math.max(0, katilan - (uye - Number(await tuval.getAttribute('data-ilk')))));
+  await expect(tuval).toHaveAttribute('data-mod', /toplan|dizilim/, { timeout: 8000 });
+  for (let k = 0; k < 7; k++) { await page.mouse.wheel(0, 700); await bekle(page, 250); }
+  await expect.poll(async () => Number(await tuval.getAttribute('data-katilan')), { timeout: 8000 }).toBeGreaterThan(0);
+  await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 60_000 });
+  const sonuc = await page.evaluate(() => { const w = window as any; clearInterval(w.__izci); return { ihlal: w.__ihlal, azalan: w.__azalan, buyuk: w.__buyuk, tamam: w.__tamam, ikili: w.__ikili, liderler: w.__liderler.size }; });
+  console.log('sürü izi', JSON.stringify(sonuc), 'katılan', await tuval.getAttribute('data-katilan'), 'dağılan', await tuval.getAttribute('data-dagilan'));
+  expect(sonuc.ikili).toBeGreaterThan(0);  // eksik sürü göründü
+  expect(sonuc.tamam).toBeGreaterThan(0);  // yeni gelen eksik sürüyü üçe tamamladı
+  expect(sonuc.buyuk).toBe(0);             // hiçbir sürü üçü aşmadı
+  expect(sonuc.azalan).toBe(0);            // kimse sürüsünden ayrılmadı
+  expect(sonuc.ihlal).toBe(0);             // sürüdekilerin yuvası kıpırdamadı
+  await expect(tuval).toHaveAttribute('data-uye', '0');
+  expect(Number(await tuval.getAttribute('data-dagilan'))).toBeGreaterThanOrEqual(2);
+  // Formasyon bozulunca herkes kendi bölgesine döndü
+  await expect(tuval).toHaveAttribute('data-evde-degil', '0', { timeout: 30_000 });
 });
 
 test('D9d takım özeti: ana sayfada üç ekip kartı, üye adı ve kartı yok, ayrıntı Takım sayfasında', async ({ page }) => {
@@ -957,11 +971,16 @@ test.describe('D20 Destek sayfası', () => {
   test('logonun yeri: seçilen yerin anlatımı ve çizimi görünür', async ({ page }) => {
     await page.goto('/destek/');
     const l = page.locator('[data-logo]');
+    // İlk gösterilen yer takım tişörtü
     await expect(l.locator('[data-yer-cizim]:visible')).toHaveCount(1);
-    await l.locator('[data-yer="tisort"]').click();
     await expect(l).toHaveAttribute('data-yer', 'tisort');
     await expect(l.locator('[data-yer-cizim="tisort"]')).toBeVisible();
     await expect(l.locator('[data-yer-panel]:visible')).toContainText('tişört');
+    await expect(l.locator('[data-yer]').first()).toHaveAttribute('data-yer', 'tisort');
+    await l.locator('[data-yer="iha"]').click();
+    await expect(l).toHaveAttribute('data-yer', 'iha');
+    await expect(l.locator('[data-yer-cizim="iha"]')).toBeVisible();
+    await expect(l.locator('[data-yer-panel]:visible')).toContainText('İHA');
   });
 
   test('ihtiyaç grupları: grup seçilince kalemleri açılır, model yüklenir', async ({ page }) => {

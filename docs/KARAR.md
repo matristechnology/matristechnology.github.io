@@ -151,3 +151,11 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Ali'nin geri bildirimi: ilk model kare duruyor, ön arka belli değil, forma siyah ve üstünde Matris logosu olmalı. Yeni model siyah polo yaka: düğmeli pat, yaka, kol bantları, kolda bayrak arması, sol göğüste Matris logosu (`public/tisort-logo.png`, saydam zeminli).
 - Sırtta üstte okul adı (yazı olarak, BTÜ amblemi konmadı), altında gümüş (2 büyük panel), onun altında destekçi (4 panel). Ana sponsor sağ göğüste, altın kollarda.
 - Ön ve arka: ekranda "Ön / Arka / Yan" etiketi ve Ön, Arka düğmeleri var.
+
+## Arka plan sürüsü: üçerli sürüler, Destek'te tişört ilk sekme (27.11.2026)
+
+- Ali'nin tarifi: dronelar 3'erli sürü halinde formasyona girer, yeni gelen boş yuvası olan bir sürüye katılır, sürüden kimse ayrılmaz, formasyon bozulunca herkes kendi bölgesine uçar. Eski kural (sürü doluysa en eski üye ayrılır) kaldırıldı.
+- Her sürünün kendi lideri, formasyonu ve planı var. En çok 12 araç, 4 sürü. Sayı üçe bölünmezse son sürü eksik kalır, boş yuvası silik halkayla gösterilir.
+- Boş yuva yoksa ve ekranda üç boşta araç varsa yeni sürü kurulur.
+- Yabancı sürü sahnesi korundu: bütün sürüler birlikte hücum eder.
+- Destek sayfasında "Logonuz nerede görünür?" bölümü artık tişörtle açılıyor.

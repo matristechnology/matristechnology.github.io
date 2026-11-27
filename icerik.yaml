@@ -1205,13 +1205,6 @@ destek_sayfa:
       - tr: Sırtın alt bölümünde, dört panelden biri.
         en: On the lower back, one of four panels.
     yerler:
-      - anahtar: iha
-        ad:
-          tr: İHA'ların üstünde
-          en: On the UAVs
-        metin:
-          tr: Logonuz araçların üst plakasında ve kollarında durur. Araçlar yarışma alanında, test videolarında ve fotoğraflarda görünür.
-          en: Your logo sits on the top plate and the arms of the vehicles. The vehicles are seen at the competition field, in test videos and in photos.
       - anahtar: tisort
         ad:
           tr: Takım tişörtünde
@@ -1219,6 +1212,13 @@ destek_sayfa:
         metin:
           tr: Her paketin tişörtte kendi yeri var. Bir paket seçin, tişört o yüzünü size çevirsin. Tişörtler yarışma haftası boyunca ve etkinliklerde giyilir.
           en: Each package has its own place on the shirt. Pick a package and the shirt turns that side towards you. The shirts are worn throughout competition week and at events.
+      - anahtar: iha
+        ad:
+          tr: İHA'ların üstünde
+          en: On the UAVs
+        metin:
+          tr: Logonuz araçların üst plakasında ve kollarında durur. Araçlar yarışma alanında, test videolarında ve fotoğraflarda görünür.
+          en: Your logo sits on the top plate and the arms of the vehicles. The vehicles are seen at the competition field, in test videos and in photos.
       - anahtar: site
         ad:
           tr: Sitede ve sosyal medyada

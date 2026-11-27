@@ -139,7 +139,7 @@ const icindekiler = [
         ))}
       </div>
       <div class="logo-cizim js-only">
-        <svg viewBox="0 0 400 300" data-yer-cizim="iha" data-secili>
+        <svg viewBox="0 0 400 300" data-yer-cizim="iha">
           <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M120 70 280 230M280 70 120 230" stroke-width="16" opacity="0.28"/>
             {[[120, 70], [280, 70], [120, 230], [280, 230]].map(([x, yy]) => <><circle cx={x} cy={yy} r="46" opacity="0.35" stroke-dasharray="4 6"/><circle cx={x} cy={yy} r="11" fill="currentColor" stroke="none" opacity="0.5"/></>)}
@@ -149,7 +149,7 @@ const icindekiler = [
           <g class="logo-kutu kucuk" transform="rotate(45 242 192)"><rect x="222" y="184" width="40" height="16" rx="3"/></g>
           <g class="logo-kutu kucuk" transform="rotate(-45 158 192)"><rect x="138" y="184" width="40" height="16" rx="3"/></g>
         </svg>
-        <div class="tisort-sahne" data-yer-cizim="tisort" data-tisort data-adlar={JSON.stringify(P.adlar.map((a) => c(a, dil).toLocaleUpperCase(dil)))} data-etiketler={JSON.stringify([y.on, y.arka, y.yan])} data-baski={dil === 'tr' ? 'BURSA TEKNİK ÜNİVERSİTESİ' : 'BURSA TECHNICAL UNIVERSITY'}>
+        <div class="tisort-sahne" data-yer-cizim="tisort" data-secili data-tisort data-adlar={JSON.stringify(P.adlar.map((a) => c(a, dil).toLocaleUpperCase(dil)))} data-etiketler={JSON.stringify([y.on, y.arka, y.yan])} data-baski={dil === 'tr' ? 'BURSA TEKNİK ÜNİVERSİTESİ' : 'BURSA TECHNICAL UNIVERSITY'}>
           <canvas role="img" aria-label={y.tisortAlan}></canvas>
           <div class="tisort-yuz-kutu">
             <span class="tisort-yuz" data-tisort-yuz role="status"></span>
