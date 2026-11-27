@@ -174,7 +174,7 @@ const yapisalMetin = JSON.stringify({ '@context': 'https://schema.org', '@graph'
       </div>
     </footer>
 
-    <canvas class="suru js-only" data-suru data-etiket={dil === 'tr' ? 'sürü' : 'swarm'} data-onleme-adi={dil === 'tr' ? 'önleme' : 'intercept'} data-formasyonlar={dil === 'tr' ? 'V,halka,çizgi,kol,ok başı' : 'V,ring,line,column,arrowhead'} data-serbest={dil === 'tr' ? 'serbest' : 'free'} data-grup={dil === 'tr' ? 'grup' : 'groups'} data-donus={dil === 'tr' ? 'dönüş' : 'yaw'} aria-hidden="true"></canvas>
+    <canvas class="suru js-only" data-suru data-etiket={dil === 'tr' ? 'sürü' : 'swarm'} data-onleme-adi={dil === 'tr' ? 'önleme' : 'intercept'} data-formasyonlar={dil === 'tr' ? 'V,halka,çizgi,kol,ok başı,artı,beşgen' : 'V,ring,line,column,arrowhead,cross,pentagon'} data-giris={sayfa === 'ana' ? (dil === 'tr' ? 'MATRİS' : 'MATRIS') : undefined} data-serbest={dil === 'tr' ? 'serbest' : 'free'} data-grup={dil === 'tr' ? 'grup' : 'groups'} data-donus={dil === 'tr' ? 'dönüş' : 'yaw'} aria-hidden="true"></canvas>
 
     <script>
       import '../scripts/site.ts';

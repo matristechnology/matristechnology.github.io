@@ -159,3 +159,10 @@ Bütün görsellerden konum ve cihaz bilgisi silindi.
 - Boş yuva yoksa ve ekranda üç boşta araç varsa yeni sürü kurulur.
 - Yabancı sürü sahnesi korundu: bütün sürüler birlikte hücum eder.
 - Destek sayfasında "Logonuz nerede görünür?" bölümü artık tişörtle açılıyor.
+
+## Sürülerde beşli sürü, tek lider, açılış yazısı (27.11.2026)
+
+- Her formasyon zamanında bir sürü beşli: halka, artı ya da beşgen. Üçlü sürüler yalnızca V, çizgi ve ok başına girer. En az 8 İHA çağrılır ki bir beşli ve bir üçlü kurulabilsin.
+- Sürüler kuruluyken ekrana giren İHA'nın gireceği boş sürü yoksa kendini lider ilan edip yeni gelenleri bekler (en çok 5 sürü). Dokuz saniyede kimse gelmezse bölgesine döner. Gelenler tek tek işlenir.
+- Açılış: ana sayfada 30 İHA "MATRİS" yazısını oluşturur (İngilizce sayfada MATRIS). Fare (24 pikselden fazla), dokunma, tuş, tekerlek ya da kaydırma yazıyı bozar, herkes bölgesine uçar. Kimse dokunmazsa 40 saniye sonra kendiliğinden bozulur (bu süre Ali'nin tarifinde yok, benim eklediğim güvenlik).
+- Harfler elle tasarlanmış nokta ve çizgilerden oluşuyor. İlk deneme olan k-ortalamalı yöntem harfleri okutamadı.

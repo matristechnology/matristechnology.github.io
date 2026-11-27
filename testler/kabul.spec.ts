@@ -275,69 +275,162 @@ test('D9c arka plan sürüsü: yabancı sürü geliyor, önleniyor, sürü yenid
   expect(await kirmizi()).toBe(0);
 });
 
-test('D9e arka plan sürüsü: görünen araçlar üçerli sürülere ayrılıyor, planlarını izliyor, sonra herkes dağılıyor', async ({ page }) => {
-  test.setTimeout(60_000);
+// Sürü izleyicisi: sayfa içinde 30 ms'de bir sürülerin üyelerini, boyutlarını, formasyonlarını ve yuvalarını okur.
+const suruIzleyici = () => {
+  const c = document.querySelector<HTMLCanvasElement>('canvas[data-suru]')!, w = window as any;
+  Object.assign(w, { __ihlal: 0, __azalan: 0, __buyuk: 0, __tamam: 0, __ikili: 0, __tek: 0, __bes: 0, __yanlisForm: 0, __liderler: new Set() });
+  let once = new Map<string, string[]>(), oncekiYuva = new Map<string, string>(), onceAdim = '';
+  w.__izci = setInterval(() => {
+    const d = c.dataset, kap = (d.kapasite || '').split(',').filter(Boolean).map(Number), bicim = (d.bicimler || '').split(',').filter(Boolean).map(Number);
+    const sirali = (d.suruler || '').split(';').filter(Boolean).map((g) => { const [id, l] = g.split(':'); return [id, (l || '').split('.').filter(Boolean)] as [string, string[]]; });
+    const gruplar = new Map(sirali);
+    sirali.forEach(([id, uy], k) => {
+      if (uy.length > kap[k]) w.__buyuk++;
+      if (kap[k] === 5) { w.__bes++; if (![1, 5, 6].includes(bicim[k])) w.__yanlisForm++; } else if (![0, 2, 4].includes(bicim[k])) w.__yanlisForm++;
+      if (kap[k] === 3 && uy.length === 2) w.__ikili++;
+      if (kap[k] === 3 && uy.length === 1) w.__tek++;
+      const eski = once.get(id);
+      if (eski) { if (!eski.every((i) => uy.includes(i))) w.__azalan++; if (eski.length < kap[k] && uy.length === kap[k]) w.__tamam++; }
+    });
+    (d.lider || '').split(',').filter(Boolean).forEach((l) => w.__liderler.add(l));
+    const simdi = new Map((d.yuvalar || '').split(',').filter(Boolean).map((p) => p.split(':') as [string, string]));
+    const degisim = (d.adim || '').includes('degis') || onceAdim.includes('degis');
+    if (!degisim) for (const [i, s] of simdi) if (oncekiYuva.has(i) && oncekiYuva.get(i) !== s) w.__ihlal++;
+    once = gruplar; oncekiYuva = simdi; onceAdim = d.adim || '';
+  }, 30);
+};
+const suruSonucu = (page: import('@playwright/test').Page) => page.evaluate(() => { const w = window as any; clearInterval(w.__izci); return { ihlal: w.__ihlal, azalan: w.__azalan, buyuk: w.__buyuk, tamam: w.__tamam, ikili: w.__ikili, tek: w.__tek, bes: w.__bes, yanlisForm: w.__yanlisForm, liderler: w.__liderler.size }; });
+
+test('D9e arka plan sürüsü: bir beşli ve üçlü sürüler kuruluyor, formasyonları boyutuna uygun, planlarını izleyip dağılıyor', async ({ page }) => {
+  test.setTimeout(90_000);
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/?dizilim'); // ilk dizilimi 1,2 sn sonra çağırır
+  await page.evaluate(suruIzleyici);
   await page.evaluate(() => scrollTo(0, 2400));
   const tuval = page.locator('canvas[data-suru]');
-  await expect(tuval).toHaveAttribute('data-mod', 'toplan', { timeout: 6000 });
-  const gorunen = Number(await tuval.getAttribute('data-gorunen')), uye = Number(await tuval.getAttribute('data-uye'));
+  await expect(tuval).toHaveAttribute('data-mod', 'toplan', { timeout: 15_000 });
+  const uye = Number(await tuval.getAttribute('data-uye'));
+  const kap = ((await tuval.getAttribute('data-kapasite')) ?? '').split(',').map(Number);
   const gruplar = ((await tuval.getAttribute('data-suruler')) ?? '').split(';').map((g) => g.split(':')[1].split('.').length);
-  console.log('görünen', gorunen, 'katılan', uye, 'sürüler', JSON.stringify(gruplar));
-  expect(uye).toBeGreaterThanOrEqual(Math.max(3, Math.min(12, gorunen) - 1));
+  console.log('katılan', uye, 'kapasiteler', JSON.stringify(kap), 'üyeler', JSON.stringify(gruplar));
+  expect(uye).toBeGreaterThanOrEqual(8);
   expect(uye).toBeLessThanOrEqual(12);
-  expect(gruplar.length).toBeLessThanOrEqual(4);
-  for (const g of gruplar) expect(g).toBeLessThanOrEqual(3);
-  // Tam sürülerin hepsi üçlü: yalnızca sonuncusu eksik kalabilir
-  expect(gruplar.filter((g) => g < 3).length).toBeLessThanOrEqual(1);
-  await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 9000 });
-  await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 45_000 });
+  expect(kap.filter((k) => k === 5)).toHaveLength(1);          // tam bir beşli sürü
+  expect(kap.filter((k) => k === 3).length).toBeGreaterThanOrEqual(1);
+  expect(kap.every((k) => k === 3 || k === 5)).toBe(true);
+  gruplar.forEach((g, k) => expect(g).toBeLessThanOrEqual(kap[k]));
+  await expect(tuval).toHaveAttribute('data-mod', 'dizilim', { timeout: 12_000 });
+  await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 60_000 });
   await expect(tuval).toHaveAttribute('data-uye', '0');
+  const sonuc = await suruSonucu(page);
+  console.log('sürü izi', JSON.stringify(sonuc));
+  expect(sonuc.yanlisForm).toBe(0); // üçlü sürüler yalnızca V, çizgi, ok başı. beşli sürü halka, artı, beşgen.
+  expect(sonuc.buyuk).toBe(0);
+  expect(sonuc.bes).toBeGreaterThan(0);
 });
 
 test('D9f arka plan sürüsü: eksik sürüye yeni gelen katılıyor, kimse ayrılmıyor, sürüdekiler kıpırdamıyor, dağılınca herkes bölgesine dönüyor', async ({ page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto('/?dizilim=5'); // beş araç: üçlü bir sürü ve boş yuvası olan ikili bir sürü
+  await page.goto('/?dizilim=7'); // yedi araç: beşli bir sürü ve boş yuvası olan ikili bir sürü
   const tuval = page.locator('canvas[data-suru]');
-  // Sürü kurulmadan önce izleyici kurulur: sürülerin üyeleri, boyutları ve yuvaları 30 ms'de bir okunur.
-  await page.evaluate(() => {
-    scrollTo(0, 1200);
-    const c = document.querySelector<HTMLCanvasElement>('canvas[data-suru]')!, w = window as any;
-    w.__ihlal = 0; w.__azalan = 0; w.__buyuk = 0; w.__tamam = 0; w.__ikili = 0; w.__liderler = new Set();
-    let once = new Map<string, string[]>(), oncekiYuva = new Map<string, string>(), onceAdim = '';
-    w.__izci = setInterval(() => {
-      const d = c.dataset;
-      const gruplar = new Map((d.suruler || '').split(';').filter(Boolean).map((g) => { const [id, l] = g.split(':'); return [id, (l || '').split('.').filter(Boolean)] as [string, string[]]; }));
-      for (const [id, uy] of gruplar) {
-        if (uy.length > 3) w.__buyuk++;
-        if (uy.length === 2) w.__ikili++;
-        const eski = once.get(id);
-        if (eski) { if (!eski.every((i) => uy.includes(i))) w.__azalan++; if (eski.length < 3 && uy.length === 3) w.__tamam++; }
-      }
-      (d.lider || '').split(',').filter(Boolean).forEach((l) => w.__liderler.add(l));
-      const simdi = new Map((d.yuvalar || '').split(',').filter(Boolean).map((p) => p.split(':') as [string, string]));
-      const degisim = (d.adim || '').includes('degis') || onceAdim.includes('degis');
-      if (!degisim) for (const [i, s] of simdi) if (oncekiYuva.has(i) && oncekiYuva.get(i) !== s) w.__ihlal++;
-      once = gruplar; oncekiYuva = simdi; onceAdim = d.adim || '';
-    }, 30);
-  });
+  await page.evaluate(suruIzleyici);
+  await page.evaluate(() => scrollTo(0, 1200));
   await expect(tuval).toHaveAttribute('data-mod', /toplan|dizilim/, { timeout: 20_000 });
   for (let k = 0; k < 7; k++) { await page.mouse.wheel(0, 700); await bekle(page, 250); }
   await expect.poll(async () => Number(await tuval.getAttribute('data-katilan')), { timeout: 8000 }).toBeGreaterThan(0);
   await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 60_000 });
-  const sonuc = await page.evaluate(() => { const w = window as any; clearInterval(w.__izci); return { ihlal: w.__ihlal, azalan: w.__azalan, buyuk: w.__buyuk, tamam: w.__tamam, ikili: w.__ikili, liderler: w.__liderler.size }; });
+  const sonuc = await suruSonucu(page);
   console.log('sürü izi', JSON.stringify(sonuc), 'katılan', await tuval.getAttribute('data-katilan'), 'dağılan', await tuval.getAttribute('data-dagilan'));
   expect(sonuc.ikili).toBeGreaterThan(0);  // eksik sürü göründü
-  expect(sonuc.tamam).toBeGreaterThan(0);  // yeni gelen eksik sürüyü üçe tamamladı
-  expect(sonuc.buyuk).toBe(0);             // hiçbir sürü üçü aşmadı
+  expect(sonuc.tamam).toBeGreaterThan(0);  // yeni gelen eksik sürüyü tamamladı
+  expect(sonuc.buyuk).toBe(0);             // hiçbir sürü kapasitesini aşmadı
   expect(sonuc.azalan).toBe(0);            // kimse sürüsünden ayrılmadı
   expect(sonuc.ihlal).toBe(0);             // sürüdekilerin yuvası kıpırdamadı
+  expect(sonuc.yanlisForm).toBe(0);
   await expect(tuval).toHaveAttribute('data-uye', '0');
   expect(Number(await tuval.getAttribute('data-dagilan'))).toBeGreaterThanOrEqual(2);
   // Formasyon bozulunca herkes kendi bölgesine döndü
-  await expect(tuval).toHaveAttribute('data-evde-degil', '0', { timeout: 30_000 });
+  await expect(tuval).toHaveAttribute('data-evde-degil', '0', { timeout: 40_000 });
+});
+
+test('D9g arka plan sürüsü: boş sürü yoksa gelen araç kendini lider ilan edip yeni gelenleri bekliyor', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/?dizilim=8'); // sekiz araç: beşli ve üçlü iki dolu sürü, boş yuva yok
+  const tuval = page.locator('canvas[data-suru]');
+  await page.evaluate(suruIzleyici);
+  await page.evaluate(() => scrollTo(0, 1200));
+  await expect(tuval).toHaveAttribute('data-mod', /toplan|dizilim/, { timeout: 20_000 });
+  expect(await tuval.getAttribute('data-kapasite')).toBe('5,3');
+  for (let k = 0; k < 7; k++) { await page.mouse.wheel(0, 700); await bekle(page, 250); }
+  await expect.poll(async () => Number(await tuval.getAttribute('data-suru')), { timeout: 8000 }).toBeGreaterThan(2);
+  await expect(tuval).toHaveAttribute('data-mod', 'serbest', { timeout: 60_000 });
+  const sonuc = await suruSonucu(page);
+  console.log('sürü izi', JSON.stringify(sonuc));
+  expect(sonuc.tek).toBeGreaterThan(0);    // tek başına lider göründü
+  expect(sonuc.ikili).toBeGreaterThan(0);  // sonra ikinci araç ona katıldı
+  expect(sonuc.azalan).toBe(0);
+  expect(sonuc.buyuk).toBe(0);
+  expect(sonuc.yanlisForm).toBe(0);
+});
+
+test.describe('D26 açılış yazısı', () => {
+  test('ana sayfa açılınca 30 İHA MATRİS yazısını oluşturuyor, fare oynayınca herkes bölgesine uçuyor', async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/');
+    const tuval = page.locator('canvas[data-suru]');
+    await expect(tuval).toHaveAttribute('data-mod', 'giris');
+    await expect(tuval).toHaveAttribute('data-giris-hazir', '1', { timeout: 20_000 });
+    expect(await tuval.getAttribute('data-giris-nokta')).toBe('30');
+    // Yazı ekranın ortasında, geniş ve harf harf: 6 harf, her birinde en az 3 nokta, noktalar soldan sağa sıralı
+    const [x0, y0, x1, y1] = ((await tuval.getAttribute('data-giris-kutu')) ?? '').split(',').map(Number);
+    expect(x1 - x0).toBeGreaterThan(700); expect(x0).toBeGreaterThan(0); expect(x1).toBeLessThan(1280);
+    expect(y0).toBeGreaterThan(60); expect(y1).toBeLessThan(800);
+    const nokta = JSON.parse((await tuval.getAttribute('data-giris-noktalar')) ?? '[]') as [number, number, number][];
+    const harfBasina = [0, 1, 2, 3, 4, 5].map((h) => nokta.filter((p) => p[2] === h));
+    harfBasina.forEach((l) => expect(l.length).toBeGreaterThanOrEqual(3));
+    const ortalar = harfBasina.map((l) => l.reduce((a, p) => a + p[0], 0) / l.length);
+    expect([...ortalar].sort((a, b) => a - b)).toEqual(ortalar);
+    expect(Number(await tuval.getAttribute('data-giris-sapma'))).toBeLessThan(10);
+    // Tuvalde 30 İHA çizilmiş: yazının kutusunda boyalı piksel var
+    const boyali = await tuval.evaluate((c: HTMLCanvasElement, k: number[]) => { const r = c.width / innerWidth, d = c.getContext('2d')!.getImageData(k[0] * r, k[1] * r, (k[2] - k[0]) * r, (k[3] - k[1]) * r).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 100) n++; return n; }, [x0, y0, x1, y1]);
+    expect(boyali).toBeGreaterThan(1500);
+    // Hareket: önce küçük oynama sayılmıyor, sonra gerçek hareket yazıyı bozuyor
+    await bekle(page, 900);
+    await page.mouse.move(300, 300);
+    await page.mouse.move(306, 304);
+    await expect(tuval).toHaveAttribute('data-mod', 'giris');
+    await page.mouse.move(420, 380);
+    await expect(tuval).not.toHaveAttribute('data-mod', 'giris', { timeout: 2000 });
+    // Herkes kendi bölgesine uçuyor ve oraya varıyor
+    await expect(tuval).toHaveAttribute('data-evde-degil', '0', { timeout: 60_000 });
+  });
+
+  test('kaydırma, tuş ve dokunma da yazıyı bozuyor; deneme parametresi varken yazı kurulmuyor', async ({ page, browser }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    for (const eylem of ['tekerlek', 'tus']) {
+      await page.goto('/');
+      const tuval = page.locator('canvas[data-suru]');
+      await expect(tuval).toHaveAttribute('data-mod', 'giris');
+      if (eylem === 'tekerlek') await page.mouse.wheel(0, 200); else await page.keyboard.press('Tab');
+      await expect(tuval).not.toHaveAttribute('data-mod', 'giris', { timeout: 2000 });
+    }
+    await page.goto('/?dizilim');
+    await expect(page.locator('canvas[data-suru]')).not.toHaveAttribute('data-mod', 'giris');
+    await page.goto('/suru-iha/'); // ayrıntı sayfalarında yazı yok
+    await expect(page.locator('canvas[data-suru]')).not.toHaveAttribute('data-mod', 'giris');
+    await expect(page.locator('canvas[data-suru]')).not.toHaveAttribute('data-giris', /./);
+    const dar = await browser.newContext({ viewport: { width: 390, height: 800 }, hasTouch: true });
+    const t = await dar.newPage();
+    await t.goto('/en/');
+    await expect(t.locator('canvas[data-suru]')).toHaveAttribute('data-giris', 'MATRIS');
+    await expect(t.locator('canvas[data-suru]')).toHaveAttribute('data-giris-hazir', '1', { timeout: 20_000 });
+    await t.touchscreen.tap(200, 400);
+    await expect(t.locator('canvas[data-suru]')).not.toHaveAttribute('data-mod', 'giris', { timeout: 2000 });
+    await dar.close();
+  });
 });
 
 test('D9d takım özeti: ana sayfada üç ekip kartı, üye adı ve kartı yok, ayrıntı Takım sayfasında', async ({ page }) => {

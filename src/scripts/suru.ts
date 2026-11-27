@@ -1,16 +1,17 @@
 // Sayfanın arkasında dolaşan İHA'lar. Süs amaçlıdır: tuval aria-hidden, tıklamaları yutmaz,
 // "hareketi azalt" açıksa hiç çizilmez. Ziyaretçi üst menüdeki düğmeyle kapatabilir, seçim tarayıcıda hatırlanır.
 //
-// Davranış (Ali, 27.11.2026: "3'erli sürü halinde formasyona girerler, yeni gelen boş bir sürüye katılır,
-// sürüden kimse ayrılmaz, formasyon bozulunca herkes kendi bölgesine uçar"):
+// Davranış (Ali, 27.11.2026):
+//   - Açılış: ana sayfa açılınca 30 İHA giriş ekranında "MATRİS" yazısını oluşturur ve durur. Kullanıcı sayfada
+//     hareket edince (fare, kaydırma, dokunma, tuş) herkes kendi bölgesine uçar.
 //   - Bölge: 30 İHA'nın her birinin sayfada bir bölgesi var, bölgeler sayfa boyunca eşit aralıkla dizilir.
 //     Serbestken her İHA kendi bölgesinde dolaşır: bir noktaya gider, asılı kalır, yenisine geçer.
-//   - Sürüler: arada bir, görüş alanındaki İHA'lar üçerli sürülere ayrılır (en az 3, en çok 12 İHA, en çok 4 sürü).
-//     Her sürünün kendi lideri, kendi formasyonu ve kendi planı var: bir yere gider, formasyon değiştirir ya da
-//     yerinde döner. Sayı üçe bölünmüyorsa son sürü eksik kalır, boş yuvası silik halkayla gösterilir.
-//   - Katılma: sürüler kuruluyken görüş alanına giren boşta bir İHA, boş yuvası olan en yakın sürüye katılır.
-//     Boş yuva yoksa ve ekranda üç boşta İHA varsa onlar yeni bir sürü kurar. Sürüdekiler yerinden kıpırdamaz,
-//     yuvalar sabittir: yeni gelen yuvasına kendisi uçar. Hiçbir İHA sürüsünden ayrılıp yerine başkası geçmez.
+//   - Sürüler: arada bir, görüş alanındaki İHA'lar sürülere ayrılır (en az 8, en çok 12 İHA). Bir sürü beşli, ötekiler üçlü.
+//     Beşli sürü halka, artı ya da beşgen düzenine girer. Üçlü sürüler yalnızca V, çizgi ya da ok başına girer.
+//     Her sürünün kendi lideri, kendi formasyonu ve kendi planı var: bir yere gider, formasyon değiştirir ya da yerinde döner.
+//   - Katılma: sürüler kuruluyken görüş alanına giren boşta bir İHA, boş yuvası olan en yakın sürüye katılır. Boş yuva
+//     yoksa kendini lider ilan edip yeni bir sürü kurar ve yeni gelen İHA'yı bekler. Yuvalar sabittir, sürüdekiler
+//     yerinden kıpırdamaz. Hiçbir İHA sürüsünden ayrılıp yerine başkası geçmez.
 //   - Dağılma: bir sürünün planı bitince formasyon bozulur, o sürünün her İHA'sı kendi bölgesine uçar.
 //   - Yabancı sürü: arada bir kenardan girer. Bizimkiler dağınıksa önce sürülere ayrılır, hepsi birlikte hücum eder,
 //     yaklaşınca her İHA bir yabancıyı kovalayıp düşürür, sonra hepsi dağılır.
@@ -20,7 +21,7 @@ if (tuval) {
   const azalt = matchMedia('(prefers-reduced-motion: reduce)');
   const veri = tuval.dataset;
   const adlar = (veri.formasyonlar ?? 'V,halka,çizgi,kol,ok başı').split(',');
-  const N = 30, SURU = 3, EN_COK = 12, EN_COK_SURU = 4, GECIS = 1700, BEKLEME = 6000; // BEKLEME: dağılan İHA bu kadar süre yeniden katılmaz
+  const N = 30, KUCUK = 3, BUYUK = 5, EN_AZ = 8, EN_COK = 12, EN_COK_SURU = 5, GECIS = 1700, BEKLEME = 6000; // BEKLEME: dağılan İHA bu kadar süre yeniden katılmaz
   let en = 0, boy = 0, oran = 1, belgeBoy = 0, vurgu = '#e8c468', soluk = '#a5a39a', yabanci = '#ff6b5e', metin = '#ecebe6';
   const boyutla = () => {
     oran = Math.min(devicePixelRatio || 1, 1.5);
@@ -40,28 +41,30 @@ if (tuval) {
 
   type Adim = 'topla' | 'git' | 'degis' | 'yaw';
   type Faz = 'topla' | 'hucum' | 'kovala';
-  type Mod = 'serbest' | 'toplan' | 'dizilim' | 'onleme';
+  type Mod = 'giris' | 'serbest' | 'toplan' | 'dizilim' | 'onleme';
   // Sürü: üyeleri, kendi merkezi (ekran koordinatı: sürü görüş alanında kalır), yönü, formasyonu ve planı.
-  type Surusu = { id: number; sira: number; uyeler: Iha[]; merkez: { x: number; y: number; vx: number; vy: number }; hedef: { x: number; y: number }; yon: number; hedefYon: number; bicim: number; adim: Adim; adimlar: Adim[]; adimT: number; gecisBas: number; sapma: number };
+  type Surusu = { id: number; sira: number; kap: number; uyeler: Iha[]; merkez: { x: number; y: number; vx: number; vy: number }; hedef: { x: number; y: number }; yon: number; hedefYon: number; bicim: number; adim: Adim; adimlar: Adim[]; adimT: number; gecisBas: number; sapma: number };
   // İHA: x, y sayfa koordinatı. ex, ey bölgenin merkezi (oran olarak). tx, ty serbestken gidilen nokta.
   // sr bağlı olduğu sürü (boştaysa null), s sürüdeki yuva (0 lider), bx, by yuvaya geçişin başladığı andaki yeri.
-  type Iha = { i: number; x: number; y: number; vx: number; vy: number; aci: number; ex: number; ey: number; tx: number; ty: number; bekle: number; hiz: number; s: number; bx: number; by: number; ayrildi: number; katildi: number; sr: Surusu | null };
+  type Iha = { i: number; x: number; y: number; vx: number; vy: number; aci: number; ex: number; ey: number; tx: number; ty: number; bekle: number; hiz: number; s: number; bx: number; by: number; ayrildi: number; katildi: number; sr: Surusu | null; gx: number; gy: number; gi: number; kalk: number };
   const ihalar: Iha[] = Array.from({ length: N }, (_, i) => ({
     i, x: 0, y: 0, vx: 0, vy: 0, aci: Math.random() * 6.28, ex: rastgele(0.12, 0.88), ey: (i + rastgele(0.2, 0.8)) / N,
-    tx: 0, ty: 0, bekle: 0, hiz: rastgele(80, 125), s: 0, bx: 0, by: 0, ayrildi: -1e9, katildi: 0, sr: null,
+    tx: 0, ty: 0, bekle: 0, hiz: rastgele(80, 125), s: 0, bx: 0, by: 0, ayrildi: -1e9, katildi: 0, sr: null, gx: 0, gy: 0, gi: -1, kalk: 0,
   }));
   const evX = (u: Iha) => u.ex * en, evY = (u: Iha) => 90 + u.ey * (belgeBoy - 130);
   const bolgeY = () => Math.max(160, (belgeBoy / N) * 0.9); // bölgenin dikey yarı boyu
   const ekranda = (u: Iha, pay = 0) => u.y - scrollY > -pay && u.y - scrollY < boy + pay && u.x > -pay && u.x < en + pay;
 
   const suruler: Surusu[] = [];
+  // Açılış: giriş ekranında 30 İHA yazıyı oluşturur. noktalar yazının 0-1 aralığındaki nokta kümesi, kenar aynı harfte komşu noktalar.
+  const giris = { aktif: false, bas: 0, bitis: -1e9, hazir: false, sapma: 0, oran: 0.3, noktalar: [] as { x: number; y: number; h: number }[], kenar: [] as [number, number][], sahip: [] as Iha[] };
   let mod: Mod = 'serbest', suruNo = 0, onleme = false, faz: Faz = 'topla';
   let sonrakiDizilim = performance.now() + 4000, rahatsiz = 0, basladi = false, sonUyeKontrol = 0, evKontrol = 0;
   let katilanSayac = 0, dagilanSayac = 0;
   const imlec = { x: -999, y: -999, var: false };
   const cagri = { x: 0, y: 0, t: -9999 };
   const birimHesap = () => Math.max(26, Math.min(40, en / 30));
-  const modGuncelle = () => { mod = onleme ? 'onleme' : suruler.length ? (suruler.some((s) => s.adim !== 'topla') ? 'dizilim' : 'toplan') : 'serbest'; };
+  const modGuncelle = () => { mod = giris.aktif ? 'giris' : onleme ? 'onleme' : suruler.length ? (suruler.some((s) => s.adim !== 'topla') ? 'dizilim' : 'toplan') : 'serbest'; };
   let fazlar = '';
   const iz = () => {
     modGuncelle();
@@ -70,7 +73,7 @@ if (tuval) {
     veri.fazlar = fazlar; veri.mod = mod; veri.uye = String(uy.length); veri.suru = String(suruler.length);
     veri.suruler = suruler.map((s) => `${s.id}:${s.uyeler.map((u) => u.i).join('.')}`).join(';');
     veri.bicim = String(suruler[0]?.bicim ?? 0); veri.bicimler = suruler.map((s) => s.bicim).join(',');
-    veri.adim = suruler.map((s) => s.adim).join(',');
+    veri.adim = suruler.map((s) => s.adim).join(','); veri.kapasite = suruler.map((s) => s.kap).join(',');
     veri.faz = onleme ? faz : ''; veri.katilan = String(katilanSayac); veri.dagilan = String(dagilanSayac);
     veri.lider = suruler.map((s) => lider(s)?.i ?? '').join(',');
     veri.yuvalar = uy.map((u) => `${u.i}:${u.s}`).join(',');
@@ -78,9 +81,15 @@ if (tuval) {
   const lider = (s: Surusu) => s.uyeler.find((u) => u.s === 0);
 
   // Yuvalar: lidere göre (ileri, yan) birim uzaklıkları. k yuva numarası (0 lider, hep sürünün merkezinde).
-  // Yuvalar hep SURU (3) yuvalık sürüye göre hesaplanır, böylece boş yuva sabit bir yerde durur ve yeni gelen oraya oturur.
+  // Yuvalar hep sürünün tam boyuna (3 ya da 5) göre hesaplanır, böylece boş yuva sabit bir yerde durur ve yeni gelen oraya oturur.
+  // Formasyonlar: 0 V, 1 halka, 2 çizgi, 3 kol, 4 ok başı, 5 artı, 6 beşgen. Üçlü sürü yalnızca V, çizgi ve ok başına girer,
+  // beşli sürü halka, artı ve beşgene.
+  const FORMLAR: Record<number, number[]> = { [KUCUK]: [0, 2, 4], [BUYUK]: [1, 5, 6] };
   const yuva = (b: number, k: number, n: number, t: number): [number, number] => {
+    if (b === 6) { const r = 1.45, a = (k * Math.PI * 2) / n; return [-r + r * Math.cos(a), r * Math.sin(a)]; } // beşgen: lider ön köşede
     if (!k) return [0, 0];
+    if (b === 5) { const a = ((k - 1) * Math.PI) / 2; return [Math.cos(a) * 1.5, Math.sin(a) * 1.5]; } // artı: dört kol
+
     const kat = Math.ceil(k / 2), yan = k % 2 ? 1 : -1;
     if (b === 1) { const r = Math.max(1.4, (n - 1) * 0.24), a = ((k - 1) / Math.max(1, n - 1)) * Math.PI * 2 + t / 2600; return [Math.cos(a) * r, Math.sin(a) * r]; } // halka: liderin çevresinde ağır ağır döner
     if (b === 2) return [-kat * 0.12, yan * kat * 1.05]; // çizgi: hafif yay
@@ -95,7 +104,7 @@ if (tuval) {
   // Yuvanın ekrandaki yeri. Son dağıtımdan bu yana GECIS süresince eski yerden yeni yuvaya düz çizgiyle geçilir.
   const yuvaEkranda = (u: Iha, t: number): [number, number] => {
     const s = u.sr!, e = yumusat(Math.max(0, Math.min(1, (t - s.gecisBas) / GECIS)));
-    const [ileri, yan] = yuva(s.bicim, u.s, SURU, t);
+    const [ileri, yan] = yuva(s.bicim, u.s, s.kap, t);
     return yerde(s, u.bx + (ileri - u.bx) * e, u.by + (yan - u.by) * e);
   };
 
@@ -129,7 +138,7 @@ if (tuval) {
     const birim = birimHesap(), c = Math.cos(s.yon), sn = Math.sin(s.yon);
     for (const u of s.uyeler) { const dx = u.x - s.merkez.x, dy = u.y - scrollY - s.merkez.y; u.bx = (dx * c + dy * sn) / birim; u.by = (-dx * sn + dy * c) / birim; }
     const l = lider(s), digerleri = s.uyeler.filter((u) => u !== l); // lider yerinde kalır
-    const yuvalar = digerleri.map((_, k) => yuva(s.bicim, k + 1, SURU, varisT));
+    const yuvalar = digerleri.map((_, k) => yuva(s.bicim, k + 1, s.kap, varisT));
     const atama = eslestir(digerleri.map((u) => yuvalar.map(([a, b]) => Math.hypot(u.bx - a, u.by - b))));
     digerleri.forEach((u, j) => (u.s = atama[j] + 1));
     s.gecisBas = t;
@@ -143,25 +152,22 @@ if (tuval) {
     u.bekle = 0;
   };
 
-  // Boştaki İHA'lar: görüş alanına en yakın olanlar önce gelir. Sayı üçe bölünmüyorsa son sürü eksik kalabilir,
-  // ama tek başına kalan lider olmasın diye fazlalık bırakılır.
+  // Boştaki İHA'lar: görüş alanına en yakın olanlar önce gelir. En az 8 İHA çağrılır ki bir beşli ve bir üçlü sürü kurulabilsin.
   const zor = Number(new URLSearchParams(location.search).get('dizilim')) || 0; // deneme betiği: katılacak İHA sayısı
   const katilanlar = (t: number) => {
     const orta = { x: en / 2, y: scrollY + boy / 2 }, uzak = (u: Iha) => Math.hypot(u.x - orta.x, u.y - orta.y);
     const sirali = ihalar.filter((u) => !u.sr && (t - u.ayrildi > BEKLEME || ekranda(u))).sort((a, b) => uzak(a) - uzak(b));
     const gorunen = sirali.filter((u) => ekranda(u));
     veri.gorunen = String(gorunen.length);
-    let p = zor || Math.max(SURU, Math.min(EN_COK, gorunen.length));
-    if (!zor && p > SURU && p % SURU === 1) p--;
-    return sirali.slice(0, Math.min(p, EN_COK));
+    return sirali.slice(0, Math.min(zor || Math.max(EN_AZ, Math.min(EN_COK, gorunen.length)), EN_COK));
   };
-  // Yakın olanları üçerli gruba ayırır: ilk İHA lider olur, en yakın iki İHA onunla gruplanır.
-  const uclule = (liste: Iha[]) => {
+  // Yakın olanları gruplara ayırır: ilk grup beşli (en az beş İHA varsa), ötekiler üçlü. Grubun ilk İHA'sı lider olur.
+  const gruplaCek = (liste: Iha[]) => {
     const kalan = [...liste], gruplar: Iha[][] = [];
     while (kalan.length) {
-      const l = kalan.shift()!;
+      const l = kalan.shift()!, boyut = !gruplar.length && liste.length >= BUYUK ? BUYUK : KUCUK;
       kalan.sort((a, b) => Math.hypot(a.x - l.x, a.y - l.y) - Math.hypot(b.x - l.x, b.y - l.y));
-      gruplar.push([l, ...kalan.splice(0, SURU - 1)]);
+      gruplar.push([l, ...kalan.splice(0, boyut - 1)]);
     }
     return gruplar;
   };
@@ -172,24 +178,24 @@ if (tuval) {
     return p;
   };
   // Bir sürü kurulur: lider olduğu yerde kalır (merkez onun yeri), ötekiler çevresindeki yuvalara uçar.
-  function suruKur(t: number, uy: Iha[], cx?: number, cy?: number) {
+  function suruKur(t: number, uy: Iha[], kap: number, cx?: number, cy?: number) {
     const l = uy[0];
     const s: Surusu = {
-      id: ++suruNo, sira: suruler.length, uyeler: uy, merkez: { x: Math.max(en * 0.12, Math.min(en * 0.88, cx ?? l.x)), y: Math.max(boy * 0.18, Math.min(boy * 0.82, cy ?? l.y - scrollY)), vx: 0, vy: 0 },
-      hedef: { x: 0, y: 0 }, yon: Math.random() * Math.PI * 2, hedefYon: 0, bicim: Math.floor(Math.random() * adlar.length), adim: 'topla', adimlar: planYap(), adimT: t, gecisBas: -1e9, sapma: 0,
+      id: ++suruNo, sira: suruler.length, kap, uyeler: uy, merkez: { x: Math.max(en * 0.12, Math.min(en * 0.88, cx ?? l.x)), y: Math.max(boy * 0.18, Math.min(boy * 0.82, cy ?? l.y - scrollY)), vx: 0, vy: 0 },
+      hedef: { x: 0, y: 0 }, yon: Math.random() * Math.PI * 2, hedefYon: 0, bicim: sec(FORMLAR[kap]), adim: 'topla', adimlar: planYap(), adimT: t, gecisBas: -1e9, sapma: 0,
     };
     s.hedef.x = s.merkez.x; s.hedef.y = s.merkez.y; s.hedefYon = s.yon;
     const digerleri = uy.slice(1);
-    const yuvalar = digerleri.map((_, k) => { const [a, b] = yuva(s.bicim, k + 1, SURU, t); return yerde(s, a, b); });
+    const yuvalar = digerleri.map((_, k) => { const [a, b] = yuva(s.bicim, k + 1, kap, t); return yerde(s, a, b); });
     const atama = eslestir(digerleri.map((u) => yuvalar.map(([a, b]) => Math.hypot(u.x - a, u.y - scrollY - b))));
     l.s = 0; digerleri.forEach((u, j) => (u.s = atama[j] + 1));
-    for (const u of uy) { [u.bx, u.by] = yuva(s.bicim, u.s, SURU, t); u.katildi = t; u.sr = s; }
+    for (const u of uy) { [u.bx, u.by] = yuva(s.bicim, u.s, kap, t); u.katildi = t; u.sr = s; }
     suruler.push(s);
     return s;
   }
   function dizilimKur(t: number, cx?: number, cy?: number) {
     const uy = katilanlar(t);
-    uclule(uy).forEach((g, k) => suruKur(t, g, k ? undefined : cx, k ? undefined : cy));
+    gruplaCek(uy).forEach((g, k) => suruKur(t, g, k === 0 && uy.length >= BUYUK ? BUYUK : KUCUK, k ? undefined : cx, k ? undefined : cy));
     sonUyeKontrol = t + 1200; veri.ilk = String(uy.length); iz();
   }
   // Başka sürülerin hedefinden uzak bir yer seç: sürüler birbirine çarpmadan farklı yönlere gider.
@@ -206,7 +212,7 @@ if (tuval) {
     s.adim = a; s.adimT = t; iz();
     if (a === 'git') hedefSec(s);
     else if (a === 'yaw') s.hedefYon = s.yon + (Math.random() < 0.5 ? -1 : 1) * rastgele(Math.PI / 2, Math.PI);
-    else { s.bicim = sec(adlar.map((_, k) => k).filter((k) => k !== s.bicim)); yenidenYuvala(s, t); }
+    else { s.bicim = sec(FORMLAR[s.kap].filter((k) => k !== s.bicim)); yenidenYuvala(s, t); }
   }
   // Formasyon bozuldu: sürünün her İHA'sı kendi bölgesine uçar.
   function dagil(s: Surusu, t: number) {
@@ -217,9 +223,64 @@ if (tuval) {
   }
   const hepsiniDagit = (t: number) => { for (const s of [...suruler]) dagil(s, t); };
 
+  // ── Açılış yazısı: her harf elle tasarlanmış az sayıda noktadan ve onları birleştiren çizgilerden oluşur ──
+  // Harf kutusu: x 0 ile genişlik arası, y 0 (üst) ile 1,6 (alt) arası. Noktalar harfin dönüm yerlerine konur,
+  // çizgiler harfin iskeletini gösterir. Toplam nokta sayısı 30 (İHA sayısı).
+  const HARFLER: Record<string, { g: number; p: [number, number][]; k: [number, number][] }> = {
+    M: { g: 1.2, p: [[0, 1.6], [0, 0], [0.6, 0.9], [1.2, 0], [1.2, 1.6]], k: [[0, 1], [1, 2], [2, 3], [3, 4]] },
+    A: { g: 1, p: [[0, 1.6], [0.5, 0], [1, 1.6], [0.14, 1.15], [0.86, 1.15]], k: [[0, 3], [3, 1], [1, 4], [4, 2], [3, 4]] },
+    T: { g: 1, p: [[0, 0], [0.5, 0], [1, 0], [0.5, 0.8], [0.5, 1.6]], k: [[0, 1], [1, 2], [1, 3], [3, 4]] },
+    R: { g: 1, p: [[0, 1.6], [0, 0.8], [0, 0], [0.85, 0.2], [0.6, 0.8], [1, 1.6]], k: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 1], [4, 5]] },
+    'İ': { g: 0, p: [[0, -0.4], [0, 0.4], [0, 1.6]], k: [[1, 2]] },
+    I: { g: 0, p: [[0, 0], [0, 0.8], [0, 1.6]], k: [[0, 1], [1, 2]] },
+    S: { g: 1, p: [[0.95, 0.15], [0.4, 0], [0.05, 0.45], [0.55, 0.8], [0.95, 1.2], [0.1, 1.55]], k: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]] },
+  };
+  function girisNoktalari(yazi: string) {
+    const harfler = [...yazi];
+    if (!harfler.length || harfler.some((h) => !HARFLER[h])) return false;
+    const ara = 0.55, tum: { x: number; y: number; h: number }[] = [];
+    giris.kenar = []; let x0 = 0;
+    harfler.forEach((h, hi) => {
+      const L = HARFLER[h], ilk = tum.length;
+      for (const [px, py] of L.p) tum.push({ x: x0 + px, y: py, h: hi });
+      for (const [a, b] of L.k) giris.kenar.push([ilk + a, ilk + b]);
+      x0 += L.g + ara;
+    });
+    const gen = x0 - ara, ust = Math.min(...tum.map((p) => p.y)), alt = Math.max(...tum.map((p) => p.y));
+    giris.oran = (alt - ust) / gen;
+    giris.noktalar = tum.map((p) => ({ x: p.x / gen, y: (p.y - ust) / gen, h: p.h }));
+    veri.girisNoktalar = JSON.stringify(giris.noktalar.map((p) => [Math.round(p.x * 1000), Math.round(p.y * 1000), p.h]));
+    return giris.noktalar.length === N;
+  }
+  // Yazıyı ekrana yerleştir, İHA'ları en kısa toplam yolla noktalara dağıt.
+  function girisHedefle() {
+    const w = Math.min(en * 0.82, 1000), h = w * giris.oran, x0 = en / 2 - w / 2, y0 = boy * 0.5 - h / 2 + 24;
+    const pts = giris.noktalar.map((p) => [x0 + p.x * w, y0 + p.y * w + scrollY]);
+    const atama = eslestir(ihalar.map((u) => pts.map(([a, b]) => Math.hypot(u.x - a, u.y - b))));
+    giris.sahip = [];
+    ihalar.forEach((u, i) => { u.gi = atama[i]; [u.gx, u.gy] = pts[atama[i]]; giris.sahip[atama[i]] = u; });
+    veri.girisKutu = `${Math.round(x0)},${Math.round(y0)},${Math.round(x0 + w)},${Math.round(y0 + h)}`; veri.girisNokta = String(pts.length);
+  }
+  function girisBaslat(t: number) {
+    giris.aktif = true; giris.bas = t; giris.hazir = false;
+    // İHA'lar ekranın dışındaki bir halkadan girer: yazı onlara doğru uçarak oluşur.
+    const yari = Math.hypot(en, boy) / 2 + 60;
+    for (const u of ihalar) { const a = Math.random() * Math.PI * 2, r = yari + rastgele(0, 140); u.x = en / 2 + Math.cos(a) * r; u.y = boy / 2 + Math.sin(a) * r + scrollY; u.vx = u.vy = 0; u.gi = -1; }
+    if (girisNoktalari(veri.giris ?? '')) girisHedefle(); else girisBitir(performance.now());
+    iz();
+  }
+  // Kullanıcı hareket etti (ya da süre doldu): yazı bozulur, her İHA kendi bölgesine uçar.
+  function girisBitir(t: number) {
+    if (!giris.aktif) return;
+    giris.aktif = false; giris.bitis = t; giris.hazir = false;
+    for (const u of ihalar) { yeniHedef(u); u.gi = -1; u.ayrildi = t; u.kalk = t + rastgele(0, 450); }
+    sonrakiDizilim = t + rastgele(9000, 15000); sonrakiBaskin = t + rastgele(22000, 36000);
+    veri.girisHazir = '0'; iz();
+  }
+
   // Sürüler kuruluyken üyelik: görüş alanına giren boştaki İHA, boş yuvası olan en yakın sürüye katılır. Sürüdekiler
-  // yerinden kıpırdamaz, kimse ayrılmaz: yeni gelen yuvasına kendisi uçar. Boş yuva yoksa ve ekranda üç boşta İHA
-  // varsa onlar yeni bir sürü kurar.
+  // yerinden kıpırdamaz, kimse ayrılmaz: yeni gelen yuvasına kendisi uçar. Boş yuva yoksa İHA kendini lider ilan edip
+  // üçlü yeni bir sürü kurar ve yeni gelen İHA'yı bekler.
   function uyelikGuncelle(t: number) {
     if (t < sonUyeKontrol) return;
     sonUyeKontrol = t + 350;
@@ -227,13 +288,13 @@ if (tuval) {
     const orta = { x: en / 2, y: scrollY + boy / 2 };
     const adaylar = ihalar.filter((u) => !u.sr && ekranda(u, -12) && t - u.ayrildi > BEKLEME).sort((a, b) => Math.hypot(a.x - orta.x, a.y - orta.y) - Math.hypot(b.x - orta.x, b.y - orta.y));
     for (const u of adaylar) {
-      const acik = suruler.filter((s) => s.uyeler.length < SURU).sort((a, b) => Math.hypot(u.x - a.merkez.x, u.y - scrollY - a.merkez.y) - Math.hypot(u.x - b.merkez.x, u.y - scrollY - b.merkez.y))[0];
-      if (!acik) break;
-      u.s = acik.uyeler.length; [u.bx, u.by] = yuva(acik.bicim, u.s, SURU, t);
-      u.katildi = t; u.sr = acik; acik.uyeler.push(u); katilanSayac++; degisti = true;
+      const acik = suruler.filter((s) => s.uyeler.length < s.kap).sort((a, b) => Math.hypot(u.x - a.merkez.x, u.y - scrollY - a.merkez.y) - Math.hypot(u.x - b.merkez.x, u.y - scrollY - b.merkez.y))[0];
+      if (acik) {
+        u.s = acik.uyeler.length; [u.bx, u.by] = yuva(acik.bicim, u.s, acik.kap, t);
+        u.katildi = t; u.sr = acik; acik.uyeler.push(u); katilanSayac++; degisti = true;
+      } else if (!onleme && suruler.length < EN_COK_SURU) { suruKur(t, [u], KUCUK); katilanSayac++; degisti = true; }
+      break; // her kontrolde tek İHA işlenir: gelenler tek tek katılır, kendini lider ilan eden bir sonrakini bekler
     }
-    const kalan = adaylar.filter((u) => !u.sr);
-    if (!onleme && suruler.length < EN_COK_SURU && kalan.length >= SURU) { suruKur(t, uclule(kalan)[0]); katilanSayac += SURU; degisti = true; }
     if (degisti) iz();
     // Deneme betiği için: görüş alanında olup hiçbir sürüde olmayan İHA sayısı.
     veri.disarida = String(ihalar.filter((u) => !u.sr && ekranda(u, -12) && t - u.ayrildi > BEKLEME).length);
@@ -311,6 +372,8 @@ if (tuval) {
 
   function adim_(t: number, dt: number) {
     modGuncelle();
+    if (giris.aktif && t - giris.bas > 40000) girisBitir(t); // kimse dokunmazsa yazı sonsuza kadar kalmaz
+    modGuncelle();
     if (t > sonrakiBaskin && (mod === 'serbest' || mod === 'dizilim') && !document.hidden) baskin(t);
     else if (mod === 'serbest' && t > sonrakiDizilim) dizilimKur(t);
     if (onleme) onlemeAdimi(t, dt);
@@ -337,8 +400,13 @@ if (tuval) {
 
     const birim = birimHesap();
     for (const u of ihalar) {
-      const s = u.sr, kovalar = onleme && faz === 'kovala' && !!s && yabancilar.length > 0, uye = !!s && !kovalar;
-      if (uye) {
+      const s = u.sr, kovalar = onleme && faz === 'kovala' && !!s && yabancilar.length > 0, uye = !!s && !kovalar, yazida = giris.aktif && u.gi >= 0;
+      if (giris.aktif) {
+        if (yazida) { // yazıdaki yerine uçar, yaklaşınca yavaşlar ve yerinde durur
+          const uzak = Math.hypot(u.gx - u.x, u.gy - u.y); giris.sapma = Math.max(giris.sapma, uzak);
+          if (uzak > 50) yonlendir(u, u.gx, u.gy, 2.2, 560, 4, dt); else yonlendir(u, u.gx, u.gy, 6, 700, 10, dt);
+        } else { u.vx *= 0.9; u.vy *= 0.9; } // yazı hesaplanana kadar bekler
+      } else if (uye) {
         const [sx, sy] = yuvaEkranda(u, t), ty = sy + scrollY, uzak = Math.hypot(sx - u.x, ty - u.y);
         s!.sapma = Math.max(s!.sapma, uzak);
         if (uzak > 50) yonlendir(u, sx, ty, 2.2, 560, 4, dt); // uzaktan gelir, yaklaşınca yavaşlar
@@ -354,9 +422,10 @@ if (tuval) {
         const uzak = Math.hypot(u.tx - u.x, u.ty - u.y);
         if (uzak < 8 && !u.bekle) u.bekle = t + rastgele(1200, 4200);
         if (u.bekle && t > u.bekle) yeniHedef(u);
-        yonlendir(u, u.tx, u.ty, 1.2, uzak > 500 ? 320 : u.hiz, 2.2, dt);
+        if (t < u.kalk) { u.vx *= 0.92; u.vy *= 0.92; } // yazı bozulurken hepsi aynı anda kalkmaz
+        else yonlendir(u, u.tx, u.ty, 1.2, uzak > 500 ? 520 : u.hiz, 2.2, dt);
       }
-      if (imlec.var) { // imleç yaklaşınca kaçar: ne kadar yakınsa o kadar sert
+      if (imlec.var && !giris.aktif) { // imleç yaklaşınca kaçar: ne kadar yakınsa o kadar sert
         const ex = u.x - imlec.x, ey = u.y - scrollY - imlec.y, m = Math.hypot(ex, ey) || 1, alan = 110;
         if (m < alan) { const g = (1 - m / alan) ** 2 * 2600 * dt; u.vx += (ex / m) * g; u.vy += (ey / m) * g; if (uye) rahatsiz += dt * (1 - m / alan) * 0.9; }
       }
@@ -367,8 +436,13 @@ if (tuval) {
       }
       u.x += u.vx * dt; u.y += u.vy * dt;
       // Burun: hızlıyken gittiği yöne, sürüdeyken sürünün yönüne döner. Asılıyken olduğu yere bakar.
-      const h = Math.hypot(u.vx, u.vy), istenen = uye && h < 60 ? s!.yon : h > 18 ? Math.atan2(u.vy, u.vx) : u.aci;
+      const h = Math.hypot(u.vx, u.vy), istenen = yazida && h < 60 ? -Math.PI / 2 : uye && h < 60 ? s!.yon : h > 18 ? Math.atan2(u.vy, u.vx) : u.aci;
       u.aci += Math.max(-6 * dt, Math.min(6 * dt, aciFarki(istenen - u.aci)));
+    }
+    if (giris.aktif) {
+      const hazirMi = giris.noktalar.length > 0 && giris.sapma < 10 && ihalar.every((u) => u.gi >= 0);
+      if (hazirMi !== giris.hazir) { giris.hazir = hazirMi; veri.girisHazir = hazirMi ? '1' : '0'; }
+      veri.girisSapma = String(Math.round(giris.sapma)); giris.sapma = 0;
     }
     veri.oturdu = suruler.length && !(onleme && faz === 'kovala') && suruler.every((s) => s.sapma < 10) ? '1' : '0';
     // Deneme betiği için: sürüde olmayan ama kendi bölgesinden uzak İHA sayısı (dağılan herkes bölgesine dönmeli).
@@ -377,7 +451,8 @@ if (tuval) {
     // Planların adımları: her sürü kendi planını izler, planı bitince dağılır.
     if (!onleme) for (const s of [...suruler]) {
       const sure = t - s.adimT, oturdu = s.sapma < 10;
-      if (s.adim === 'topla') { if ((oturdu && sure > 600) || sure > 7000) siradakiAdim(s, t); }
+      if (s.uyeler.length < 2) { if (sure > 9000) dagil(s, t); } // tek başına lider yeni İHA'yı bekler, gelmezse bölgesine döner
+      else if (s.adim === 'topla') { if ((oturdu && sure > 600) || sure > 7000) siradakiAdim(s, t); }
       else if (s.adim === 'git') { if ((Math.hypot(s.hedef.x - s.merkez.x, s.hedef.y - s.merkez.y) < 2 && oturdu) || sure > 9000) siradakiAdim(s, t); }
       else if (s.adim === 'degis') { if (t - s.gecisBas > GECIS + 900) siradakiAdim(s, t); }
       else if (s.adim === 'yaw') { if ((Math.abs(aciFarki(s.hedefYon - s.yon)) < 0.01 && oturdu && sure > 800) || sure > 6000) siradakiAdim(s, t); }
@@ -410,6 +485,11 @@ if (tuval) {
     const simdi = performance.now(), donus = simdi / 45, sy = scrollY, kovala = onleme && faz === 'kovala';
     ctx.clearRect(0, 0, en, boy);
     const kis = en < 600 ? 0.6 : 1; // dar ekranda metnin üstünden geçerken daha silik
+    if (giris.aktif && giris.hazir) { // yazıdaki komşu İHA'lar arasında ince bağ
+      ctx.lineWidth = 1.4; ctx.strokeStyle = vurgu; ctx.globalAlpha = 0.5 * kis; ctx.beginPath();
+      for (const [a, b] of giris.kenar) { const u = giris.sahip[a], v = giris.sahip[b]; if (u && v) { ctx.moveTo(u.x, u.y - sy); ctx.lineTo(v.x, v.y - sy); } }
+      ctx.stroke();
+    }
     if (!kovala) for (const s of suruler) {
       if (simdi - s.adimT <= 600) continue;
       // haberleşme bağları: her üye bir öndeki yuvadakine bağlı
@@ -423,10 +503,10 @@ if (tuval) {
       }
       ctx.stroke();
       // boş yuva: gelecek İHA için silik, kesikli halka
-      if (!onleme && s.uyeler.length < SURU) {
+      if (!onleme && s.uyeler.length < s.kap) {
         ctx.strokeStyle = vurgu; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
-        for (let k = s.uyeler.length; k < SURU; k++) {
-          const [a, b] = yuva(s.bicim, k, SURU, simdi), [x, y] = yerde(s, a, b);
+        for (let k = s.uyeler.length; k < s.kap; k++) {
+          const [a, b] = yuva(s.bicim, k, s.kap, simdi), [x, y] = yerde(s, a, b);
           ctx.globalAlpha = (0.28 + 0.12 * Math.sin(simdi / 500 + k)) * kis; ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.stroke();
         }
         ctx.setLineDash([]);
@@ -434,8 +514,8 @@ if (tuval) {
     }
     for (const u of ihalar) {
       if (!ekranda(u, 30)) continue;
-      const uye = !!u.sr, salin = uye ? 0 : Math.sin(simdi / 420 + u.i * 1.7) * 1.4; // boştayken hafifçe salınır
-      const lid = uye && u.s === 0 && !onleme;
+      const uye = !!u.sr || (giris.aktif && u.gi >= 0), salin = uye ? 0 : Math.sin(simdi / 420 + u.i * 1.7) * 1.4; // boştayken hafifçe salınır
+      const lid = !!u.sr && u.s === 0 && !onleme;
       if (lid) { // lider: metin renginde, çevresinde ince bir halka
         ctx.globalAlpha = 0.5 * kis; ctx.strokeStyle = vurgu; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(u.x, u.y - sy, 12, 0, Math.PI * 2); ctx.stroke();
       }
@@ -458,16 +538,20 @@ if (tuval) {
       ctx.moveTo(cagri.x - 5, cagri.y); ctx.lineTo(cagri.x + 5, cagri.y); ctx.moveTo(cagri.x, cagri.y - 5); ctx.lineTo(cagri.x, cagri.y + 5); ctx.stroke();
     }
     const uyeSayisi = suruler.reduce((a, s) => a + s.uyeler.length, 0);
-    const ad = onleme ? veri.onlemeAdi ?? 'önleme' : !suruler.length ? veri.serbest ?? 'serbest' : suruler.length > 1 ? `${suruler.length} ${veri.grup ?? 'grup'}` : suruler[0].adim === 'yaw' ? veri.donus ?? 'dönüş' : adlar[suruler[0].bicim];
+    const ad = giris.aktif ? veri.giris ?? 'MATRİS' : onleme ? veri.onlemeAdi ?? 'önleme' : !suruler.length ? veri.serbest ?? 'serbest' : suruler.length > 1 ? `${suruler.length} ${veri.grup ?? 'grup'}` : suruler[0].adim === 'yaw' ? veri.donus ?? 'dönüş' : adlar[suruler[0].bicim];
     ctx.globalAlpha = 0.7; ctx.fillStyle = soluk; ctx.font = '11px ui-monospace, monospace'; ctx.textAlign = 'right';
-    ctx.fillText(`${(veri.etiket ?? 'sürü').toUpperCase()} · ${suruler.length ? uyeSayisi : N} · ${ad.toUpperCase()}`, en - 12, boy - 12);
+    ctx.fillText(`${(veri.etiket ?? 'sürü').toUpperCase()} · ${suruler.length && !giris.aktif ? uyeSayisi : N} · ${ad.toUpperCase()}`, en - 12, boy - 12);
     ctx.globalAlpha = 1;
   }
 
   function yerlestir() {
     // Her İHA kendi bölgesinde bir yerden başlar.
     for (const u of ihalar) { yeniHedef(u); u.x = u.tx; u.y = u.ty; yeniHedef(u); }
-    veri.onleme = '0'; iz();
+    veri.onleme = '0';
+    // Açılış yazısı yalnızca ana sayfada, sayfa en üstteyken ve deneme parametresi yokken
+    const ara_ = new URLSearchParams(location.search);
+    if (veri.giris && scrollY < 100 && !ara_.has('dizilim') && !ara_.has('baskin')) girisBaslat(performance.now());
+    iz();
   }
 
   let kare = 0, son = 0, boyOlcum = 0;
@@ -492,9 +576,21 @@ if (tuval) {
     dugme.setAttribute('aria-pressed', String(!kapali()));
     baslat();
   });
-  addEventListener('resize', () => basladi && boyutla());
+  addEventListener('resize', () => { if (!basladi) return; boyutla(); if (giris.aktif && giris.noktalar.length) girisHedefle(); });
   document.addEventListener('visibilitychange', baslat);
-  addEventListener('pointermove', (e) => { if (e.pointerType !== 'touch') { imlec.x = e.clientX; imlec.y = e.clientY; imlec.var = true; } }, { passive: true });
+  // Kullanıcı hareketi açılış yazısını bozar. Sayfa açılırken tarayıcının gönderdiği ilk fare olayı sayılmaz,
+  // fare ilk görülen yerinden 24 pikselden fazla oynayınca hareket sayılır. Dokunma, tuş, tekerlek ve kaydırma hemen sayılır.
+  let ilkImlec: { x: number; y: number } | null = null;
+  const hareket = () => giris.aktif && girisBitir(performance.now());
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'touch') { imlec.x = e.clientX; imlec.y = e.clientY; imlec.var = true; }
+    if (!giris.aktif || performance.now() - giris.bas < 800) return;
+    if (!ilkImlec) ilkImlec = { x: e.clientX, y: e.clientY };
+    else if (Math.hypot(e.clientX - ilkImlec.x, e.clientY - ilkImlec.y) > 24) hareket();
+  }, { passive: true });
+  addEventListener('pointerdown', hareket, { passive: true }); addEventListener('keydown', hareket);
+  addEventListener('wheel', hareket, { passive: true }); addEventListener('touchstart', hareket, { passive: true });
+  addEventListener('scroll', () => { if (scrollY > 20) hareket(); }, { passive: true });
   document.documentElement.addEventListener('pointerleave', () => (imlec.var = false));
   // Boş bir yere tıklamak: serbestken görünenleri oraya toplar, sürü varken en yakın sürüyü oraya götürür.
   // Bağlantı, düğme ve benzetimin üstündeki tıklamalara karışmaz.
@@ -502,6 +598,7 @@ if (tuval) {
     if (!kare || (e.target as HTMLElement).closest('a, button, input, textarea, select, label, video, canvas, summary, dialog, .uye, [role="button"]')) return;
     if (getSelection()?.toString()) return;
     const t = performance.now();
+    if (giris.aktif || t - giris.bitis < 700) return; // yazıyı bozan tıklama yeni sürü başlatmaz
     cagri.x = e.clientX; cagri.y = e.clientY; cagri.t = t;
     if (mod === 'serbest') dizilimKur(t, e.clientX, e.clientY);
     else if (mod === 'dizilim') {
