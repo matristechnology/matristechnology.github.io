@@ -192,7 +192,20 @@ uyeler:
     baglanti: https://www.linkedin.com/in/funda-çakan-89a330437
     izin: true
   - { ad: "", gorev: { tr: MAVLink haberleşmesi, en: MAVLink communication }, ekip: "yazilim", dal: "haberlesme", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
-  - { ad: "", gorev: { tr: Mekanik ve elektronik tasarım, en: Mechanical and electronic design }, ekip: "elektronik", dal: "montaj", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
+  - ad: Ömer Faruk Ferik
+    gorev: { tr: Elektronik, en: Electronics }
+    ayrinti:
+      tr: SolidWorks ile mekanik tasarım yapıyor, ESP32 ve Raspberry Pi gibi gömülü sistemlerde C ve Python ile çalışıyor. Robotik, elektronik ve yazılımı birleştiren özgün projeler geliştirmeye odaklanıyor.
+      en: Does mechanical design in SolidWorks and works with C and Python on embedded systems such as the ESP32 and Raspberry Pi. Focuses on original projects that combine robotics, electronics and software.
+    ekip: elektronik
+    dal: montaj
+    sorumlu: false
+    bolum: { tr: "Mekatronik Mühendisliği, 2. sınıf", en: "Mechatronics Engineering, 2nd year" }
+    katilis: 2026
+    fotograf: omer-faruk-ferik.jpg
+    baglanti: https://www.linkedin.com/in/ömer-faruk-ferik-11082330a
+    github: https://github.com/OmerFarukFERIK
+    izin: true
   - { ad: "", gorev: { tr: "QR kodu ve iniş dairesi algılama", en: "QR code and landing circle detection" }, ekip: "yazilim", dal: "goruntu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Görev bilgisayarı yazılımı", en: "Mission computer software" }, ekip: "yazilim", dal: "gomulu", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
   - { ad: "", gorev: { tr: "Otopilot ve sensör kurulumu", en: "Autopilot and sensor setup" }, ekip: "elektronik", dal: "aviyonik", sorumlu: false, bolum: { tr: "", en: "" }, fotograf: "", baglanti: "", izin: false }
