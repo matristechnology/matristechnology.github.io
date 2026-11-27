@@ -438,7 +438,7 @@ test('D9d takım özeti: ana sayfada üç ekip kartı, üye adı ve kartı yok, 
   await page.goto('/');
   const ekipler = page.locator('[data-ekipler] > li');
   await expect(ekipler).toHaveCount(3);
-  await expect(ekipler.locator('.ekip-sayi')).toHaveText(['9 kişi', '3 kişi', '4 kişi']);
+  await expect(ekipler.locator('.ekip-sayi')).toHaveText(['9 kişi', '4 kişi', '3 kişi']);
   expect(await ekipler.locator('.etiketler li').count()).toBe(10);
   await expect(page.locator('#takim .uye, #takim [data-suzgec]')).toHaveCount(0);
   await expect(page.locator('#takim .ayrintili a')).toHaveAttribute('href', '/takim/');
@@ -468,7 +468,7 @@ test('D10 bağlantılar: sayfa içi hedefler var, dış bağlantılar doğru adr
     for (const h of new Set(baglar)) {
       if (h.startsWith('#')) expect(await page.locator(`[id="${h.slice(1)}"]`).count(), h).toBe(1);
       else if (h.startsWith('/')) expect((await request.get(h.split('#')[0])).status(), h).toBe(200);
-      else expect(h, h).toMatch(/^(mailto:[^@\s?]+@[^@\s?]+\.[a-z]+(\?subject=[^\s]*)?$|https:\/\/(www\.)?(instagram|linkedin)\.com\/|https:\/\/www\.openstreetmap\.org\/\?mlat=|https:\/\/www\.google\.com\/maps\/dir\/)/);
+      else expect(h, h).toMatch(/^(mailto:[^@\s?]+@[^@\s?]+\.[a-z]+(\?subject=[^\s]*)?$|https:\/\/(www\.)?(instagram|linkedin)\.com\/|https:\/\/github\.com\/[\w-]+$|https:\/\/www\.openstreetmap\.org\/\?mlat=|https:\/\/www\.google\.com\/maps\/dir\/)/);
     }
   }
   expect((await request.get('/olmayan-sayfa/')).status()).toBe(404);
@@ -805,9 +805,9 @@ test.describe('D16 Takım sayfası', () => {
     await expect(s.locator('[data-dugum="ekip:mekanik"]')).not.toHaveAttribute('data-yolda', '');
     await s.locator('[data-goster]').click();
     const k = page.locator('[data-kadro]');
-    await expect(k).toHaveAttribute('data-gorunen', '2');
+    await expect(k).toHaveAttribute('data-gorunen', '4');
     await expect(k).toHaveAttribute('data-dal', 'goruntu');
-    await expect(page.locator('[data-kart]:visible')).toHaveCount(2);
+    await expect(page.locator('[data-kart]:visible')).toHaveCount(4);
   });
 
   test('üyeler: ekip, dal ve arama süzgeci', async ({ page }) => {
@@ -815,12 +815,12 @@ test.describe('D16 Takım sayfası', () => {
     const k = page.locator('[data-kadro]');
     await expect(k).toHaveAttribute('data-gorunen', '17');
     await k.locator('[data-kadro-ekip] [data-ekip="mekanik"]').click();
-    await expect(k).toHaveAttribute('data-gorunen', '4');
+    await expect(k).toHaveAttribute('data-gorunen', '3');
     await k.locator('[data-kadro-dal]').selectOption('haberlesme');
     await expect(k).toHaveAttribute('data-ekip', 'yazilim');
-    await expect(k).toHaveAttribute('data-gorunen', '2');
+    await expect(k).toHaveAttribute('data-gorunen', '1');
     await k.locator('[data-kadro-ekip] [data-ekip=""]').click();
-    await k.locator('[data-kadro-ara]').fill('uwb');
+    await k.locator('[data-kadro-ara]').fill('karabulut');
     await expect(k).toHaveAttribute('data-gorunen', '1');
     await expect(k.locator('[data-kadro-durum]')).toContainText('17');
     await k.locator('[data-kadro-ara]').fill('zzzz');
@@ -829,8 +829,11 @@ test.describe('D16 Takım sayfası', () => {
 
   test('adı ve izni olmayan üyenin kişisel bilgisi sayfada yok', async ({ page }) => {
     await page.goto('/takim/');
-    await expect(page.locator('[data-kart].adsiz')).toHaveCount(17);
-    await expect(page.locator('[data-kart] img')).toHaveCount(0);
+    // 15 üye adıyla görünüyor, 2 üyenin ismi yok. Adsız kartta fotoğraf, bölüm ve bağlantı çıkmaz.
+    await expect(page.locator('[data-kart].adsiz')).toHaveCount(2);
+    await expect(page.locator('[data-kart].adsiz img, [data-kart].adsiz a')).toHaveCount(0);
+    await expect(page.locator('[data-kart]:not(.adsiz)')).toHaveCount(15);
+    await expect(page.locator('[data-kart] img')).toHaveCount(11);
   });
 
   test('takıma katıl: dal seçilince e-posta taslağına yazılır', async ({ page }) => {
